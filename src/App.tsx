@@ -16,7 +16,8 @@ import Dashboard from '@pages/Dashboard';
 import Blank from '@pages/Blank';
 import SubMenu from '@pages/SubMenu';
 import Profile from '@pages/profile/Profile';
-
+// Importa la vista del Doctor
+import Doctor from './pages/Doctor';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
 import { setAuthentication } from './store/reducers/auth';
@@ -99,6 +100,9 @@ const App = () => {
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Route>
+
+        {/* Aquí agregamos la ruta para la página del Doctor */}
+         <Route path="/doctor" element={<Doctor nombre="Dr. Juan Pérez" especialidad="Cardiología" colegiatura="12345" telefono="987654321" foto="img/aaaaxfc.jpg"/>} />
       </Routes>
       <ToastContainer
         autoClose={3000}

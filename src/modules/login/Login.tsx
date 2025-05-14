@@ -23,12 +23,12 @@ const Login = () => {
   const login = async (email: string, password: string) => {
     try {
       setAuthLoading(true);
-      const response = await authLogin(email, password);
-      dispatch(setAuthentication(response as any));
-      toast.success('Login is succeed!');
-      setAuthLoading(false);
+      //const response = await authLogin(email, password);
+      //dispatch(setAuthentication(response as any));
+      //toast.success('Login is succeed!');
+      //setAuthLoading(false);
       // dispatch(loginUser(token));
-      navigate('/');
+      //navigate('/');
     } catch (error: any) {
       setAuthLoading(false);
       toast.error(error.message || 'Failed');
