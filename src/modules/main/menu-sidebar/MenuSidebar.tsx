@@ -20,6 +20,11 @@ export const MENU: IMenuItem[] = [
     path: '/',
   },
   {
+    name: 'Doctor',
+    icon: 'fas fa-wrench nav-icon',
+    path: '/Doctor',
+  },
+  {
     name: i18n.t('menusidebar.label.blank'),
     icon: 'fas fa-wrench nav-icon',
     path: '/blank',
@@ -67,12 +72,12 @@ const MenuSidebar = () => {
       <Link to="/" className="brand-link">
         <StyledBrandImage
           src="/img/logo.png"
-          alt="AdminLTE Logo"
+          alt="Jesus From North Logo"
           width={33}
           height={33}
           rounded
         />
-        <span className="brand-text font-weight-light">AdminLTE 3</span>
+        <span className="brand-text font-weight-light">Jesus From North</span>
       </Link>
       <div className="sidebar">
         <div className="user-panel mt-3 pb-3 mb-3 d-flex">

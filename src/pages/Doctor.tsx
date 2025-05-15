@@ -10,16 +10,15 @@ import {
 } from "react-bootstrap";
 import {
   FaUserMd,
-  FaUserMinus,
-  FaHouseUser,
   FaIdBadge,
   FaEnvelope,
   FaPhone,
   FaUser,
   FaAddressCard,
 } from "react-icons/fa";
+import { ContentHeader } from "@components";
 
-const Doctor: React.FC = () => {
+const Doctor = () => {
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
@@ -49,86 +48,10 @@ const Doctor: React.FC = () => {
   };
 
   return (
-    // INICIO MODIFICACIÓN: Contenedor flex para sidebar y contenido principal
-    <div className="d-flex" style={{ minHeight: "100vh" }}>
-      {/* INICIO MODIFICACIÓN: Sidebar vertical */}
-      <nav
-        className="bg-light border-end"
-        style={{
-          width: 220,
-          minHeight: "100vh",
-          position: "fixed",
-          left: 0,
-          top: 0,
-        }}
-      >
-        <div className="p-3">
-          <h4 className="mb-4 text-primary">
-            <FaUserMd className="me-2" />
-            Menú
-          </h4>
-          <ul className="nav flex-column">
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="#">
-                <span className="me-2">🏠</span>Dashboard
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link active text-primary" href="/doctor">
-                <FaUserMd className="me-2" />
-                Doctor
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="/doctor">
-                <FaUserMinus className="me-2" />
-                Paciente
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="#">
-                <FaHouseUser className="me-2" />
-                Citas
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="#">
-                <span className="me-2">💉</span>Recetas
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="#">
-                <span className="me-2">📋</span>Gestion
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="#">
-                <span className="me-2">⚙️</span>Especialidad
-              </a>
-            </li>
-            <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="">
-                <span className="me-2">⚙️</span>Servicio
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      {/* FIN MODIFICACIÓN: Sidebar vertical */}
-
-      {/* INICIO MODIFICACIÓN: Contenido principal con margen izquierdo */}
-      <div style={{ marginLeft: 220, width: "100%" }}>
-        <div className="content-header">
-          <div className="container-fluid">
-            <div className="row mb-2">
-              <div className="col-sm-6">
-                <h1 className="m-0">Doctor</h1>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="container-fluid" style={{ marginTop: 20 }}>
+    <div>
+      <ContentHeader title="Gestión de Doctores" />
+      <section className="content">
+        <div className="container-fluid">
           <Card className="mb-4 shadow-sm">
             <Card.Header className="bg-primary text-white d-flex align-items-center">
               <FaUserMd className="me-2" />
@@ -233,36 +156,22 @@ const Doctor: React.FC = () => {
             </Card.Body>
           </Card>
 
-          <div
-            className="mb-2 d-flex align-items-center"
-            style={{ gap: "2rem" }}
-          >
-            <h5 className="mb-0 me-4">Doctor</h5>
-            {/* INICIO MODIFICACIÓN: Separación visual de los campos de búsqueda */}
+          <div className="mb-2 d-flex align-items-center" style={{ gap: "2rem" }}>
+            <h5 className="mb-0 me-4">Buscar Doctor</h5>
             <div className="d-flex align-items-center me-5">
-              <Form.Control
-                style={{ width: 120 }}
-                size="sm"
-                type="text"
-                placeholder="CMP"
-              />
+              <Form.Control style={{ width: 120 }} size="sm" type="text" placeholder="CMP" />
               <Button size="sm" variant="primary" className="ms-3">
                 Buscar
               </Button>
             </div>
             <div className="d-flex align-items-center">
-              <Form.Control
-                style={{ width: 140 }}
-                size="sm"
-                type="text"
-                placeholder="Nombre"
-              />
+              <Form.Control style={{ width: 140 }} size="sm" type="text" placeholder="Nombre" />
               <Button size="sm" variant="primary" className="ms-3">
                 Buscar
               </Button>
             </div>
-            {/* FIN MODIFICACIÓN */}
           </div>
+
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -298,10 +207,8 @@ const Doctor: React.FC = () => {
             </tbody>
           </Table>
         </div>
-      </div>
-      {/* FIN MODIFICACIÓN: Contenido principal */}
+      </section>
     </div>
-    // FIN MODIFICACIÓN: Contenedor flex
   );
 };
 

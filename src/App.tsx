@@ -13,7 +13,7 @@ import { setWindowSize } from '@app/store/reducers/ui';
 import ReactGA from 'react-ga4';
 
 import Dashboard from '@pages/Dashboard';
-import Blank from '@pages/Blank';
+import Blank from '@app/pages/Doctor';
 import SubMenu from '@pages/SubMenu';
 import Profile from '@pages/profile/Profile';
 import Doctor from './pages/Doctor';
