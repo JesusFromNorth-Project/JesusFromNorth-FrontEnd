@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Dashboard</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+		<style>
+			.small-box {
+				border-radius: 0.25rem;
+				position: relative;
+				display: block;
+				margin-bottom: 20px;
+				box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+				color: #fff;
+				padding: 20px;
+			}
+			.small-box .icon {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				font-size: 50px;
+				opacity: 0.4;
+			}
+			.small-box-footer {
+				display: block;
+				padding: 5px 0;
+				color: #fff;
+				font-weight: bold;
+				text-decoration: none;
+			}
+			.small-box-footer:hover {
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<h1>Dashboard</h1>
+
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<!-- New Orders -->
+						<div class="col-lg-3 col-6">
+							<div class="small-box bg-info">
+								<div class="inner">
+									<h3>150</h3>
+									<p>New Orders</p>
+								</div>
+								<div class="icon">
+									<i class="ion ion-bag"></i>
+								</div>
+								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+							</div>
+						</div>
+
+						<!-- Bounce Rate -->
+						<div class="col-lg-3 col-6">
+							<div class="small-box bg-success">
+								<div class="inner">
+									<h3>53<sup style="font-size: 20px">%</sup></h3>
+									<p>Bounce Rate</p>
+								</div>
+								<div class="icon">
+									<i class="ion ion-stats-bars"></i>
+								</div>
+								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+							</div>
+						</div>
+
+						<!-- User Registrations -->
+						<div class="col-lg-3 col-6">
+							<div class="small-box bg-warning">
+								<div class="inner">
+									<h3>44</h3>
+									<p>User Registrations</p>
+								</div>
+								<div class="icon">
+									<i class="ion ion-person-add"></i>
+								</div>
+								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+							</div>
+						</div>
+
+						<!-- Unique Visitors -->
+						<div class="col-lg-3 col-6">
+							<div class="small-box bg-danger">
+								<div class="inner">
+									<h3>65</h3>
+									<p>Unique Visitors</p>
+								</div>
+								<div class="icon">
+									<i class="ion ion-pie-graph"></i>
+								</div>
+								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</body>
+</html>
