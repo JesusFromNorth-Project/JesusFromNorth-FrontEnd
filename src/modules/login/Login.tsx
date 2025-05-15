@@ -59,8 +59,8 @@ const Login = () => {
       <div className="card card-outline card-primary">
         <div className="card-header text-center">
           <Link to="/" className="h1">
-            <b>Admin</b>
-            <span>LTE</span>
+            <h1>Clínica</h1>
+            <h1><b>Jesus From North</b></h1>
           </Link>
         </div>
         <div className="card-body">
