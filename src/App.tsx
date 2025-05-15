@@ -1,31 +1,32 @@
-import { useEffect, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import Main from '@modules/main/Main';
-import Login from '@modules/login/Login';
-import Register from '@modules/register/Register';
-import ForgetPassword from '@modules/forgot-password/ForgotPassword';
-import RecoverPassword from '@modules/recover-password/RecoverPassword';
-import { useWindowSize } from '@app/hooks/useWindowSize';
-import { calculateWindowSize } from '@app/utils/helpers';
-import { useDispatch, useSelector } from 'react-redux';
-import { setWindowSize } from '@app/store/reducers/ui';
-import ReactGA from 'react-ga4';
+import { useEffect, useState } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-import Dashboard from '@pages/Dashboard';
-import Blank from '@pages/Blank';
-import SubMenu from '@pages/SubMenu';
-import Profile from '@pages/profile/Profile';
-// Importa la vista del Doctor
-import Doctor from './pages/Doctor';
-import PublicRoute from './routes/PublicRoute';
-import PrivateRoute from './routes/PrivateRoute';
-import { setAuthentication } from './store/reducers/auth';
-import {
-  getAuthStatus,
-} from './utils/oidc-providers';
-import Specialty from './pages/Specialty';
-import Service from './pages/Service';
+import Main from "@modules/main/Main";
+import Login from "@modules/login/Login";
+import Register from "@modules/register/Register";
+import ForgetPassword from "@modules/forgot-password/ForgotPassword";
+import RecoverPassword from "@modules/recover-password/RecoverPassword";
+
+import { useWindowSize } from "@app/hooks/useWindowSize";
+import { calculateWindowSize } from "@app/utils/helpers";
+import { useDispatch, useSelector } from "react-redux";
+import { setWindowSize } from "@app/store/reducers/ui";
+import ReactGA from "react-ga4";
+
+import Dashboard from "@pages/Dashboard";
+import Blank from "@pages/Blank";
+import SubMenu from "@pages/SubMenu";
+import Profile from "@pages/profile/Profile";
+import Doctor from "./pages/Doctor";
+import Specialty from "./pages/Specialty";
+import Service from "./pages/Service";
+
+import PublicRoute from "./routes/PublicRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+
+import { setAuthentication } from "./store/reducers/auth";
+import { getAuthStatus } from "./utils/oidc-providers";
 
 const { VITE_NODE_ENV } = import.meta.env;
 
@@ -39,19 +40,16 @@ const App = () => {
 
   const checkSession = async () => {
     try {
-      let responses: any = await Promise.all([
-        getAuthStatus(),
-      ]);
-
-      responses = responses.filter((r: any) => Boolean(r));
-
-      if (responses && responses.length > 0) {
-        dispatch(setAuthentication(responses[0]));
+      const responses: any = await Promise.all([getAuthStatus()]);
+      const validResponses = responses.filter((r: any) => Boolean(r));
+      if (validResponses.length > 0) {
+        dispatch(setAuthentication(validResponses[0]));
       }
     } catch (error: any) {
-      console.log('error', error);
+      console.error("Error checking auth status:", error);
+    } finally {
+      setIsAppLoading(false);
     }
-    setIsAppLoading(false);
   };
 
   useEffect(() => {
@@ -66,48 +64,49 @@ const App = () => {
   }, [windowSize]);
 
   useEffect(() => {
-    if (location && location.pathname && VITE_NODE_ENV === 'production') {
+    if (location?.pathname && VITE_NODE_ENV === "production") {
       ReactGA.send({
-        hitType: 'pageview',
+        hitType: "pageview",
         page: location.pathname,
       });
     }
   }, [location]);
 
   if (isAppLoading) {
-    return <p>Loading</p>;
+    return <p>Loading...</p>;
   }
 
   return (
     <>
       <Routes>
         <Route path="/login" element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
+          <Route index element={<Login />} />
         </Route>
         <Route path="/register" element={<PublicRoute />}>
-          <Route path="/register" element={<Register />} />
+          <Route index element={<Register />} />
         </Route>
         <Route path="/forgot-password" element={<PublicRoute />}>
-          <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route index element={<ForgetPassword />} />
         </Route>
         <Route path="/recover-password" element={<PublicRoute />}>
-          <Route path="/recover-password" element={<RecoverPassword />} />
-        </Route>
-        <Route path="/" element={<PrivateRoute />}>
-          <Route path="/" element={<Main />}>
-            <Route path="/sub-menu-2" element={<Blank />} />
-            <Route path="/sub-menu-1" element={<SubMenu />} />
-            <Route path="/blank" element={<Blank />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/" element={<Dashboard />} />
-          </Route>
+          <Route index element={<RecoverPassword />} />
         </Route>
 
-        {/* Aquí agregamos la ruta para la página del Doctor */}
-         <Route path="/doctor" element={<Doctor />} />
-         <Route path="/specialty" element={<Specialty />} />
-        <Route path="/service" element={<Service />} />
+        <Route path="/" element={<PrivateRoute />}>
+          <Route element={<Main />}>
+            <Route index element={<Dashboard />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="sub-menu-1" element={<SubMenu />} />
+            <Route path="sub-menu-2" element={<Blank />} />
+            <Route path="blank" element={<Blank />} />
+
+            <Route path="doctor" element={<Doctor />} />
+            <Route path="specialty" element={<Specialty />} />
+            <Route path="service" element={<Service />} />
+          </Route>
+        </Route>
       </Routes>
+
       <ToastContainer
         autoClose={3000}
         draggable={false}
