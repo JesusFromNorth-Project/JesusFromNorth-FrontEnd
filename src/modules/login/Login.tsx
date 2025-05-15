@@ -9,7 +9,6 @@ import { setWindowClass } from '@app/utils/helpers';
 import { Checkbox } from '@profabric/react-components';
 import * as Yup from 'yup';
 
-import { authLogin } from '@app/utils/oidc-providers';
 import { Form, InputGroup } from 'react-bootstrap';
 import { Button } from '@app/styles/common';
 
@@ -21,18 +20,36 @@ const Login = () => {
   const [t] = useTranslation();
 
   const login = async (email: string, password: string) => {
-    try {
-      setAuthLoading(true);
-      //const response = await authLogin(email, password);
-      //dispatch(setAuthentication(response as any));
-      //toast.success('Login is succeed!');
-      //setAuthLoading(false);
-      // dispatch(loginUser(token));
-      //navigate('/');
-    } catch (error: any) {
-      setAuthLoading(false);
-      toast.error(error.message || 'Failed');
-    }
+    setAuthLoading(true);
+
+    // Simular retardo de login con setTimeout
+    setTimeout(() => {
+      if (email === 'admin@gmail.com' && password === 'admin') {
+        // Simular datos de usuario
+        const user = {
+          id: '1',
+          email: 'admin@gmail.com',
+          name: 'Admin User',
+          mustChangePassword: false,
+          subscriptions: ['default'],
+        };
+
+        // Guardar en localStorage como si fuera la respuesta real
+        localStorage.setItem('authentication', JSON.stringify({ profile: user }));
+        localStorage.setItem('token', 'fake-token-123456');
+        localStorage.setItem('subscriptionSelected', JSON.stringify(user.subscriptions[0]));
+        localStorage.setItem('subscriptionList', JSON.stringify(user.subscriptions));
+
+        dispatch(setAuthentication({ profile: user }));
+
+        toast.success('Login successful!');
+        setAuthLoading(false);
+        navigate('/');
+      } else {
+        setAuthLoading(false);
+        toast.error('Email or password is incorrect');
+      }
+    }, 1000); // Simular 1 segundo de espera
   };
 
   const { handleChange, values, handleSubmit, touched, errors } = useFormik({
@@ -59,8 +76,7 @@ const Login = () => {
       <div className="card card-outline card-primary">
         <div className="card-header text-center">
           <Link to="/" className="h1">
-            <b>Admin</b>
-            <span>LTE</span>
+            <b>JesusFromNort</b>
           </Link>
         </div>
         <div className="card-body">
@@ -79,9 +95,7 @@ const Login = () => {
                   isInvalid={touched.email && !!errors.email}
                 />
                 {touched.email && errors.email ? (
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                 ) : (
                   <InputGroup.Append>
                     <InputGroup.Text>
@@ -104,9 +118,7 @@ const Login = () => {
                   isInvalid={touched.password && !!errors.password}
                 />
                 {touched.password && errors.password ? (
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password}
-                  </Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                 ) : (
                   <InputGroup.Append>
                     <InputGroup.Text>
@@ -127,10 +139,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="col-4">
-                <Button
-                  loading={isAuthLoading}
-                  onClick={handleSubmit as any}
-                >
+                <Button loading={isAuthLoading} onClick={handleSubmit as any}>
                   {t('login.button.signIn.label')}
                 </Button>
               </div>
