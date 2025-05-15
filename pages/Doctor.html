@@ -4,61 +4,17 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Registro de Doctor</title>
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-		<style>
-			body {
-				display: flex;
-				min-height: 100vh;
-			}
-			nav {
-				background-color: #58a2eb;
-				width: 220px;
-				min-height: 100vh;
-				position: fixed;
-				left: 0;
-				top: 0;
-			}
-			.main-content {
-				margin-left: 220px;
-				padding: 20px;
-				width: 100%;
-			}
-		</style>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="/css/Doctor.css" />
 	</head>
 	<body>
-		<!-- Sidebar -->
-		<nav class="border-end p-3">
-			<h4 class="mb-4 text-primary">🩺 Menú</h4>
-			<ul class="nav flex-column">
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="Dashboard.html">🏠 Dashboard</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link active text-primary" href="#">🩺 Doctor</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="#">🧑 Paciente</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="#">🏥 Citas</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="#">💉 Recetas</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="#">📋 Gestión</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="#">⚙️ Especialidad</a>
-				</li>
-				<li class="nav-item mb-2">
-					<a class="nav-link text-dark" href="Servicios.html">⚙️ Servicio</a>
-				</li>
-			</ul>
-		</nav>
+		<!-- Sidebar dinámico -->
+		<div id="sidebar-placeholder"></div>
 
 		<!-- Contenido Principal -->
-		<div class="main-content">
+		<div class="main-content" style="margin-left: 220px">
 			<h1 class="mb-4">Doctor</h1>
 
 			<div class="card shadow-sm mb-4">
@@ -147,5 +103,29 @@
 				</tbody>
 			</table>
 		</div>
+
+		<!-- Script para cargar el sidebar externo y resaltar el enlace activo -->
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				fetch("../components/Sidebar.html")
+					.then((res) => res.text())
+					.then((html) => {
+						document.getElementById("sidebar-placeholder").innerHTML = html;
+
+						// Resaltar el enlace activo según la página actual
+						const path = window.location.pathname.split("/").pop().toLowerCase();
+						const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+						links.forEach((link) => {
+							if (link.getAttribute("href").toLowerCase().includes(path)) {
+								link.classList.remove("text-dark");
+								link.classList.add("text-primary");
+							}
+						});
+					})
+					.catch((err) => console.error("Error al cargar sidebar:", err));
+			});
+		</script>
+		<!-- Bootstrap JS -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	</body>
 </html>

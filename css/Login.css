@@ -1,0 +1,15 @@
+body {
+	background-color: #f4f6f9;
+}
+.login-box {
+	width: 360px;
+	margin: 7% auto;
+}
+.login-box .card {
+	border-top: 3px solid #007bff;
+}
+.login-box-msg {
+	margin: 0;
+	text-align: center;
+	padding: 10px 20px 20px 20px;
+}
