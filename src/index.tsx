@@ -3,6 +3,10 @@ import { Provider } from 'react-redux';
 import App from '@app/App';
 import store from '@store/store';
 
+// Import Bootstrap and ToastifyCSS
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './utils/i18n';
 import './index.css';
 import * as serviceWorker from './serviceWorker';

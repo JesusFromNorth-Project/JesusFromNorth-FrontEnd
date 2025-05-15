@@ -20,9 +20,7 @@ import Doctor from './pages/Doctor';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
 import { setAuthentication } from './store/reducers/auth';
-import {
-  getAuthStatus,
-} from './utils/oidc-providers';
+import { getAuthStatus } from './utils/oidc-providers';
 
 const { VITE_NODE_ENV } = import.meta.env;
 
@@ -78,6 +76,7 @@ const App = () => {
   return (
     <>
       <Routes>
+        {/* Public routes */}
         <Route path="/login" element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
         </Route>
@@ -90,17 +89,20 @@ const App = () => {
         <Route path="/recover-password" element={<PublicRoute />}>
           <Route path="/recover-password" element={<RecoverPassword />} />
         </Route>
+
+        {/* Private routes with layout */}
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/" element={<Main />}>
+            <Route path="/" element={<Dashboard />} />
             <Route path="/sub-menu-2" element={<Blank />} />
             <Route path="/sub-menu-1" element={<SubMenu />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/doctor" element={<Doctor />} />
           </Route>
         </Route>
-         <Route path="/doctor" element={<Doctor nombre="Dr. Juan Pérez" especialidad="Cardiología" colegiatura="12345" telefono="987654321" foto="img/aaaaxfc.jpg"/>} />
       </Routes>
+
       <ToastContainer
         autoClose={3000}
         draggable={false}
