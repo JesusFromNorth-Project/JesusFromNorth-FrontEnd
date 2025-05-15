@@ -53,8 +53,9 @@ const Doctor: React.FC = () => {
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       {/* INICIO MODIFICACIÓN: Sidebar vertical */}
       <nav
-        className="bg-light border-end"
+        className="border-end"
         style={{
+            backgroundColor: "#58a2eb",
           width: 220,
           minHeight: "100vh",
           position: "fixed",
@@ -102,12 +103,12 @@ const Doctor: React.FC = () => {
               </a>
             </li>
             <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="#">
+              <a className="nav-link text-dark" href="/specialty">
                 <span className="me-2">⚙️</span>Especialidad
               </a>
             </li>
             <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="">
+              <a className="nav-link text-dark" href="/service">
                 <span className="me-2">⚙️</span>Servicio
               </a>
             </li>

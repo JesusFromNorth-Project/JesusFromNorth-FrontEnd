@@ -24,6 +24,8 @@ import { setAuthentication } from './store/reducers/auth';
 import {
   getAuthStatus,
 } from './utils/oidc-providers';
+import Specialty from './pages/Specialty';
+import Service from './pages/Service';
 
 const { VITE_NODE_ENV } = import.meta.env;
 
@@ -102,7 +104,9 @@ const App = () => {
         </Route>
 
         {/* Aquí agregamos la ruta para la página del Doctor */}
-         <Route path="/doctor" element={<Doctor nombre="Dr. Juan Pérez" especialidad="Cardiología" colegiatura="12345" telefono="987654321" foto="img/aaaaxfc.jpg"/>} />
+         <Route path="/doctor" element={<Doctor />} />
+         <Route path="/specialty" element={<Specialty />} />
+        <Route path="/service" element={<Service />} />
       </Routes>
       <ToastContainer
         autoClose={3000}
