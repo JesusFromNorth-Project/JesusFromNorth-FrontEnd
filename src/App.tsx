@@ -16,13 +16,16 @@ import Dashboard from '@pages/Dashboard';
 import Blank from '@pages/Blank';
 import SubMenu from '@pages/SubMenu';
 import Profile from '@pages/profile/Profile';
-
+// Importa la vista del Doctor
+import Doctor from './pages/Doctor';
 import PublicRoute from './routes/PublicRoute';
 import PrivateRoute from './routes/PrivateRoute';
 import { setAuthentication } from './store/reducers/auth';
 import {
   getAuthStatus,
 } from './utils/oidc-providers';
+import Specialty from './pages/Specialty';
+import Service from './pages/Service';
 
 const { VITE_NODE_ENV } = import.meta.env;
 
@@ -99,6 +102,11 @@ const App = () => {
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Route>
+
+        {/* Aquí agregamos la ruta para la página del Doctor */}
+         <Route path="/doctor" element={<Doctor />} />
+         <Route path="/specialty" element={<Specialty />} />
+        <Route path="/service" element={<Service />} />
       </Routes>
       <ToastContainer
         autoClose={3000}
