@@ -1,0 +1,26 @@
+body {
+	display: flex;
+	min-height: 100vh;
+	margin: 0;
+}
+
+nav {
+	background-color: #58a2eb;
+	width: 220px;
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	padding: 1rem;
+}
+
+.main-content,
+.main {
+	margin-left: 220px;
+	padding: 2rem;
+	width: 100%;
+}
+
+.dropdown-toggle::after {
+	display: none;
+}
