@@ -9,6 +9,9 @@ const servicios = [
 	{ id: 4, nombre: "Nombre 4", especialidad: "Odontología", costo: "S/1.20" },
 ];
 
+const servicioApiUrl = "http://localhost:8080/service/";
+const servicioListUrl = "http://localhost:8080/service/list";
+
 function renderServicios() {
 	tabla.innerHTML = "";
 	servicios.forEach((s) => {
@@ -32,18 +35,41 @@ function renderServicios() {
 	});
 }
 
-form.addEventListener("submit", function (e) {
-	e.preventDefault();
-	const data = new FormData(form);
-	const nuevoServicio = {
-		id: ++id,
-		nombre: data.get("nombre"),
-		especialidad: data.get("especialidad"),
-		costo: `S/${data.get("costo")}`,
-	};
-	servicios.push(nuevoServicio);
-	form.reset();
-	renderServicios();
+window.addEventListener("DOMContentLoaded", () => {
+	const form = document.getElementById("formServicio");
+	form.addEventListener("submit", async function (e) {
+		e.preventDefault();
+		const nombre = this.nombre.value;
+		const especialidad = this.especialidad.value;
+		const costo = this.costo.value;
+		if (!nombre || !especialidad || !costo) {
+			alert("Completa todos los campos");
+			return;
+		}
+		const body = {
+			service_name: nombre,
+			price: parseFloat(costo),
+			id_specialty: especialidad,
+		};
+		try {
+			const res = await fetch(servicioApiUrl, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(body),
+			});
+			if (res.ok) {
+				alert("Servicio guardado exitosamente");
+				this.reset();
+				// Recargar tabla después de guardar
+				renderServicios();
+			} else {
+				const data = await res.json();
+				alert(data.message || "Error al guardar servicio");
+			}
+		} catch (error) {
+			alert("Error de conexión con el servidor");
+		}
+	});
 });
 
 renderServicios();

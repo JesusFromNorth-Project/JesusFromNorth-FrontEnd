@@ -18,10 +18,12 @@
 				<div class="card-body">
 					<p class="login-box-msg">Inicia sesión para acceder al sistema</p>
 
-					<form>
+					<div id="errorMessage" class="alert alert-danger mb-3" style="display: none"></div>
+
+					<form id="loginForm">
 						<div class="mb-3">
 							<div class="input-group">
-								<input type="email" name="email" class="form-control" placeholder="Email" required />
+								<input type="username" name="username" class="form-control" placeholder="Username" required />
 								<span class="input-group-text">
 									<i class="fas fa-envelope"></i>
 								</span>
@@ -50,5 +52,8 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Login script (external) -->
+		<script src="/scripts/Login.js"></script>
 	</body>
 </html>

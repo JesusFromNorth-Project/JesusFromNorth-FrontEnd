@@ -58,19 +58,19 @@
 							<div class="col-md-4">
 								<div class="input-group">
 									<span class="input-group-text">👤</span>
-									<input type="text" class="form-control" placeholder="Nombre" required />
+									<input type="text" class="form-control" name="nombre" placeholder="Nombre" required />
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="input-group">
 									<span class="input-group-text">🪪</span>
-									<input type="text" class="form-control" placeholder="Apellido(s)" required />
+									<input type="text" class="form-control" name="apellido" placeholder="Apellido(s)" required />
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="input-group">
 									<span class="input-group-text">🔖</span>
-									<input type="text" class="form-control" placeholder="CMP" required />
+									<input type="text" class="form-control" name="cmp" placeholder="CMP" required />
 								</div>
 							</div>
 						</div>
@@ -79,19 +79,22 @@
 							<div class="col-md-4">
 								<div class="input-group">
 									<span class="input-group-text">✉️</span>
-									<input type="email" class="form-control" placeholder="Correo" required />
+									<input type="email" class="form-control" name="correo" placeholder="Correo" required />
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="input-group">
 									<span class="input-group-text">📞</span>
-									<input type="text" class="form-control" placeholder="Teléfono" required />
+									<input type="text" class="form-control" name="telefono" placeholder="Teléfono" required />
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="input-group">
 									<span class="input-group-text">🩺</span>
-									<input type="text" class="form-control" placeholder="Especialidad" required />
+									<select class="form-select" name="especialidad" id="selectEspecialidad" required>
+										<option value="">Seleccione especialidad</option>
+										<!-- Opciones dinámicas -->
+									</select>
 								</div>
 							</div>
 						</div>
