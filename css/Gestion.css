@@ -1,0 +1,20 @@
+ .main-content {
+            margin-left: 220px;
+            padding: 2rem 2rem 0 2rem;
+        }
+        .table thead th {
+            background: #f2f2f2;
+        }
+        .footer {
+            background: #e9ecef;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        .add-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 1000;
+            font-size: 2rem;
+        }
