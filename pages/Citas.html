@@ -1,17 +1,105 @@
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Citas</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="/css/Dashboard.css" />
-	</head>
-	<body>
-		<!-- Sidebar dinámico -->
-		<div id="sidebar-placeholder"></div>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Citas</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/Citas.css" />
+</head>
+
+<body>
+	<!-- Sidebar dinámico -->
+	<div id="sidebar-placeholder"></div>
+	<!-- Contenido Principal -->
+	<div class="main-content">
+		<h3 class="mb-4">Datos de la Cita</h3>
+		<div class="row g-4">
+			<!-- Formulario de la cita -->
+			<div class="col-md-6">
+				<div class="card card-cita shadow-sm">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<span class="text-muted" style="font-size: 0.95rem;">Fecha de creación: XX / XX / XX</span>
+							<button class="btn btn-link p-0" title="Editar"><i class="fa fa-pen"></i></button>
+						</div>
+						<form>
+							<div class="mb-2 input-group">
+								<span class="input-group-text"><i class="fa fa-calendar"></i></span>
+								<input type="date" class="form-control" placeholder="Fecha pactada">
+							</div>
+							<div class="mb-2 input-group">
+								<span class="input-group-text"><i class="fa fa-user"></i></span>
+								<input type="text" class="form-control" placeholder="Paciente">
+							</div>
+							<div class="mb-2 input-group">
+								<span class="input-group-text"><i class="fa fa-stethoscope"></i></span>
+								<select class="form-select">
+									<option>Especialidad</option>
+									<option>Cardiología</option>
+									<option>Pediatría</option>
+								</select>
+							</div>
+							<div class="mb-2 input-group">
+								<span class="input-group-text"><i class="fa fa-user-md"></i></span>
+								<select class="form-select">
+									<option>Doctor</option>
+									<option>Dr. Pérez</option>
+									<option>Dra. Gómez</option>
+								</select>
+							</div>
+							<div class="mb-2 input-group">
+								<span class="input-group-text"><i class="fa fa-pen"></i></span>
+								<input type="text" class="form-control" placeholder="Descripción">
+							</div>
+							<div class="mb-3 text-muted" style="font-size: 0.95rem;">
+								Hora: 10:00 am
+							</div>
+							<div class="d-flex justify-content-end">
+								<button type="submit" class="btn btn-primary">Guardar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<button class="btn btn-outline-primary mt-3">Ver Citas</button>
+			</div>
+			<!-- Horario -->
+			<div class="col-md-6">
+				<div class="d-flex align-items-center mb-2">
+					<div class="dropdown me-2">
+						<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownDias"
+							data-bs-toggle="dropdown" aria-expanded="false">
+							Martes 29
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownDias">
+							<li><a class="dropdown-item" href="#">Lunes 28</a></li>
+							<li><a class="dropdown-item" href="#">Martes 29</a></li>
+							<li><a class="dropdown-item" href="#">Miércoles 30</a></li>
+							<li><a class="dropdown-item" href="#">Jueves 31</a></li>
+							<li><a class="dropdown-item" href="#">Viernes 1</a></li>
+						</ul>
+					</div>
+					<button class="btn btn-outline-secondary">DIA</button>
+				</div>
+				<div class="card horario">
+					<div class="list-group list-group-flush">
+						<div class="list-group-item">5 am</div>
+						<div class="list-group-item">6 am</div>
+						<div class="list-group-item">7 am</div>
+						<div class="list-group-item bg-reservado">8 am</div>
+						<div class="list-group-item bg-reservado">9 am</div>
+						<div class="list-group-item bg-disponible">10 am</div>
+						<div class="list-group-item">11 am</div>
+						<div class="list-group-item">12 pm</div>
+						<div class="list-group-item bg-reservado">1 pm</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Script para cargar el sidebar externo y resaltar el enlace activo -->
 		<script>
 			document.addEventListener("DOMContentLoaded", () => {
 				fetch("../components/Sidebar.html")
@@ -31,5 +119,6 @@
 			});
 		</script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	</body>
+</body>
+
 </html>

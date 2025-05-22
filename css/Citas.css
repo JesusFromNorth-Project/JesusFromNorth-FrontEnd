@@ -1,0 +1,50 @@
+        body {
+            background: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #e3f0fb;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 1rem 0;
+        }
+
+        .sidebar .nav-link {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            color: #0d6efd;
+            background: #fff;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 2rem 2rem 0 2rem;
+        }
+
+        .card-cita {
+            min-width: 420px;
+            max-width: 500px;
+        }
+
+        .horario {
+            min-width: 220px;
+        }
+
+        .bg-reservado {
+            background: #ff5c5c !important;
+            color: #fff;
+        }
+
+        .bg-disponible {
+            background: #b6e0fe !important;
+        }
+
+      
