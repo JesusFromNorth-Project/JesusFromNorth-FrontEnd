@@ -1,0 +1,40 @@
+.section-title {
+    color: #4B2E83;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.card-service {
+    border: none;
+    text-align: center;
+}
+
+.card-service .card-body {
+    padding: 1.5rem;
+}
+
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+.partner-logo {
+    height: 60px;
+    object-fit: contain;
+    background: #fff;
+    padding: 10px 18px;
+    border-radius: 12px;
+    margin: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.partner-logo:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+}
+
+
+
+
