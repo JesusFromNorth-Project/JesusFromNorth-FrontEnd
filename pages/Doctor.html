@@ -1,134 +1,304 @@
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Registro de Doctor</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="/css/Doctor.css" />
-	</head>
-	<body>
-		<!-- Sidebar dinámico -->
-		<div id="sidebar-placeholder"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Doctor</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/css/Doctor.css" />
+  </head>
+  <body>
+    <!-- Sidebar dinámico -->
+    <div id="sidebar-placeholder"></div>
 
-		<!-- Contenido Principal -->
-		<div class="main-content" style="margin-left: 220px">
-			<h1 class="mb-4">Doctor</h1>
+    <!-- Contenido Principal -->
+    <div class="main-content" style="margin-left: 220px">
+      <h1 class="mb-4">Doctor</h1>
 
-			<div class="card shadow-sm mb-4">
-				<div class="card-header bg-primary text-white">🩺 Datos del Doctor</div>
-				<div class="card-body">
-					<form>
-						<div class="row mb-3">
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text">👤</span>
-									<input type="text" class="form-control" name="nombre" placeholder="Nombre" required />
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text">🪪</span>
-									<input type="text" class="form-control" name="apellido" placeholder="Apellido(s)" required />
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text">🔖</span>
-									<input type="text" class="form-control" name="cmp" placeholder="CMP" required />
-								</div>
-							</div>
-						</div>
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">🩺 Datos del Doctor</div>
+        <div class="card-body">
+          <form>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text">👤</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="nombre"
+                    placeholder="Nombre"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text">🪪</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="apellido"
+                    placeholder="Apellido(s)"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text">🔖</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="cmp"
+                    placeholder="CMP"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
 
-						<div class="row mb-3">
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text">✉️</span>
-									<input type="email" class="form-control" name="correo" placeholder="Correo" required />
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text">📞</span>
-									<input type="text" class="form-control" name="telefono" placeholder="Teléfono" required />
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text">🩺</span>
-									<select class="form-select" name="especialidad" id="selectEspecialidad" required>
-										<option value="">Seleccione especialidad</option>
-										<!-- Opciones dinámicas -->
-									</select>
-								</div>
-							</div>
-						</div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text">✉️</span>
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="correo"
+                    placeholder="Correo"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text">📞</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="telefono"
+                    placeholder="Teléfono"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text">🩺</span>
+                  <select
+                    class="form-select"
+                    name="especialidad"
+                    id="selectEspecialidad"
+                    required
+                  >
+                    <option value="">Seleccione especialidad</option>
+                    <!-- Opciones dinámicas -->
+                  </select>
+                </div>
+              </div>
+            </div>
 
-						<div class="text-end">
-							<button type="submit" class="btn btn-primary">Guardar</button>
-						</div>
-					</form>
-				</div>
-			</div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-			<!-- Búsqueda -->
-			<div class="d-flex align-items-center mb-3" style="gap: 2rem">
-				<h5 class="mb-0 me-4">Doctor</h5>
-				<div class="d-flex align-items-center me-5">
-					<input type="text" class="form-control form-control-sm me-2" style="width: 120px" placeholder="CMP" />
-					<button class="btn btn-sm btn-primary">Buscar</button>
-				</div>
-				<div class="d-flex align-items-center">
-					<input type="text" class="form-control form-control-sm me-2" style="width: 140px" placeholder="Nombre" />
-					<button class="btn btn-sm btn-primary">Buscar</button>
-				</div>
-			</div>
+      <!-- Búsqueda -->
+      <div class="d-flex align-items-center mb-3" style="gap: 2rem">
+        <h5 class="mb-0 me-4">Doctor</h5>
+        <div class="d-flex align-items-center me-5">
+          <input
+            type="text"
+            class="form-control form-control-sm me-2"
+            style="width: 120px"
+            placeholder="CMP"
+            id="searchCMP"
+          />
+          <button class="btn btn-sm btn-primary">Buscar</button>
+        </div>
+        <div class="d-flex align-items-center">
+          <input
+            type="text"
+            class="form-control form-control-sm me-2"
+            style="width: 140px"
+            placeholder="Nombre"
+            id="searchNombre"
+          />
+          <button class="btn btn-sm btn-primary">Buscar</button>
+        </div>
+      </div>
 
-			<!-- Tabla -->
-			<table class="table table-bordered table-striped">
-				<thead class="table-light">
-					<tr>
-						<th>ID</th>
-						<th>Nombre</th>
-						<th>Apellido</th>
-						<th>CMP</th>
-						<th>Correo</th>
-						<th>Teléfono</th>
-						<th>Especialidad</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td colspan="7" class="text-center">No hay doctores registrados.</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+      <!-- Tabla -->
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>CMP</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Especialidad</th>
+          </tr>
+        </thead>
+        <tbody id="tablaDoctores">
+          <tr>
+            <td colspan="7" class="text-center">
+              No hay doctores registrados.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-		<!-- Script para cargar el sidebar externo y resaltar el enlace activo -->
-		<script>
-			document.addEventListener("DOMContentLoaded", () => {
-				fetch("../components/Sidebar.html")
-					.then((res) => res.text())
-					.then((html) => {
-						document.getElementById("sidebar-placeholder").innerHTML = html;
+    <!-- Modal de Edición -->
+    <div class="modal fade" id="editarDoctorModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Doctor</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editarDoctorForm">
+              <input type="hidden" name="doctorId" />
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="nombre"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Apellido</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="apellido"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Correo</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="correo"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Teléfono</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="telefono"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Especialidad</label>
+                <select class="form-select" name="especialidad" required>
+                  <!-- Se llenará dinámicamente -->
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="guardarEdicion()"
+            >
+              Guardar cambios
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-						// Resaltar el enlace activo según la página actual
-						const path = window.location.pathname.split("/").pop().toLowerCase();
-						const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-						links.forEach((link) => {
-							if (link.getAttribute("href").toLowerCase().includes(path)) {
-								link.classList.remove("text-dark");
-								link.classList.add("text-primary");
-							}
-						});
-					})
-					.catch((err) => console.error("Error al cargar sidebar:", err));
-			});
-		</script>
-		<!-- Bootstrap JS -->
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	</body>
+    <!-- Modal de Detalles -->
+    <div class="modal fade" id="detallesDoctorModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detalles del Doctor</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="detallesDoctorBody">
+            <!-- Se llenará dinámicamente -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script para cargar el sidebar externo -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("../components/Sidebar.html")
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("sidebar-placeholder").innerHTML = html;
+
+            // Resaltar el enlace activo según la página actual
+            const path = window.location.pathname
+              .split("/")
+              .pop()
+              .toLowerCase();
+            const links = document.querySelectorAll(
+              "#sidebar-placeholder a.nav-link"
+            );
+            links.forEach((link) => {
+              if (link.getAttribute("href").toLowerCase().includes(path)) {
+                link.classList.remove("text-dark");
+                link.classList.add("text-primary");
+              }
+            });
+          })
+          .catch((err) => console.error("Error al cargar sidebar:", err));
+      });
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

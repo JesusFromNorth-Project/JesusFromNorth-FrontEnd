@@ -1,79 +1,176 @@
-const especialidadApiUrl = "http://localhost:8080/specialty/";
-const especialidadListUrl = "http://localhost:8080/specialty/list";
+const apiUrl = "http://localhost:8080/system_clinic/api/v0.1/specialty/";
 
-// Renderizar tabla de especialidades desde backend
-async function renderTabla() {
-	try {
-		const res = await fetch(especialidadListUrl);
-		const data = await res.json();
-		const especialidades = data.data || [];
-		const tbody = document.getElementById("tablaEspecialidades");
-		tbody.innerHTML = "";
-		if (especialidades.length === 0) {
-			tbody.innerHTML = '<tr><td colspan="3" class="text-center">No hay especialidades registradas.</td></tr>';
-			return;
-		}
-		especialidades.forEach((esp, idx) => {
-			const tr = document.createElement("tr");
-			tr.innerHTML = `
-				<td>${idx + 1}</td>
-				<td>${esp.specialty_name}</td>
-				<td style="text-align: center;">
-					<button class="btn btn-danger btn-sm" onclick="eliminarEspecialidad('${esp.id_specialty}')">Eliminar</button>
-				</td>
-			`;
-			tbody.appendChild(tr);
-		});
-	} catch (error) {
-		alert("Error al cargar especialidades");
-	}
+// Verificar autenticación
+function verificarAutenticacion() {
+    const adminId = localStorage.getItem("adminId");
+    if (!adminId) {
+        window.location.href = "/pages/Login.html";
+        return false;
+    }
+    return true;
 }
 
-// Guardar especialidad
+// Mostrar mensajes
+function mostrarMensaje(mensaje, tipo = 'danger') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.querySelector('.main-content').insertAdjacentElement('afterbegin', alertDiv);
+    setTimeout(() => alertDiv.remove(), 5000);
+}
+
+function mostrarExito(mensaje) {
+    mostrarMensaje(mensaje, 'success');
+}
+
+function mostrarError(mensaje) {
+    mostrarMensaje(mensaje, 'danger');
+}
+
+// Renderizar tabla de especialidades
+async function renderTabla() {
+    if (!verificarAutenticacion()) return;
+
+    try {
+        const res = await fetch(`${apiUrl}list`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("adminId")}`
+            }
+        });
+        
+        if (res.status === 401 || res.status === 403) {
+            // Token expirado o inválido
+            localStorage.removeItem("adminId");
+            localStorage.removeItem("adminName");
+            window.location.href = "/pages/Login.html";
+            return;
+        }
+        
+        const response = await res.json();
+        const especialidades = response.data || [];
+
+        const tbody = document.getElementById("tablaEspecialidades");
+        tbody.innerHTML = "";
+        
+        if (especialidades.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">No hay especialidades registradas.</td></tr>';
+            return;
+        }
+
+        especialidades.forEach((esp) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${esp.id_specialty || ''}</td>
+                <td>${esp.specialty_name || ''}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarEspecialidad('${esp.id_specialty || ''}')">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                    <button class="btn btn-info btn-sm ms-2" onclick="verServicios('${esp.id_specialty || ''}')">
+                        <i class="fas fa-list"></i> Ver Servicios
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarError("Error al cargar las especialidades");
+    }
+}
+
+// Inicialización
 window.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("especialidadForm").addEventListener("submit", async function (e) {
-		e.preventDefault();
-		const especialidad = this.especialidad.value;
-		if (!especialidad) {
-			alert("Completa el campo de especialidad");
-			return;
-		}
-		const body = { specialty_name: especialidad };
-		try {
-			const res = await fetch(especialidadApiUrl, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(body),
-			});
-			if (res.ok) {
-				alert("Especialidad guardada exitosamente");
-				this.reset();
-				renderTabla();
-			} else {
-				const data = await res.json();
-				alert(data.message || "Error al guardar especialidad");
-			}
-		} catch (error) {
-			alert("Error de conexión con el servidor");
-		}
-	});
-	// Render inicial
-	renderTabla();
+    if (!verificarAutenticacion()) return;
+
+    // Configurar formulario
+    document.getElementById("especialidadForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const specialty_name = this.specialty_name.value.trim();
+        
+        if (!specialty_name) {
+            mostrarError("El nombre de la especialidad es requerido");
+            return;
+        }
+
+        try {
+            const res = await fetch(apiUrl, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("adminId")}`
+                },
+                body: JSON.stringify({
+                    name_specialty: specialty_name
+                })
+            });
+
+            const data = await res.json();
+            
+            if (res.ok) {
+                mostrarExito("Especialidad guardada exitosamente");
+                this.reset();
+                await renderTabla();
+            } else {
+                mostrarError(data.message || "Error al guardar la especialidad");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError("Error de conexión con el servidor");
+        }
+    });
+
+    // Cargar datos iniciales
+    renderTabla();
 });
 
 // Eliminar especialidad
 async function eliminarEspecialidad(id) {
-	if (!confirm("¿Seguro que deseas eliminar esta especialidad?")) return;
-	try {
-		const res = await fetch(`${especialidadApiUrl}${id}`, { method: "DELETE" });
-		if (res.status === 204) {
-			alert("Especialidad eliminada exitosamente");
-			renderTabla();
-		} else {
-			const data = await res.json();
-			alert(data.message || "Error al eliminar especialidad");
-		}
-	} catch (error) {
-		alert("Error de conexión con el servidor");
-	}
+    if (!verificarAutenticacion()) return;
+    
+    if (!confirm("¿Está seguro de eliminar esta especialidad?")) return;
+
+    try {
+        const res = await fetch(`${apiUrl}${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("adminId")}`
+            }
+        });
+
+        if (res.status === 204) {
+            mostrarExito("Especialidad eliminada exitosamente");
+            await renderTabla();
+        } else {
+            const data = await res.json();
+            mostrarError(data.message || "Error al eliminar la especialidad");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarError("Error de conexión con el servidor");
+    }
+}
+
+// Ver servicios de la especialidad
+async function verServicios(id) {
+    if (!verificarAutenticacion()) return;
+
+    try {
+        const res = await fetch(`${apiUrl}/${id}/services`);
+        const data = await res.json();
+        
+        if (res.ok) {
+            const servicios = data.data.services || [];
+            // Aquí puedes mostrar los servicios en un modal o en otra sección
+            console.log('Servicios:', servicios);
+        } else {
+            mostrarError(data.message || "Error al obtener los servicios");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarError("Error de conexión con el servidor");
+    }
 }
