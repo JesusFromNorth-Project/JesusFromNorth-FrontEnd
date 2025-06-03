@@ -13,12 +13,14 @@
 </head>
 
 <body>
+	<!-- Sidebar dinámico -->
 	<div id="sidebar-placeholder"></div>
 <div class="container-fluid contenido-principal">
 		<!-- Contenido Principal -->
 		<h1 class="mb-4">Paciente</h1>
 		<div class="w-100 ">
 			<div class="card mb-4 shadow-sm">
+				<!-- Formulario de Paciente -->
 				<div class="card-header bg-primary">
 					<i class="fa fa-user"></i> Datos del Paciente
 				</div>
@@ -118,8 +120,8 @@
 			</table>
 		</div>
 	</div>
-
-	<script>
+	
+	<script> // Cargar el sidebar dinámicamente y resaltar el enlace activo
 		document.addEventListener("DOMContentLoaded", () => {
 			fetch("../components/Sidebar.html")
 				.then((res) => res.text())
