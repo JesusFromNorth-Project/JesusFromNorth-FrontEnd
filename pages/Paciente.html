@@ -15,7 +15,7 @@
 <body>
 	<!-- Sidebar dinámico -->
 	<div id="sidebar-placeholder"></div>
-<div class="container-fluid contenido-principal">
+	<div class="container-fluid contenido-principal">
 		<!-- Contenido Principal -->
 		<h1 class="mb-4">Paciente</h1>
 		<div class="w-100 ">
@@ -27,7 +27,7 @@
 				<div class="card-body">
 					<form id="formPaciente">
 						<div class="form-row">
-							<div class="form-group col-12 col-md-4">
+							<div class="form-group col-12 col-md-3">
 								<div class="input-group">
 									<div class="input-group-prepend">
 										<span class="input-group-text form-icon"><i class="fa fa-user"></i></span>
@@ -36,7 +36,7 @@
 										required />
 								</div>
 							</div>
-							<div class="form-group col-12 col-md-4">
+							<div class="form-group col-12 col-md-3">
 								<div class="input-group">
 									<div class="input-group-prepend">
 										<span class="input-group-text form-icon"><i class="fa fa-user"></i></span>
@@ -45,7 +45,37 @@
 										required />
 								</div>
 							</div>
-							<div class="form-group col-12 col-md-4">
+							<div class="form-group col-12 col-md-2">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<span class="input-group-text form-icon"><i class="fa fa-id-card"></i></span>
+									</div>
+									<input type="text" class="form-control" placeholder="DNI" name="dni" required />
+								</div>
+							</div>
+							<div class="form-group col-12 col-md-2">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<span class="input-group-text form-icon"><i
+												class="fa fa-birthday-cake"></i></span>
+									</div>
+									<input type="date" class="form-control" placeholder="Fecha de Nacimiento"
+										name="birthday" required />
+								</div>
+							</div>
+							<div class="form-group col-12 col-md-2">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<span class="input-group-text form-icon"><i
+												class="fa fa-hourglass-half"></i></span>
+									</div>
+									<input type="number" class="form-control" placeholder="Edad" name="edad" min="0"
+										required />
+								</div>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-12 col-md-3">
 								<div class="input-group">
 									<div class="input-group-prepend">
 										<span class="input-group-text form-icon"><i class="fa fa-home"></i></span>
@@ -54,9 +84,7 @@
 										required />
 								</div>
 							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group col-12 col-md-4">
+							<div class="form-group col-12 col-md-3">
 								<div class="input-group">
 									<div class="input-group-prepend">
 										<span class="input-group-text form-icon"><i class="fa fa-phone"></i></span>
@@ -65,19 +93,26 @@
 										required />
 								</div>
 							</div>
-							<div class="form-group col-md-4">
+							<div class="form-group col-12 col-md-3">
 								<div class="input-group">
 									<div class="input-group-prepend">
-										<span class="input-group-text form-icon"><i class="fa fa-envelope"></i></span>
+										<span class="input-group-text form-icon"><i class="fa fa-mobile-alt"></i></span>
 									</div>
-									<input type="email" class="form-control" placeholder="Correo Electrónico"
-										name="correo" required />
+									<input type="tel" class="form-control" placeholder="Celular" name="celular"
+										required />
 								</div>
 							</div>
-							<div class="form-group col-md-4 d-flex align-items-center">
+							<div class="form-group col-md-3 d-flex align-items-center">
 								<label class="mr-2 mb-0">Género:</label>
 								<label class="mr-3 mb-0"><input type="radio" name="genero" value="H"> H</label>
 								<label class="mb-0"><input type="radio" name="genero" value="M"> M</label>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-12">
+								<label>Antecedente</label>
+								<textarea class="form-control" name="antecedente" rows="2"
+									placeholder="Antecedente"></textarea>
 							</div>
 						</div>
 						<div class="form-row">
@@ -91,10 +126,10 @@
 			<!-- Buscador y tabla -->
 			<div class="mb-3 d-flex align-items-center">
 				<h4 class="mb-0 mr-3">Paciente</h4>
-				<input type="text" class="form-control form-control-sm mr-2" style="width: 120px" placeholder="ID"
+				<input type="text" class="form-control form-control-sm mr-2" style="width: 120px" placeholder="Apellido"
 					id="searchID" />
 				<button class="btn btn-primary btn-sm mr-3">Buscar</button>
-				<input type="text" class="form-control form-control-sm mr-2" style="width: 140px" placeholder="Nombre"
+				<input type="text" class="form-control form-control-sm mr-2" style="width: 140px" placeholder="Dni"
 					id="searchNombre" />
 				<button class="btn btn-primary btn-sm">Buscar</button>
 			</div>
@@ -104,15 +139,20 @@
 						<th>ID</th>
 						<th>Nombre</th>
 						<th>Apellido</th>
+						<th>DNI</th>
+						<th>Fecha Nacimiento</th>
+						<th>Edad</th>
 						<th>Correo</th>
 						<th>Teléfono</th>
+						<th>Celular</th>
 						<th>Dirección</th>
 						<th>Género</th>
+						<th>Antecedente</th>
 					</tr>
 				</thead>
 				<tbody id="tablaPacientes">
 					<tr>
-						<td colspan="7" class="text-center">
+						<td colspan="12" class="text-center">
 							No hay pacientes registrados.
 						</td>
 					</tr>
@@ -120,7 +160,7 @@
 			</table>
 		</div>
 	</div>
-	
+
 	<script> // Cargar el sidebar dinámicamente y resaltar el enlace activo
 		document.addEventListener("DOMContentLoaded", () => {
 			fetch("../components/Sidebar.html")
