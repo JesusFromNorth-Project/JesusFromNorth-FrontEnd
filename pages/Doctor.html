@@ -229,13 +229,22 @@
     </div>
   </div>
 
-  <!-- Script para cargar el sidebar externo -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("../components/Sidebar.html")
-        .then((res) => res.text())
-        .then((html) => {
-          document.getElementById("sidebar-placeholder").innerHTML = html;
+    <!-- Script para cargar el sidebar externo -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+
+        let role = localStorage.getItem("role");
+    		let sideBar = null;
+    		if(role=="ADMIN"){
+				  sideBar="../components/SidebarAdmin.html";
+    		}else{
+    		  sideBar="../components/SidebarDoctor.html";
+    		}
+
+        fetch(sideBar)
+          .then((res) => res.text())
+          .then((html) => {
+            document.getElementById("sidebar-placeholder").innerHTML = html;
 
           // Resaltar el enlace activo según la página actual
           const path = window.location.pathname

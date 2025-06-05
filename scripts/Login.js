@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {
 				const data = await res.json();
 				// Guardar el token JWT
 				localStorage.setItem("adminId", data.token);
+				localStorage.setItem("role", data.role);
 				localStorage.setItem("adminName", username);
 				window.location.href = "Dashboard.html";
 			} else {
