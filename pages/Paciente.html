@@ -123,7 +123,16 @@
 	
 	<script> // Cargar el sidebar dinámicamente y resaltar el enlace activo
 		document.addEventListener("DOMContentLoaded", () => {
-			fetch("../components/Sidebar.html")
+			
+			let role = localStorage.getItem("role");
+    		let sideBar = null;
+    		if(role=="ADMIN"){
+				sideBar="../components/SidebarAdmin.html";
+    		}else{
+    		  	sideBar="../components/SidebarDoctor.html";
+    		}
+
+			fetch(sideBar)
 				.then((res) => res.text())
 				.then((html) => {
 					document.getElementById("sidebar-placeholder").innerHTML = html;
