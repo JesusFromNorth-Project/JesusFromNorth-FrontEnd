@@ -1,26 +1,86 @@
 body {
-	display: flex;
 	min-height: 100vh;
-	margin: 0;
 }
 
-nav {
-	background-color: #58a2eb;
-	width: 220px;
-	position: fixed;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	padding: 1rem;
+.main-content {
+	margin-left: 240px;
+	padding: 2rem 1rem;
 }
 
-.main-content,
-.main {
-	margin-left: 220px;
-	padding: 2rem;
-	width: 100%;
+.card-form {
+	min-width: 340px;
+	max-width: 400px;
+	margin-right: 2rem;
+	border-radius: 1.2rem;
+	box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08);
+}
+
+.card-table {
+	flex: 1;
+	border-radius: 1.2rem;
+	box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08);
+	min-width: 500px;
+}
+
+.table thead {
+	 background: linear-gradient(90deg, #2563eb 60%, #58a2eb 100%);
+	color: #fff;
+}
+
+.table td,
+.table th {
+	vertical-align: middle;
 }
 
 .dropdown-toggle::after {
 	display: none;
+}
+
+.btn-primary {
+	background: linear-gradient(90deg, #2563eb 60%, #58a2eb 100%);
+	border: none;
+}
+
+.btn-primary:hover {
+	background: linear-gradient(90deg, #174bbd 60%, #58a2eb 100%);
+}
+
+.input-group-text {
+	background: #e8f0fe;
+	color: #2563eb;
+	border: none;
+}
+
+.form-control:focus {
+	border-color: #2563eb;
+	box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+h4.text-primary, .card-header.bg-primary {
+            background: linear-gradient(90deg, #2563eb 60%, #58a2eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            
+            font-weight: 700;
+        }
+
+@media (max-width: 991.98px) {
+	.main-content {
+		margin-left: 0;
+		padding: 1rem 0.5rem;
+	}
+
+	.d-flex.flex-row {
+		flex-direction: column !important;
+	}
+
+	.card-form {
+		margin-right: 0;
+		margin-bottom: 2rem;
+		width: 100%;
+	}
+
+	.card-table {
+		min-width: unset;
+	}
 }

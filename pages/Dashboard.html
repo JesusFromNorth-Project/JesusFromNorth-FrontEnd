@@ -1,117 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Dashboard</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="/css/Dashboard.css" />
-	</head>
-	<body>
-		<!-- Sidebar dinámico -->
-		<div id="sidebar-placeholder"></div>
 
-		<!-- Main Content -->
-		<div class="main" style="margin-left: 220px">
-			<h1>Dashboard</h1>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Dashboard</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/Dashboard.css" />
+</head>
 
-			<section class="content">
-				<div class="container-fluid">
-					<div class="row">
-						<!-- New Orders -->
-						<div class="col-lg-3 col-6">
-							<div class="small-box bg-info">
-								<div class="inner">
-									<h3>150</h3>
-									<p>New Orders</p>
-								</div>
-								<div class="icon">
-									<i class="ion ion-bag"></i>
-								</div>
-								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+<body>
+	<!-- Sidebar dinámico -->
+	<div id="sidebar-placeholder"></div>
+
+	<!-- Main Content -->
+	<div class="main">
+		<h1>Dashboard</h1>
+		<section class="content">
+			<div class="container-fluid">
+				<!-- Tarjetas resumen -->
+				<div class="row mb-4">
+					<div class="col-lg-3 col-6">
+						<div class="small-box bg-primary">
+							<div class="inner">
+								<h3>320</h3>
+								<p>Total Pacientes</p>
 							</div>
+							<div class="icon"><i class="fas fa-users"></i></div>
 						</div>
-
-						<!-- Bounce Rate -->
-						<div class="col-lg-3 col-6">
-							<div class="small-box bg-success">
-								<div class="inner">
-									<h3>53<sup style="font-size: 20px">%</sup></h3>
-									<p>Bounce Rate</p>
-								</div>
-								<div class="icon">
-									<i class="ion ion-stats-bars"></i>
-								</div>
-								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+					</div>
+					<div class="col-lg-3 col-6">
+						<div class="small-box bg-success">
+							<div class="inner">
+								<h3>18</h3>
+								<p>Total Doctores</p>
 							</div>
+							<div class="icon"><i class="fas fa-user-md"></i></div>
 						</div>
-
-						<!-- User Registrations -->
-						<div class="col-lg-3 col-6">
-							<div class="small-box bg-warning">
-								<div class="inner">
-									<h3>44</h3>
-									<p>User Registrations</p>
-								</div>
-								<div class="icon">
-									<i class="ion ion-person-add"></i>
-								</div>
-								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+					</div>
+					<div class="col-lg-3 col-6">
+						<div class="small-box bg-info">
+							<div class="inner">
+								<h3>12</h3>
+								<p>Citas Hoy</p>
 							</div>
+							<div class="icon"><i class="fas fa-calendar-check"></i></div>
 						</div>
-
-						<!-- Unique Visitors -->
-						<div class="col-lg-3 col-6">
-							<div class="small-box bg-danger">
-								<div class="inner">
-									<h3>65</h3>
-									<p>Unique Visitors</p>
-								</div>
-								<div class="icon">
-									<i class="ion ion-pie-graph"></i>
-								</div>
-								<a href="/" class="small-box-footer"> More info <i class="fas fa-arrow-circle-right"></i> </a>
+					</div>
+					<div class="col-lg-3 col-6">
+						<div class="small-box bg-warning">
+							<div class="inner">
+								<h3>5</h3>
+								<p>Citas Pendientes</p>
+							</div>
+							<div class="icon"><i class="fas fa-clock"></i></div>
+						</div>
+					</div>
+				</div>
+				<!-- Gráfica de citas -->
+				<div class="row mb-4">
+					<div class="col-12">
+						<div class="card shadow-sm">
+							<div class="card-body">
+								<canvas id="citasChart" height="80"></canvas>
 							</div>
 						</div>
 					</div>
 				</div>
-			</section>
-		</div>
+				<!-- Tabla de próximas citas -->
+				<div class="row">
+					<div class="col-12">
+						<div class="card shadow-sm">
+							<div class="card-header bg-primary text-white">Próximas Citas</div>
+							<div class="card-body p-0">
+								<table class="table mb-0">
+									<thead>
+										<tr>
+											<th>Paciente</th>
+											<th>Doctor</th>
+											<th>Fecha/Hora</th>
+											<th>Estado</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>Juan Pérez</td>
+											<td>Dra. López</td>
+											<td>05/06/2025 10:00</td>
+											<td><span class="badge bg-success">Confirmada</span></td>
+										</tr>
+										<!-- Más filas aquí -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Accesos rápidos -->
+				<div class="row mt-4">
+					<div class="col">
+						<a href="/pages/Paciente.html" class="btn btn-outline-primary mr-2">Registrar Paciente</a>
+						<a href="/pages/Citas.html" class="btn btn-outline-success mr-2">Nueva Cita</a>
+						<a href="/pages/Reportes.html" class="btn btn-outline-info">Ver Reportes</a>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
 
-		<!-- Script para cargar el sidebar externo -->
-		<script>
-			document.addEventListener("DOMContentLoaded", () => {
-				let role = localStorage.getItem("role");
+	<!-- Script para cargar el sidebar externo -->
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			let role = localStorage.getItem("role");
 
-    			let sideBar = null;
+			let sideBar = null;
 
-    			if(role=="ADMIN"){
-					sideBar="../components/SidebarAdmin.html";
-    			}else{
-    			    sideBar="../components/SidebarDoctor.html";
-    			}
+			if (role == "ADMIN") {
+				sideBar = "../components/SidebarAdmin.html";
+			} else {
+				sideBar = "../components/SidebarDoctor.html";
+			}
 
-				fetch(sideBar)
-					.then((res) => res.text())
-					.then((html) => {
-						document.getElementById("sidebar-placeholder").innerHTML = html;
+			fetch(sideBar)
+				.then((res) => res.text())
+				.then((html) => {
+					document.getElementById("sidebar-placeholder").innerHTML = html;
 
-						// Resaltar el enlace activo según la página actual
-						const path = window.location.pathname.split("/").pop().toLowerCase();
-						const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-						links.forEach((link) => {
-							if (link.getAttribute("href").toLowerCase().includes(path)) {
-								link.classList.remove("text-dark");
-								link.classList.add("text-primary");
-							}
-						});
-					})
-					.catch((err) => console.error("Error al cargar sidebar:", err));
-			});
-		</script>
-		<!-- Bootstrap JS -->
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	</body>
+					// Resaltar el enlace activo según la página actual
+					const path = window.location.pathname.split("/").pop().toLowerCase();
+					const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+					links.forEach((link) => {
+						if (link.getAttribute("href").toLowerCase().includes(path)) {
+							link.classList.remove("text-dark");
+							link.classList.add("text-primary");
+						}
+					});
+				})
+				.catch((err) => console.error("Error al cargar sidebar:", err));
+		});
+	</script>
+	<!-- Bootstrap JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
 </html>

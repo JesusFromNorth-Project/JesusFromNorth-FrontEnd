@@ -1,37 +1,19 @@
 
 body {
-	display: flex;
-	min-height: 100vh;
-    padding-top: 50px;
-}
-.card-header.bg-primary {
-    background: #0084ff !important;
-    color: #fff !important;
-    font-weight: 150;
-    font-size: 1.2rem;
-}
-
-.form-icon {
-    width: 40px;
-    text-align: center;
-    color: #555;
-}
-
-.form-row>.form-group {
-    margin-bottom: 1rem;
-}
-
-.main-content,
-.main {
-    margin-left: 220px;
-    padding: 2rem;
-    width: 10
-    0%;
+	padding-top: 50px;
 }
 .contenido-principal {
     margin-left: 240px;
-    margin-right: auto;
-    padding-left: 1.5rem;
     padding-right: 2.0rem;
+}
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%) !important;
+}
+.input-group-text.bg-light {
+    background: #f9f7f1 !important;
+}
+.table-primary th {
+    background: #e3eaff !important;
+    color: #1e293b;
 }
    
