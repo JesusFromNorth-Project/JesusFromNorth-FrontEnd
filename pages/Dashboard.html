@@ -11,7 +11,7 @@
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
 
   <!-- Iconos de FullCalendar -->
-  <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="/css/Dashboard.css" />
 </head>
@@ -25,7 +25,6 @@
     <h1 class="mb-4">Dashboard</h1>
     <section class="content">
       <div class="container-fluid">
-
         <!-- Mensaje de éxito -->
         <span id="msg"></span>
 
@@ -38,32 +37,130 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="visualizarModalLabel">Detalle de cita médica</h1>
+
+                <h1 class="modal-title fs-5" id="visualizarModalLabel">
+                  Detalle de cita médica
+                </h1>
+
+                <h1 class="modal-title fs-5" id="editarModalLabel" style="display: none;">
+                  Editar cita médica
+                </h1>
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
+
               <div class="modal-body">
 
-                <dl class="row">
+                <!-- Visualizar evento -->
+                <div id="visualizarEvento">
+                  <dl class="row">
+                    <dt class="col-sm-3">Fecha</dt>
+                    <dd class="col-sm-9" id="visualizar_fecha"></dd>
 
-                  <dt class="col-sm-3">Fecha</dt>
-                  <dd class="col-sm-9" id="visualizar_fecha"></dd>
+                    <dt class="col-sm-3">DNI</dt>
+                    <dd class="col-sm-9" id="visualizar_dni"></dd>
 
-                  <dt class="col-sm-3">DNI</dt>
-                  <dd class="col-sm-9" id="visualizar_dni"></dd>
+                    <dt class="col-sm-3">Paciente</dt>
+                    <dd class="col-sm-9" id="visualizar_paciente"></dd>
 
-                  <dt class="col-sm-3">Paciente</dt>
-                  <dd class="col-sm-9" id="visualizar_paciente"></dd>
+                    <dt class="col-sm-3">Especialidad</dt>
+                    <dd class="col-sm-9" id="visualizar_especialidad"></dd>
 
-                  <dt class="col-sm-3">Especialidad</dt>
-                  <dd class="col-sm-9" id="visualizar_especialidad"></dd>
+                    <dt class="col-sm-3">Doctor</dt>
+                    <dd class="col-sm-9" id="visualizar_doctor"></dd>
 
-                  <dt class="col-sm-3">Doctor</dt>
-                  <dd class="col-sm-9" id="visualizar_doctor"></dd>
+                    <dt class="col-sm-3">Descripción</dt>
+                    <dd class="col-sm-9" id="visualizar_descripcion"></dd>
+                  </dl>
 
-                  <dt class="col-sm-3">Descripción</dt>
-                  <dd class="col-sm-9" id="visualizar_descripcion"></dd>
+                  <button class="btn btn-warning" id="btnViewEditEvento">
+                    Editar
+                  </button>
+                </div>
 
-                </dl>
+                <!-- Editar evento -->
+                <div id="editarEvento" style="display: none;">
+
+                  <!-- mensaje dentro del modal -->
+                  <span id="msgEditEvento"></span>
+
+                  <form id="formEditEvento">
+
+                    <!-- esto es si necesitas no mostrar el id cuando lo traes-->
+                    <input type="hidden" name="edit_id" id="edit_id">
+
+                    <div class="row mb-3">
+                      <!-- en los for iria el nombre de la columna en BD -->
+                      <label for="edit_dni" class="col-sm-2 col-form-label">DNI</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="edit_dni" class="form-control" id="edit_dni"
+                          placeholder="Ingresar dni paciente" />
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <!-- en los for iria el nombre de la columna en BD -->
+                      <label for="edit_paciente" class="col-sm-2 col-form-label">Paciente</label>
+                      <div class="col-sm-10">
+                        <input type="text" name="edit_dni" class="form-control" id="edit_paciente"
+                          placeholder="Apareceria el nombre del paciente" />
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="edit_fecha" class="col-sm-2 col-form-label">Fecha</label>
+                      <div class="col-sm-10">
+                        <input type="datetime-local" name="edit_fecha" class="form-control" id="edit_fecha" />
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="edit_especialidad" class="form-label">Especialidad</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-heart-pulse"></i></span>
+                        <select class="form-select" id="edit_especialidad" required>
+                          <option selected disabled value="">
+                            Seleccione...
+                          </option>
+                          <option>Cardiología</option>
+                          <option>Dermatología</option>
+                          <option>Pediatría</option>
+                          <!-- Agrega más especialidades -->
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="edit_doctor" class="form-label">Doctor</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                        <select class="form-select" id="edit_doctor" required>
+                          <option selected disabled value="">
+                            Seleccione...
+                          </option>
+                          <option>Roberto Alonso Mosquera</option>
+                          <option>María Pérez</option>
+                          <option>Carlos Mendoza</option>
+                          <!-- Agrega más doctores -->
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="edit_descripcion" class="form-label">Descripción</label>
+                      <textarea class="form-control" id="edit_descripcion" rows="3"></textarea>
+                    </div>
+
+                    <button type="button" name="btnViewEvento" class="btn btn-primary" id="btnViewEvento">
+                      Cancelar
+                    </button>
+
+                    <button type="submit" name="btnEditEvento" class="btn btn-warning" id="btnEditEvento">
+                      Guardar
+                    </button>
+                  </form>
+
+                </div>
 
               </div>
             </div>
@@ -76,19 +173,19 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="registrarModalLabel">Registrar cita médica</h1>
+                <h1 class="modal-title fs-5" id="registrarModalLabel">
+                  Registrar cita médica
+                </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-
                 <form id="formCadEvento">
-
                   <div class="row mb-3">
                     <!-- en los for iria el nombre de la columna en BD -->
                     <label for="cad_dni" class="col-sm-2 col-form-label">DNI</label>
                     <div class="col-sm-10">
                       <input type="text" name="cad_dni" class="form-control" id="cad_dni"
-                      placeholder="Ingresar dni paciente">
+                        placeholder="Ingresar dni paciente" />
                     </div>
                   </div>
 
@@ -97,14 +194,14 @@
                     <label for="cad_paciente" class="col-sm-2 col-form-label">Paciente</label>
                     <div class="col-sm-10">
                       <input type="text" name="cad_dni" class="form-control" id="cad_paciente"
-                      placeholder="Apareceria el nombre del paciente">
+                        placeholder="Apareceria el nombre del paciente" />
                     </div>
                   </div>
 
                   <div class="row mb-3">
                     <label for="cad_fecha" class="col-sm-2 col-form-label">Fecha</label>
                     <div class="col-sm-10">
-                      <input type="datetime-local" name="cad_fecha" class="form-control" id="cad_fecha">
+                      <input type="datetime-local" name="cad_fecha" class="form-control" id="cad_fecha" />
                     </div>
                   </div>
 
@@ -113,7 +210,9 @@
                     <div class="input-group">
                       <span class="input-group-text"><i class="bi bi-heart-pulse"></i></span>
                       <select class="form-select" id="cad_especialidad" required>
-                        <option selected disabled value="">Seleccione...</option>
+                        <option selected disabled value="">
+                          Seleccione...
+                        </option>
                         <option>Cardiología</option>
                         <option>Dermatología</option>
                         <option>Pediatría</option>
@@ -121,13 +220,15 @@
                       </select>
                     </div>
                   </div>
-                  
+
                   <div class="mb-3">
                     <label for="cad_doctor" class="form-label">Doctor</label>
                     <div class="input-group">
                       <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                       <select class="form-select" id="cad_doctor" required>
-                        <option selected disabled value="">Seleccione...</option>
+                        <option selected disabled value="">
+                          Seleccione...
+                        </option>
                         <option>Roberto Alonso Mosquera</option>
                         <option>María Pérez</option>
                         <option>Carlos Mendoza</option>
@@ -141,11 +242,10 @@
                     <textarea class="form-control" id="cad_descripcion" rows="3"></textarea>
                   </div>
 
-                  <button type="submit" name="btnCadEvento" class="btn btn-success" 
-                  id="btnCadEvento">Registrar</button>
-
+                  <button type="submit" name="btnCadEvento" class="btn btn-success" id="btnCadEvento">
+                    Registrar
+                  </button>
                 </form>
-
               </div>
             </div>
           </div>
@@ -170,7 +270,8 @@
 
   <!-- Scripts para CalendarFull -->
   <script src="../scripts/index.global.min.js"></script>
-  <script src="../scripts/bootstrap5/index.global.min.js"></script> <!-- Incluye bootstrap al calendar NO TOCAR-->
+  <script src="../scripts/bootstrap5/index.global.min.js"></script>
+  <!-- Incluye bootstrap al calendar NO TOCAR-->
   <script src="../scripts/core/locales-all.global.min.js"></script>
   <script src="../scripts/custom.js"></script>
 
