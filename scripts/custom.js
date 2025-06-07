@@ -1,15 +1,13 @@
 //Se ejecuta cuando el html esta completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
-
   //Recibe el selector calendar atributo id
   var calendarEl = document.getElementById("calendar");
 
   //Instancia FullCalendar.Calendar y se asigna a la variable calendar
   // y recibe todo el contenido para que lo envie al HTML
   var calendar = new FullCalendar.Calendar(calendarEl, {
-
     //Incluyendo Bootstrap 5
-    themeSystem: 'bootstrap5',
+    themeSystem: "bootstrap5",
 
     //Crea los encabezados
     headerToolbar: {
@@ -18,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
       right: "dayGridMonth,timeGridWeek,timeGridDay",
     },
 
-    locale: 'es',
+    locale: "es",
 
     //Define la fecha actual (MUESTRA)
     initialDate: "2023-01-12",
@@ -32,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //Indica visualmente area seleccionada antes de que el usuario suelte boton de mouse para confirmar seleccion
     selectMirror: true,
-
 
     //Permite cambiar tamaño de los eventos horizontalmente y arrastrar directamente en el calendario
     editable: true,
@@ -81,124 +78,52 @@ document.addEventListener("DOMContentLoaded", function () {
         start: "2023-01-12T14:30:00",
       },
       {
-        title: "Happy Hour",
+        paciente: "Mario Bros",
         dni: "123456789",
-        start: "2023-01-12T17:30:00",
+        especialidad: "Cardiologia",
+        start: "2023-01-13T10:30:00",
+        end: "2023-01-13T12:30:00",
       },
       {
         title: "Dinner",
         start: "2023-01-12T20:00:00",
       },
       {
-        title: "Birthday Party",
-        start: "2023-01-13T07:00:00",
-      },
-      {
-        title: "Click for Google",
-        url: "http://google.com/",
-        start: "2023-01-28",
+        paciente: "Luigi Bros",
+        dni: "6345435234",
+        especialidad: "Oftalmologo",
+        start: "2023-01-14T10:30:00",
+        end: "2023-01-12T12:30:00",
       },
     ],
 
-    eventClick: function (info) {
-      document.getElementById('tituloEvento').value = info.event.title || '';
-      document.getElementById('eventModalLabel').textContent = 'Detalle del evento';
-
-      // Si el evento es all-day, muestra solo la fecha, si no, muestra fecha y hora
-      let fecha = info.event.start;
-      let fechaLocal = '';
-      if (fecha) {
-        // Si el evento tiene hora (no all-day), muestra fecha y hora
-        if (!info.event.allDay) {
-          fechaLocal = new Date(fecha.getTime() - (fecha.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-        } else {
-          // Si es all-day, solo la fecha (sin hora)
-          fechaLocal = new Date(fecha.getTime() - (fecha.getTimezoneOffset() * 60000)).toISOString().slice(0, 10) + 'T00:00';
-        }
+    //Personalizar contenido del evento
+    eventContent: function (arg) {
+      // Mostrar el nombre del paciente como título
+      if (arg.event.extendedProps.paciente) {
+        return {
+          html: `<i>Paciente:</i> <b>${arg.event.extendedProps.paciente}</b>`,
+        };
       }
-      document.getElementById('fechaSeleccionada').value = fechaLocal;
-
-      document.getElementById('dniPaciente').value = info.event.extendedProps.dni || '';
-      document.getElementById('especialidad').value = info.event.extendedProps.especialidad || '';
-      document.getElementById('doctor').value = info.event.extendedProps.doctor || '';
-      document.getElementById('descripcion').value = info.event.extendedProps.descripcion || '';
-
-      var modal = new bootstrap.Modal(document.getElementById('eventModal'));
-      modal.show();
+      return { html: "<i>Sin título</i>" };
     },
-    select: function (info) {
-      document.getElementById('tituloEvento').value = '';
-      document.getElementById('dniPaciente').value = '';
-      document.getElementById('especialidad').selectedIndex = 0;
-      document.getElementById('doctor').selectedIndex = 0;
-      document.getElementById('descripcion').value = '';
 
-      // Muestra la fecha/hora en el input datetime-local
-      let fecha = info.start;
-      let fechaLocal = fecha
-        ? new Date(fecha.getTime() - (fecha.getTimezoneOffset() * 60000)).toISOString().slice(0, 16)
-        : '';
-      document.getElementById('fechaSeleccionada').value = fechaLocal;
+    //Para visualizar el evento al darle click
+    eventClick: function (info) {
+      //Recibir el selector de la ventana modal
+      const visualizarModal = new bootstrap.Modal(
+        document.getElementById("visualizarModal")
+      );
 
-      document.getElementById('eventModalLabel').textContent = 'Agendar cita';
+      //Enviar los datos del evento a la ventana modal
+      document.getElementById("visualizar_paciente").innerText =
+        info.event.extendedProps.paciente || "Sin paciente";
+      document.getElementById("visualizar_dni").innerText = info.event.extendedProps.dni
 
-      var modal = new bootstrap.Modal(document.getElementById('eventModal'));
-      modal.show();
-    }
+      //Abrir ventana modal
+      visualizarModal.show();
+    },
   });
 
   calendar.render();
-
-  // Maneja el envío del formulario para crear un nuevo evento
-  document.getElementById('appointmentForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    var title = document.getElementById('tituloEvento').value || 'Nueva cita';
-    var fechaEvento = document.getElementById('fechaSeleccionada').value;
-    var dni = document.getElementById('dniPaciente').value;
-    var especialidad = document.getElementById('especialidad').value;
-    var doctor = document.getElementById('doctor').value;
-    var descripcion = document.getElementById('descripcion').value;
-
-    if (!fechaEvento) {
-      alert('Debes seleccionar la fecha y hora.');
-      return;
-    }
-
-    // Validar si ya existe un evento en la misma fecha y hora (robusto)
-    var eventos = calendar.getEvents();
-    var existe = eventos.some(function (ev) {
-      if (!ev.start) return false;
-      // Normaliza ambos a minutos para evitar problemas de segundos/milisegundos
-      var evTime = new Date(ev.start);
-      var evStr = evTime.getFullYear() + '-' +
-        String(evTime.getMonth() + 1).padStart(2, '0') + '-' +
-        String(evTime.getDate()).padStart(2, '0') + 'T' +
-        String(evTime.getHours()).padStart(2, '0') + ':' +
-        String(evTime.getMinutes()).padStart(2, '0');
-      return evStr === fechaEvento;
-    });
-
-    if (existe) {
-      alert('Ya existe una cita en esa fecha y hora.');
-      return;
-    }
-
-    // Agrega el evento al calendario
-    calendar.addEvent({
-      title: title,
-      start: fechaEvento,
-      extendedProps: {
-        dni: dni,
-        especialidad: especialidad,
-        doctor: doctor,
-        descripcion: descripcion
-      }
-    });
-
-    // Cierra el modal
-    var modal = bootstrap.Modal.getInstance(document.getElementById('eventModal'));
-    modal.hide();
-  });
-
 });

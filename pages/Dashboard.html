@@ -27,66 +27,40 @@
       <div class="container-fluid">
         <!-- Calendario -->
         <div id="calendar"></div>
-        <!-- Modal para eventos -->
-        <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+
+        <!-- Modal -->
+        <div class="modal fade" id="visualizarModal" tabindex="-1" aria-labelledby="visualizarModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
-            <div class="modal-content shadow-lg">
-              <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="eventModalLabel">
-                  <i class="bi bi-calendar-event"></i> Agendar cita
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Cerrar"></button>
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="visualizarModalLabel">Detalle de cita médica</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <form id="appointmentForm">
-                  <div class="mb-3">
-                    <label for="tituloEvento" class="form-label">Título del evento</label>
-                    <input type="text" class="form-control" id="tituloEvento" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="dniPaciente" class="form-label">Ingrese DNI de paciente</label>
-                    <input type="text" class="form-control" id="dniPaciente" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="especialidad" class="form-label">Especialidad</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-heart-pulse"></i></span>
-                      <select class="form-select" id="especialidad" required>
-                        <option selected disabled value="">Seleccione...</option>
-                        <option>Cardiología</option>
-                        <option>Dermatología</option>
-                        <option>Pediatría</option>
-                        <!-- Agrega más especialidades -->
-                      </select>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <label for="doctor" class="form-label">Doctor</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                      <select class="form-select" id="doctor" required>
-                        <option selected disabled value="">Seleccione...</option>
-                        <option>Roberto Alonso Mosquera</option>
-                        <option>María Pérez</option>
-                        <!-- Agrega más doctores -->
-                      </select>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Fecha seleccionada</label>
-                    <input type="datetime-local" class="form-control" id="fechaSeleccionada" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripción</label>
-                    <textarea class="form-control" id="descripcion" rows="3"></textarea>
-                  </div>
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-primary w-100">
-                      <i class="bi bi-plus-circle"></i> Añadir
-                    </button>
-                  </div>
-                </form>
+
+                <dl class="row">
+
+                  <dt class="col-sm-3">Fecha</dt>
+                  <dd class="col-sm-9" id="visualizar_fecha"></dd>
+
+                  <dt class="col-sm-3">DNI</dt>
+                  <dd class="col-sm-9" id="visualizar_dni"></dd>
+
+                  <dt class="col-sm-3">Paciente</dt>
+                  <dd class="col-sm-9" id="visualizar_paciente"></dd>
+
+                  <dt class="col-sm-3">Especialidad</dt>
+                  <dd class="col-sm-9" id="visualizar_especialidad"></dd>
+
+                  <dt class="col-sm-3">Doctor</dt>
+                  <dd class="col-sm-9" id="visualizar_doctor"></dd>
+
+                  <dt class="col-sm-3">Descripción</dt>
+                  <dd class="col-sm-9" id="visualizar_descripcion"></dd>
+
+                </dl>
+
               </div>
             </div>
           </div>
