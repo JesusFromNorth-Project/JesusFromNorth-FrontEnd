@@ -29,34 +29,49 @@
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">🩺 Datos del Doctor</div>
         <div class="card-body">
-          <form>
+          <form id="doctorForm">
             <div class="row mb-3">
-              <div class="col-md-4">
-                <div class="input-group">
+              <div class="col-md-6">
+                <div class="input-group mb-3">
                   <span class="input-group-text">👤</span>
                   <input
                     type="text"
                     class="form-control"
                     name="nombre"
-                    placeholder="Nombre"
+                    placeholder="Nombres"
                     required
                   />
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-text">🪪</span>
+              <div class="col-md-6">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">👥</span>
                   <input
                     type="text"
                     class="form-control"
                     name="apellido"
-                    placeholder="Apellido(s)"
+                    placeholder="Apellidos"
                     required
                   />
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="input-group">
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">🆔</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="dni"
+                    placeholder="DNI"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group mb-3">
                   <span class="input-group-text">🔖</span>
                   <input
                     type="text"
@@ -68,33 +83,78 @@
                 </div>
               </div>
             </div>
-
+            
             <div class="row mb-3">
-              <div class="col-md-4">
-                <div class="input-group">
+              <div class="col-12">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">🏠</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="direccion"
+                    placeholder="Dirección"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">📱</span>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    name="telefono"
+                    placeholder="Teléfono celular"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">📞</span>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    name="telefonoFijo"
+                    placeholder="Teléfono fijo"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="input-group mb-3">
                   <span class="input-group-text">✉️</span>
                   <input
                     type="email"
                     class="form-control"
                     name="correo"
-                    placeholder="Correo"
+                    placeholder="Correo electrónico"
                     required
                   />
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-text">📞</span>
+              <div class="col-md-6">
+                <div class="input-group mb-3">
+                  <span class="input-group-text">🔑</span>
                   <input
-                    type="text"
+                    type="password"
                     class="form-control"
-                    name="telefono"
-                    placeholder="Teléfono"
+                    name="password"
+                    placeholder="Contraseña"
                     required
                   />
                 </div>
               </div>
-              <div class="col-md-4">
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-12">
                 <div class="input-group">
                   <span class="input-group-text">🩺</span>
                   <select
@@ -111,7 +171,7 @@
             </div>
 
             <div class="text-end">
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
             </div>
           </form>
         </div>
@@ -272,33 +332,8 @@
       </div>
     </div>
 
-    <!-- Script para cargar el sidebar externo -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        fetch("../components/Sidebar.html")
-          .then((res) => res.text())
-          .then((html) => {
-            document.getElementById("sidebar-placeholder").innerHTML = html;
-
-            // Resaltar el enlace activo según la página actual
-            const path = window.location.pathname
-              .split("/")
-              .pop()
-              .toLowerCase();
-            const links = document.querySelectorAll(
-              "#sidebar-placeholder a.nav-link"
-            );
-            links.forEach((link) => {
-              if (link.getAttribute("href").toLowerCase().includes(path)) {
-                link.classList.remove("text-dark");
-                link.classList.add("text-primary");
-              }
-            });
-          })
-          .catch((err) => console.error("Error al cargar sidebar:", err));
-      });
-    </script>
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/scripts/Doctor.js"></script>
   </body>
 </html>

@@ -1,14 +1,7 @@
-const apiUrl = "http://localhost:8080/system_clinic/api/v0.1/specialty/";
+// Importar la verificación de autenticación
+import { verificarAutenticacion } from '/scripts/utils/auth.js';
 
-// Verificar autenticación
-function verificarAutenticacion() {
-    const adminId = localStorage.getItem("adminId");
-    if (!adminId) {
-        window.location.href = "/pages/Login.html";
-        return false;
-    }
-    return true;
-}
+const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/specialty/";
 
 // Mostrar mensajes
 function mostrarMensaje(mensaje, tipo = 'danger') {
@@ -18,7 +11,7 @@ function mostrarMensaje(mensaje, tipo = 'danger') {
         ${mensaje}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    document.querySelector('.main-content').insertAdjacentElement('afterbegin', alertDiv);
+    document.querySelector('.main-content')?.insertAdjacentElement('afterbegin', alertDiv);
     setTimeout(() => alertDiv.remove(), 5000);
 }
 
@@ -30,12 +23,38 @@ function mostrarError(mensaje) {
     mostrarMensaje(mensaje, 'danger');
 }
 
+// Cargar el sidebar
+async function cargarSidebar() {
+    try {
+        const response = await fetch("../components/Sidebar.html");
+        if (!response.ok) throw new Error('Error al cargar el sidebar');
+        
+        const html = await response.text();
+        document.getElementById("sidebar-placeholder").innerHTML = html;
+
+        // Resaltar el enlace activo según la página actual
+        const path = window.location.pathname.split("/").pop().toLowerCase();
+        const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+        
+        links.forEach((link) => {
+            const href = link.getAttribute("href")?.toLowerCase();
+            if (href && href.includes(path)) {
+                link.classList.remove("text-dark");
+                link.classList.add("text-primary");
+            }
+        });
+    } catch (error) {
+        console.error("Error al cargar sidebar:", error);
+        mostrarError("Error al cargar la interfaz");
+    }
+}
+
 // Renderizar tabla de especialidades
 async function renderTabla() {
     if (!verificarAutenticacion()) return;
 
     try {
-        const res = await fetch(`${apiUrl}list`, {
+        const res = await fetch(`${API_BASE_URL}list`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("adminId")}`
             }
@@ -82,9 +101,16 @@ async function renderTabla() {
     }
 }
 
+// Hacer que las funciones estén disponibles globalmente
+window.eliminarEspecialidad = eliminarEspecialidad;
+window.verServicios = verServicios;
+
 // Inicialización
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     if (!verificarAutenticacion()) return;
+    
+    // Cargar el sidebar
+    await cargarSidebar();
 
     // Configurar formulario
     document.getElementById("especialidadForm").addEventListener("submit", async function (e) {
@@ -97,7 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch(apiUrl, {
+            const res = await fetch(API_BASE_URL, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -134,7 +160,7 @@ async function eliminarEspecialidad(id) {
     if (!confirm("¿Está seguro de eliminar esta especialidad?")) return;
 
     try {
-        const res = await fetch(`${apiUrl}${id}`, {
+        const res = await fetch(`${API_BASE_URL}${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("adminId")}`
@@ -159,7 +185,7 @@ async function verServicios(id) {
     if (!verificarAutenticacion()) return;
 
     try {
-        const res = await fetch(`${apiUrl}/${id}/services`);
+        const res = await fetch(`${API_BASE_URL}/${id}/services`);
         const data = await res.json();
         
         if (res.ok) {
