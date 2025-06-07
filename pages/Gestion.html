@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Gestión</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="/css/Gestion.css" />
-</head>
-
-<body>
-	<!-- Sidebar dinámico -->
-	<div id="sidebar-placeholder"></div>
-	<!-- Contenido Principal -->
-	<div class="main-content">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/Gestion.css" />
+  </head>
+  <body>
+    <!-- Sidebar dinámico -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Contenido Principal -->
+    <div class="main-content" style="margin-left: 220px; padding: 20px;">
 		<h2 class="text-center mb-4">Gestión General</h2>
 		<!-- Médicos -->
 		<div class="mb-5">
@@ -39,18 +38,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>Juan</td>
-							<td>Pérez</td>
-							<td>Cardiología</td>
-							<td>juan@mail.com</td>
-							<td>999-999-999</td>
-							<td><button class="btn btn-link">Editar</button></td>
-							<td><button class="btn btn-link text-danger">Eliminar</button></td>
-						</tr>
-						<tr>
-							<td colspan="7" class="text-center">...</td>
-						</tr>
+						<!-- Los datos se cargarán dinámicamente -->
 					</tbody>
 				</table>
 			</div>
@@ -77,18 +65,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>Maria</td>
-							<td>López</td>
-							<td>12345678</td>
-							<td>maria@mail.com</td>
-							<td>888-888-888</td>
-							<td><button class="btn btn-link">Editar</button></td>
-							<td><button class="btn btn-link text-danger">Eliminar</button></td>
-						</tr>
-						<tr>
-							<td colspan="7" class="text-center">...</td>
-						</tr>
+						<!-- Los datos se cargarán dinámicamente -->
 					</tbody>
 				</table>
 			</div>
@@ -96,25 +73,10 @@
 		<button class="btn btn-dark rounded-circle add-btn">
 			<i class="fa fa-plus"></i>
 		</button>
-		<script>
-			document.addEventListener("DOMContentLoaded", () => {
-				fetch("../components/Sidebar.html")
-					.then((res) => res.text())
-					.then((html) => {
-						document.getElementById("sidebar-placeholder").innerHTML = html;
-						const path = window.location.pathname.split("/").pop().toLowerCase();
-						const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-						links.forEach((link) => {
-							if (link.getAttribute("href").toLowerCase().includes(path)) {
-								link.classList.remove("text-dark");
-								link.classList.add("text-primary");
-							}
-						});
-					})
-					.catch((err) => console.error("Error al cargar sidebar:", err));
-			});
-		</script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
+    </div>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/scripts/Gestion.js"></script>
+  </body>
 </html>

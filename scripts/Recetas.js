@@ -1,8 +1,6 @@
 // Importar la verificación de autenticación
 import { verificarAutenticacion } from '/scripts/utils/auth.js';
 
-const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/service/";
-
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
     // Verificar autenticación
@@ -44,6 +42,10 @@ function mostrarMensaje(mensaje, tipo = 'danger') {
     `;
     document.querySelector('.main-content')?.insertAdjacentElement('afterbegin', alertDiv);
     setTimeout(() => alertDiv.remove(), 5000);
+}
+
+function mostrarExito(mensaje) {
+    mostrarMensaje(mensaje, 'success');
 }
 
 function mostrarError(mensaje) {

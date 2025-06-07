@@ -1,144 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Gestión de Servicios</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="/css/Servicios.css" />
-	</head>
-	<body>
-		<!-- Sidebar dinámico -->
-		<div id="sidebar-placeholder"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Servicios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/Servicios.css" />
+  </head>
+  <body>
+    <!-- Sidebar dinámico -->
+    <div id="sidebar-placeholder"></div>
 
-		<!-- Contenido principal -->
-		<div class="main-content">
-			<h2 class="mb-4">Datos de Servicio</h2>
-			<div class="row">
-				<!-- Formulario -->
-				<div class="col-md-5">
-					<div class="card">
-						<div class="card-body">
-							<h4 class="text-center mb-4">Servicio</h4>
-							<form id="formServicio">
-								<div class="mb-3 input-group">
-									<span class="input-group-text">👨‍⚕️</span>
-									<input type="text" class="form-control" placeholder="Nombre" name="nombre" required />
-								</div>
-								<div class="mb-3 input-group">
-									<span class="input-group-text">📌</span>
-									<select class="form-select" name="especialidad" required>
-										<option value="">Especialidad</option>
-										<option>Cardiologia</option>
-										<option>Obstetricia</option>
-										<option>Pediatria</option>
-										<option>Odontologia</option>
-									</select>
-								</div>
-								<div class="mb-4 input-group">
-									<span class="input-group-text">S/.</span>
-									<input type="text" class="form-control" placeholder="Costo" name="costo" required />
-								</div>
-								<div class="d-flex justify-content-center">
-									<button type="submit" class="btn btn-primary">Guardar</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-				<!-- Tabla -->
-				<div class="col-md-7">
-					<table class="table table-bordered table-hover mt-4 mt-md-0" id="tablaServicios">
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>Nombre</th>
-								<th>Especialidad</th>
-								<th>Costo</th>
-								<th>Acción</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- Datos dinámicos desde JS -->
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-
-		<script>
-			const form = document.getElementById("formServicio");
-			const tabla = document.querySelector("#tablaServicios tbody");
-			let id = 4;
-			const servicios = [
-				{ id: 1, nombre: "Nombre 1", especialidad: "Cardiologia", costo: "S/1.20" },
-				{ id: 2, nombre: "Nombre 2", especialidad: "Obstetricia", costo: "S/1.20" },
-				{ id: 3, nombre: "Nombre 3", especialidad: "Pediatria", costo: "S/1.20" },
-				{ id: 4, nombre: "Nombre 4", especialidad: "Odontologia", costo: "S/1.20" },
-			];
-
-			function renderServicios() {
-				tabla.innerHTML = "";
-				servicios.forEach((s) => {
-					const row = document.createElement("tr");
-					row.innerHTML = `
-          <td>${s.id}</td>
-          <td>${s.nombre}</td>
-          <td>${s.especialidad}</td>
-          <td>${s.costo}</td>
-          <td class="text-center">
-            <div class="dropdown">
-              <button class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">⋮</button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Editar</a></li>
-                <li><a class="dropdown-item" href="#">Eliminar</a></li>
-              </ul>
+    <!-- Contenido principal -->
+    <div class="main-content" style="margin-left: 220px">
+      <h2 class="mb-4">Datos de Servicio</h2>
+      <div class="row">
+        <!-- Formulario -->
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="text-center mb-4">Servicio</h4>
+              <form id="formServicio">
+                <div class="mb-3 input-group">
+                  <span class="input-group-text">👨‍⚕️</span>
+                  <input type="text" class="form-control" placeholder="Nombre" name="nombre" required />
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text">📌</span>
+                  <select class="form-select" name="especialidad" required>
+                    <option value="">Especialidad</option>
+                    <option>Cardiologia</option>
+                    <option>Obstetricia</option>
+                    <option>Pediatria</option>
+                    <option>Odontologia</option>
+                  </select>
+                </div>
+                <div class="mb-4 input-group">
+                  <span class="input-group-text">S/.</span>
+                  <input type="text" class="form-control" placeholder="Costo" name="costo" required />
+                </div>
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+              </form>
             </div>
-          </td>
-        `;
-					tabla.appendChild(row);
-				});
-			}
+          </div>
+        </div>
+        <!-- Tabla -->
+        <div class="col-md-7">
+          <table class="table table-bordered table-hover mt-4 mt-md-0" id="tablaServicios">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Especialidad</th>
+                <th>Costo</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Datos dinámicos desde JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-			form.addEventListener("submit", function (e) {
-				e.preventDefault();
-				const data = new FormData(form);
-				const nuevoServicio = {
-					id: ++id,
-					nombre: data.get("nombre"),
-					especialidad: data.get("especialidad"),
-					costo: `S/${data.get("costo")}`,
-				};
-				servicios.push(nuevoServicio);
-				form.reset();
-				renderServicios();
-			});
-
-			renderServicios();
-		</script>
-
-		<!-- Script para cargar el sidebar externo y resaltar el enlace activo -->
-		<script>
-			document.addEventListener("DOMContentLoaded", () => {
-				fetch("../components/Sidebar.html")
-					.then((res) => res.text())
-					.then((html) => {
-						document.getElementById("sidebar-placeholder").innerHTML = html;
-						// Resaltar el enlace activo según la página actual
-						const path = window.location.pathname.split("/").pop().toLowerCase();
-						const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-						links.forEach((link) => {
-							if (link.getAttribute("href").toLowerCase().includes(path)) {
-								link.classList.remove("text-dark");
-								link.classList.add("text-primary");
-							}
-						});
-					})
-					.catch((err) => console.error("Error al cargar sidebar:", err));
-			});
-		</script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	</body>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/scripts/Servicios.js"></script>
+  </body>
 </html>
