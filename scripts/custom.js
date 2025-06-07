@@ -242,6 +242,54 @@ document.addEventListener("DOMContentLoaded", function () {
       const doctor = document.getElementById("cad_doctor").value;
       const descripcion = document.getElementById("cad_descripcion").value;
 
+      // Convertir la fecha a objeto Date para comparaciones
+      const nuevaFecha = new Date(fecha);
+      
+      // Obtener todos los eventos existentes
+      const eventos = calendar.getEvents();
+      
+      // Verificar conflictos
+      let conflicto = false;
+      let mensajeError = '';
+      
+      eventos.forEach(evento => {
+        const eventoFecha = evento.start;
+        
+        // Verificar si es la misma hora
+        if(eventoFecha.getTime() === nuevaFecha.getTime()) {
+          // Verificar si el doctor ya tiene una cita a esa hora
+          if(evento.extendedProps.doctor === doctor) {
+            conflicto = true;
+            mensajeError = 'El doctor ya tiene una cita programada en este horario.';
+            return;
+          }
+          
+          // Verificar si el paciente ya tiene una cita a esa hora
+          if(evento.extendedProps.dni === dni) {
+            conflicto = true;
+            mensajeError = 'El paciente ya tiene una cita programada en este horario.';
+            return;
+          }
+          
+          // Verificar si el paciente tiene cita con otro doctor a la misma hora
+          if(evento.extendedProps.paciente === paciente && evento.extendedProps.doctor !== doctor) {
+            conflicto = true;
+            mensajeError = 'El paciente ya tiene una cita con otro doctor en este horario.';
+            return;
+          }
+        }
+      });
+      
+      // Si hay conflicto, mostrar mensaje de error
+      if(conflicto) {
+        msg.innerHTML = `<div class="alert alert-danger" role="alert">
+          ${mensajeError}
+        </div>`;
+        btnCadEvento.value = "Registrar"; // Restaurar texto del botón
+        removerMsg();
+        return;
+      }
+
       //Crear objeto con los datos del formulario
       const nuevoEvento = {
         start: fecha,
@@ -260,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //Limpiar el formulario
       formCadEvento.reset();
 
-      //Mostrar mensaje de éxito (puedes personalizarlo con bootstrap y agregar condiciones)
+      //Mostrar mensaje de éxito
       msg.innerHTML = `<div class="alert alert-success" role="alert">
         Cita registrada correctamente.
       </div>`;
