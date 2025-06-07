@@ -3,6 +3,11 @@ document.addEventListener("DOMContentLoaded", function () {
   //Recibe el selector calendar atributo id
   var calendarEl = document.getElementById("calendar");
 
+  //Recibir el selector de la ventana modal
+      const registrarModal = new bootstrap.Modal(
+        document.getElementById("registrarModal")
+      );
+
   //Instancia FullCalendar.Calendar y se asigna a la variable calendar
   // y recibe todo el contenido para que lo envie al HTML
   var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -19,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     locale: "es",
 
     //Define la fecha actual (MUESTRA)
-    initialDate: "2023-01-12",
+    initialDate: "2025-06-12",
     //initialDate: "2025-06-06",
 
     //Permite hacer click en los dias de semana
@@ -40,33 +45,33 @@ document.addEventListener("DOMContentLoaded", function () {
     //Eventos estáticos ejemplos
     //**IMPORTANTE: En esta parte se consumiran las API's para citas
     events: [
-      {
-        title: "All Day Event",
-        start: "2023-01-01",
-      },
-      {
-        title: "Long Event",
-        start: "2023-01-07",
-        end: "2023-01-10",
-      },
-      {
-        groupId: 999,
-        title: "Repeating Event",
-        start: "2023-01-09T16:00:00",
-      },
-      {
-        groupId: 999,
-        title: "Repeating Event",
-        start: "2023-01-16T16:00:00",
-      },
+      // {
+      //   title: "All Day Event",
+      //   start: "2023-01-01",
+      // },
+      // {
+      //   title: "Long Event",
+      //   start: "2023-01-07",
+      //   end: "2023-01-10",
+      // },
+      // {
+      //   groupId: 999,
+      //   title: "Repeating Event",
+      //   start: "2023-01-09T16:00:00",
+      // },
+      // {
+      //   groupId: 999,
+      //   title: "Repeating Event",
+      //   start: "2023-01-16T16:00:00",
+      // },
       {
         paciente: "Donkey Kong",
         dni: "888999000",
         especialidad: "Fisioterapia",
         doctor: "Pedro Jiménez",
         descripcion: "Lesión en hombro por lanzar barriles",
-        start: "2023-01-08T10:00:00",
-        end: "2023-01-08T11:30:00",
+        start: "2025-06-08T10:00:00",
+        end: "2025-06-08T11:30:00",
       },
       {
         paciente: "Yoshi",
@@ -74,8 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidad: "Nutrición",
         doctor: "Ana Torres",
         descripcion: "Problemas digestivos por comer demasiadas frutas",
-        start: "2023-01-12T13:00:00",
-        end: "2023-01-12T14:30:00",
+        start: "2025-06-12T13:00:00",
+        end: "2025-06-12T14:30:00",
       },
       {
         paciente: "Toad",
@@ -83,8 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidad: "Neurología",
         doctor: "Javier Ruiz",
         descripcion: "Mareos al girar rápido con hongo",
-        start: "2023-01-05T16:00:00",
-        end: "2023-01-05T17:00:00",
+        start: "2025-06-05T16:00:00",
+        end: "2025-06-05T17:00:00",
       },
       {
         paciente: "Bowser Koopa",
@@ -92,8 +97,8 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidad: "Odontología",
         doctor: "Laura Fernández",
         descripcion: "Dolor en colmillos por morder castillos",
-        start: "2023-01-20T11:00:00",
-        end: "2023-01-20T12:00:00",
+        start: "2025-06-20T11:00:00",
+        end: "2025-06-20T12:00:00",
       },
       {
         paciente: "Mario Bros",
@@ -101,8 +106,8 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidad: "Cardiologia",
         doctor: "Roberto Mosquera",
         descripcion: "Cuando come su hongo no crece",
-        start: "2023-01-13T10:30:00",
-        end: "2023-01-13T12:30:00",
+        start: "2025-06-13T10:30:00",
+        end: "2025-06-13T12:30:00",
       },
       {
         paciente: "Princesa Peach",
@@ -110,8 +115,8 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidad: "Dermatología",
         doctor: "Carlos Mendoza",
         descripcion: "Irritación en la piel por contacto con flores de fuego",
-        start: "2023-01-10T14:00:00",
-        end: "2023-01-10T15:30:00",
+        start: "2025-06-10T14:00:00",
+        end: "2025-06-10T15:30:00",
       },
       {
         paciente: "Luigi Bros",
@@ -119,8 +124,8 @@ document.addEventListener("DOMContentLoaded", function () {
         especialidad: "Traumatología",
         doctor: "María González",
         descripcion: "Dolor de espalda por saltar en tuberías",
-        start: "2023-01-15T09:00:00",
-        end: "2023-01-15T10:00:00",
+        start: "2025-06-15T09:00:00",
+        end: "2025-06-15T10:00:00",
       },
     ],
 
@@ -137,15 +142,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //Para visualizar el evento al darle click
     eventClick: function (info) {
+
+      //registrarModal esta arriba en el document listener, 
+      // por lo que no es necesario volver a declararlo
+
+      //Evitar que se abra la ventana modal al hacer click en el evento
+      info.jsEvent.preventDefault();
+
+
       //Recibir el selector de la ventana modal
       const visualizarModal = new bootstrap.Modal(
         document.getElementById("visualizarModal")
       );
 
-
+      //**IMPORTANTE: Si modificas algo acá que se congruente con el html
       //Enviar los datos del evento a la ventana modal
-      document.getElementById("visualizar_fecha").innerText = info.event.start.toLocaleString();
-      document.getElementById("visualizar_fecha_fin").innerText = info.event.end.toLocaleString();
+      document.getElementById("visualizar_fecha").innerText =
+        info.event.start.toLocaleString();
       document.getElementById("visualizar_paciente").innerText =
         info.event.extendedProps.paciente || "Sin paciente";
       document.getElementById("visualizar_dni").innerText =
@@ -156,11 +169,114 @@ document.addEventListener("DOMContentLoaded", function () {
         info.event.extendedProps.doctor;
       document.getElementById("visualizar_descripcion").innerText =
         info.event.extendedProps.descripcion || "Sin descripción";
-      
-        //Abrir ventana modal
+
+      //Abrir ventana modal para ver detalle de cita
       visualizarModal.show();
+    },
+
+    //Para registrar un evento al hacer click en un día
+    select: function (info) {
+
+
+      //para captar fecha de calendario usando esta funcion
+      document.getElementById("cad_fecha").value = convertirFecha(info.start);
+
+      //Abrir la ventana modal para agregar una cita
+      registrarModal.show();
     },
   });
 
+  //Renderizar el calendario
   calendar.render();
+
+  //Convertir fecha
+  function convertirFecha(fecha){
+
+    //convierte a cadena un objeto date
+    const fechaObj = new Date(fecha);
+
+    //Obtener el año
+    const año = fechaObj.getFullYear();
+
+    //Obtener el mes y agregar 1 porque los meses en JavaScript van de 0 a 11
+    const mes = String(fechaObj.getMonth() + 1).padStart(2, '0'); // Mes (0-11, por eso +1)
+
+    //Obtener el día y agregar 0 al inicio si es necesario
+    const dia = String(fechaObj.getDate()).padStart(2, '0'); // Día (1-31)
+
+    //Obtener la hora y agregar 0 al inicio si es necesario
+    const hora = String(fechaObj.getHours()).padStart(2, '0'); // Hora (0-23)
+
+    //Obtener el minuto y agregar 0 al inicio si es necesario
+    const minuto = String(fechaObj.getMinutes()).padStart(2, '0'); // Minuto (0-59)
+
+    //Retornar la fecha en formato YYYY-MM-DD HH:mm
+    return `${año}-${mes}-${dia} ${hora}:${minuto}`;
+  }
+
+  //Recibir el selector del formulario de registro de eventos
+  const formCadEvento = document.getElementById("formCadEvento");
+
+  //Recibir el selector del mensaje de éxito
+  //Este mensaje se mostrará cuando se registre una cita correctamente
+  const msg = document.getElementById("msg");
+
+  //Recibir el selector del botón de registrar evento (puedes usarlo tambien para cambiar el texto del botón)
+  //Este botón se usa para abrir la ventana modal de registro de eventos
+  const btnCadEvento = document.getElementById("btnCadEvento");
+
+  //Aca usarias la API para obtener los pacientes, doctores, especialidades, etc.
+  //Por ahora, solo se muestra el formulario de registro de eventos
+  //Si el formulario existe, agregar un evento submit
+  if(formCadEvento){
+    formCadEvento.addEventListener("submit", function (e) {
+      e.preventDefault(); // Evitar el envío del formulario
+
+      btnCadEvento.value = "Registrando..."; // Cambiar el texto del botón
+
+      //Obtener los valores de los campos del formulario
+      const fecha = document.getElementById("cad_fecha").value;
+      const paciente = document.getElementById("cad_paciente").value;
+      const dni = document.getElementById("cad_dni").value;
+      const especialidad = document.getElementById("cad_especialidad").value;
+      const doctor = document.getElementById("cad_doctor").value;
+      const descripcion = document.getElementById("cad_descripcion").value;
+
+      //Crear objeto con los datos del formulario
+      const nuevoEvento = {
+        start: fecha,
+        extendedProps: {
+          paciente: paciente,
+          dni: dni,
+          especialidad: especialidad,
+          doctor: doctor,
+          descripcion: descripcion
+        }
+      };
+
+      //Agregar el nuevo evento al calendario
+      calendar.addEvent(nuevoEvento);
+
+      //Limpiar el formulario
+      formCadEvento.reset();
+
+      //Mostrar mensaje de éxito (puedes personalizarlo con bootstrap y agregar condiciones)
+      msg.innerHTML = `<div class="alert alert-success" role="alert">
+        Cita registrada correctamente.
+      </div>`;
+
+      //Remover el mensaje de éxito después de 3 segundos
+      removerMsg();
+
+      //Cerrar la ventana modal
+      registrarModal.hide();
+    });
+  }
+
+  //funcion para remover el mensaje de éxito después de 3 segundos
+  function removerMsg() {
+    setTimeout(() => {
+      document.getElementById("msg").innerHTML = "";
+    }, 3000);
+  }
 });
