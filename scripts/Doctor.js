@@ -1,18 +1,25 @@
-// Importar la verificación de autenticación
+// ============================================
+// MÓDULOS Y CONFIGURACIÓN
+// ============================================
 import { verificarAutenticacion } from '/scripts/utils/auth.js';
 
+// URLs de la API
 const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/doctor/";
 const ESPECIALITY_URL = "http://localhost:5080/system_clinic/api/v0.1/specialty/";
 
-// Función para obtener los headers con autenticación
+// ============================================
+// MANEJO DE AUTENTICACIÓN
+// ============================================
+
+/**
+ * Obtiene los headers de autenticación para las peticiones a la API
+ * @returns {Object} Headers de autenticación
+ */
 function getAuthHeaders() {
-    const token = localStorage.getItem('adminId'); // El token se guarda en adminId
+    const token = localStorage.getItem('jwtToken');
     if (!token) {
         console.error('No se encontró el token de autenticación');
-        // Forzar cierre de sesión si no hay token
-        localStorage.removeItem('adminId');
-        localStorage.removeItem('adminName');
-        window.location.href = '/pages/Login.html';
+        cerrarSesion();
         return {};
     }
     return {
@@ -21,14 +28,25 @@ function getAuthHeaders() {
     };
 }
 
-// Función para manejar respuestas de error de la API
+/**
+ * Cierra la sesión del usuario y redirige al login
+ */
+function cerrarSesion() {
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('adminId');
+    localStorage.removeItem('adminName');
+    window.location.href = '/pages/Login.html';
+}
+
+/**
+ * Maneja los errores de la API, especialmente los de autenticación
+ * @param {Response} response - Respuesta de la API
+ * @returns {Promise<Error>} Error con el mensaje correspondiente
+ */
 async function handleApiError(response) {
-    if (response.status === 401) {
-        // Token expirado o inválido
+    if (response.status === 401 || response.status === 403) {
         console.error('Error de autenticación - Token expirado o inválido');
-        localStorage.removeItem('adminId');
-        localStorage.removeItem('adminName');
-        window.location.href = '/pages/Login.html';
+        cerrarSesion();
         return new Error('Sesión expirada. Por favor, inicie sesión nuevamente.');
     }
     
@@ -36,6 +54,10 @@ async function handleApiError(response) {
     console.error('Error en la petición:', error);
     return new Error(error.message || 'Error en la petición al servidor');
 }
+
+// ============================================
+// INICIALIZACIÓN DE LA PÁGINA
+// ============================================
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
@@ -181,66 +203,90 @@ async function cargarEspecialidades() {
     }
 }
 
-// Función para manejar el envío del formulario
+/**
+ * Maneja el envío del formulario de registro de doctor
+ * @param {Event} event - Evento de envío del formulario
+ */
 async function manejarEnvioFormulario(event) {
     event.preventDefault();
     
     const form = event.target;
-    const formData = new FormData(form);
-    
-    // Obtener los valores del formulario
-    const doctorData = {
-        first_name: formData.get('nombre'),
-        last_name: formData.get('apellido'),
-        email: formData.get('correo'),
-        address: formData.get('direccion'),
-        phone: formData.get('telefono'),
-        landline_phone: formData.get('telefonoFijo'),
-        dni: formData.get('dni'),
-        cmp: formData.get('cmp'),
-        username: formData.get('correo'),
-        password: formData.get('password')
-    };
-    
-    const especialidadId = formData.get('especialidad');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton?.textContent;
     
     try {
-        // Obtener el ID del administrador del localStorage
-        const adminId = localStorage.getItem('adminId');
-        if (!adminId) {
-            mostrarError('No se encontró el ID del administrador. Por favor, inicie sesión nuevamente.');
-            setTimeout(() => {
-                window.location.href = '/pages/Login.html';
-            }, 2000);
-            return;
+        // Deshabilitar el botón de envío
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
         }
         
-        // Hacer la petición al backend
-        const response = await fetch(`${API_BASE_URL}save/assignAdmin/${adminId}/assignSpecialty/${especialidadId}`, {
+        const formData = new FormData(form);
+        
+        // Obtener los valores del formulario
+        const doctorData = {
+            first_name: formData.get('nombre'),
+            last_name: formData.get('apellido'),
+            email: formData.get('correo'),
+            address: formData.get('direccion'),
+            phone: formData.get('telefono'),
+            landline_phone: formData.get('telefonoFijo'),
+            dni: formData.get('dni'),
+            cmp: formData.get('cmp'),
+            username: formData.get('correo'),
+            password: formData.get('password')
+        };
+        
+        const especialidadId = formData.get('especialidad');
+        
+        // Validar que se haya seleccionado una especialidad
+        if (!especialidadId) {
+            throw new Error('Por favor seleccione una especialidad');
+        }
+        
+        console.log('Datos del doctor:', JSON.stringify(doctorData, null, 2));
+        console.log('ID de especialidad:', especialidadId);
+        
+        const url = `${API_BASE_URL}save/assignSpecialty/${especialidadId}`;
+        console.log('URL de la petición:', url);
+        
+        const headers = getAuthHeaders();
+        console.log('Headers de la petición:', headers);
+        
+        const response = await fetch(url, {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: headers,
             body: JSON.stringify(doctorData)
         });
         
+        // Primero obtenemos la respuesta como JSON
+        const result = await response.json();
+        console.log('Respuesta del servidor:', result);
+        
+        // Luego verificamos si hubo un error
         if (!response.ok) {
             const error = await handleApiError(response);
             throw error;
         }
         
-        const result = await response.json();
+        // Si llegamos aquí, la petición fue exitosa
+        mostrarExito(result.message || 'Doctor registrado exitosamente');
+        form.reset();
         
-        if (result.success) {
-            mostrarExito('Doctor registrado exitosamente');
-            form.reset();
-            // Opcional: Actualizar la lista de doctores
-            // await cargarDoctores();
-        } else {
-            throw new Error(result.message || 'Error al registrar el doctor');
-        }
+        // Actualizar la lista de doctores
+        await cargarDoctores();
+        
     } catch (error) {
         console.error('Error al registrar doctor:', error);
         mostrarError(error.message || 'Error al conectar con el servidor');
+    } finally {
+        // Restaurar el botón de envío
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+        }
     }
+
 }
 
 // Función para inicializar el formulario

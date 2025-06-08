@@ -54,7 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 // Guardar la información de autenticación
-                localStorage.setItem("adminId", data.token);
+                localStorage.setItem("jwtToken", data.token);
+                localStorage.setItem("adminId", data.adminId); // Asegúrate de que el backend envíe el adminId
                 localStorage.setItem("adminName", data.username || username);
                 
                 // Guardar el rol del usuario si está disponible
