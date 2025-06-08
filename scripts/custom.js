@@ -48,25 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
     //Eventos estáticos ejemplos
     //**IMPORTANTE: En esta parte se consumiran las API's para citas
     events: [
-      // {
-      //   title: "All Day Event",
-      //   start: "2023-01-01",
-      // },
-      // {
-      //   title: "Long Event",
-      //   start: "2023-01-07",
-      //   end: "2023-01-10",
-      // },
-      // {
-      //   groupId: 999,
-      //   title: "Repeating Event",
-      //   start: "2023-01-09T16:00:00",
-      // },
-      // {
-      //   groupId: 999,
-      //   title: "Repeating Event",
-      //   start: "2023-01-16T16:00:00",
-      // },
       {
         paciente: "Donkey Kong",
         dni: "888999000",
@@ -107,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         paciente: "Mario Bros",
         dni: "123456789",
         especialidad: "Cardiologia",
-        doctor: "Roberto Mosquera",
+        doctor: "Carlos Mendoza",
         descripcion: "Cuando come su hongo no crece",
         start: "2025-06-13T10:30:00",
         end: "2025-06-13T12:30:00",
@@ -125,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
         paciente: "Luigi Bros",
         dni: "987654321",
         especialidad: "Traumatología",
-        doctor: "María González",
+        doctor: "Ana Torres",
         descripcion: "Dolor de espalda por saltar en tuberías",
         start: "2025-06-15T09:00:00",
         end: "2025-06-15T10:00:00",
@@ -527,13 +508,13 @@ document.addEventListener("DOMContentLoaded", function () {
     //
     btnEliminarEvento.addEventListener("click", async () => {
       //Confirmar si el usuario desea eliminar el evento
-      const confirmacion = window.confirm("Este seguro de eliminar este evento?")
+      const confirmacion = window.confirm(
+        "Este seguro de eliminar este evento?"
+      );
 
-      if(confirmacion){
-
+      if (confirmacion) {
         //En esta parte consumirías la API para eliminar el evento
         //Por ahora, solo simula eliminación del evento del calendario
-        
 
         msgViewEvento.innerHTML = `<div class="alert alert-danger" role="alert">
           Cita eliminada correctamente.
@@ -559,8 +540,42 @@ document.addEventListener("DOMContentLoaded", function () {
         //Restablecer vista del modal
         document.getElementById("visualizarEvento").style.display = "block";
       }
-
     });
   }
-
 });
+
+// Obtner el elemento doctor con el id "user_doctor"
+// Este elemento debe tener el atributo data-user-id con el ID del usuario
+const user = document.getElementById("user_doctor");
+
+if (user) {
+  //**IMPORTANTE: En esta parte consumirías la API para listar todos los doctores
+  //Por ahora, solo simula la carga de eventos del doctor
+  const doctores = [
+    { id: "1", nombre: "Pedro Jiménez" },
+    { id: "2", nombre: "Ana Torres" },
+    { id: "3", nombre: "Javier Ruiz" },
+    { id: "4", nombre: "Laura Fernández" },
+    { id: "5", nombre: "Carlos Mendoza" },
+  ];
+
+  // Simular la carga de eventos del doctor
+  doctores.forEach((doctor) => {
+    const option = document.createElement("option");
+    option.value = doctor.id;
+    option.textContent = doctor.nombre;
+    user.appendChild(option);
+  });
+}
+
+async function listarDoctores() {
+  // Aquí iría la lógica para obtener los doctores desde una API
+  // Por ahora, retornamos un array simulado
+  return [
+    { id: "1", nombre: "Pedro Jiménez" },
+    { id: "2", nombre: "Ana Torres" },
+    { id: "3", nombre: "Javier Ruiz" },
+    { id: "4", nombre: "Laura Fernández" },
+    { id: "5", nombre: "Carlos Mendoza" },
+  ];
+}

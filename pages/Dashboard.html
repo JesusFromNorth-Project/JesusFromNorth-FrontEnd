@@ -14,7 +14,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="/css/Dashboard.css" />
-</head>
 
 <body>
   <!-- Sidebar dinámico -->
@@ -28,13 +27,31 @@
       <div class="container-fluid">
 
         <div class="container">
-          <h2 class="mb-4">Agenda</h2>
+          <div class="card mb-4 border-light shadow">
+            <div class="card-body">
+              <h2 class="mt-0 me-3 ms-2 pb-2 border-bottom">Agenda</h2>
 
-          <!-- Mensaje de éxito -->
-          <span id="msg"></span>
+              <!-- Mensaje de éxito -->
+              <span id="msg"></span>
 
-          <!-- Calendario -->
-          <div id="calendar"></div>
+              <form class="ms-2 me-2">
+                <div class="col-md-6 col-sm-12">
+                  <label class="form-label" for="user_doctor">Buscar cita por Doctor</label>
+                  <select name="user_doctor" id="user_doctor" class="form-select">
+                    <option value="">Seleccione</option>
+                  </select>
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+          <div class="card p-4 border-light shadow">
+            <div class="card-body">
+              <!-- Calendario -->
+              <div id="calendar"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Modal Visualizar -->
@@ -269,8 +286,8 @@
           <div class="row mt-4">
             <h3>Accesos directos</h3>
             <div class="col">
-              <a href="/pages/Paciente.html" class="btn btn-outline-primary mr-2">Registrar Paciente</a>
-              <a href="/pages/Doctor.html" class="btn btn-outline-success mr-2">Registrar Doctor</a>
+              <a href="/pages/Paciente.html" class="btn btn-outline-primary mr-2">Paciente</a>
+              <a href="/pages/Doctor.html" class="btn btn-outline-success mr-2">Doctores</a>
               <!-- <a href="/pages/Reportes.html" class="btn btn-outline-info">Ver Reportes</a>  No se creo html-->
             </div>
           </div>
