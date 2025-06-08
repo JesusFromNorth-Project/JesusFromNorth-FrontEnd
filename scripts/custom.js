@@ -542,6 +542,55 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  // Guarda los eventos originales para restaurar al quitar el filtro
+  let eventosOriginales = [];
+
+  // Después de calendar.render();
+  calendar.render();
+
+  // Guardar los eventos originales (solo una vez)
+  eventosOriginales = calendar.getEvents().map((ev) => ({
+    paciente: ev.extendedProps.paciente,
+    dni: ev.extendedProps.dni,
+    especialidad: ev.extendedProps.especialidad,
+    doctor: ev.extendedProps.doctor,
+    descripcion: ev.extendedProps.descripcion,
+    start: ev.start,
+    end: ev.end,
+  }));
+
+  // Filtrar eventos por doctor
+  const userDoctorSelect = document.getElementById("user_doctor");
+  if (userDoctorSelect) {
+    userDoctorSelect.addEventListener("change", function () {
+      const doctorId = this.value;
+
+      // Busca el nombre del doctor por id
+      const doctores = [
+        { id: "1", nombre: "Pedro Jiménez" },
+        { id: "2", nombre: "Ana Torres" },
+        { id: "3", nombre: "Javier Ruiz" },
+        { id: "4", nombre: "Laura Fernández" },
+        { id: "5", nombre: "Carlos Mendoza" },
+      ];
+      const doctorSeleccionado = doctores.find((d) => d.id === doctorId);
+
+      // Limpiar eventos actuales
+      calendar.removeAllEvents();
+
+      // Si no hay filtro, mostrar todos
+      if (!doctorSeleccionado) {
+        eventosOriginales.forEach((ev) => calendar.addEvent(ev));
+        return;
+      }
+
+      // Agregar solo los eventos del doctor seleccionado
+      eventosOriginales
+        .filter((ev) => ev.doctor === doctorSeleccionado.nombre)
+        .forEach((ev) => calendar.addEvent(ev));
+    });
+  }
 });
 
 // Obtner el elemento doctor con el id "user_doctor"
@@ -558,6 +607,36 @@ if (user) {
     { id: "4", nombre: "Laura Fernández" },
     { id: "5", nombre: "Carlos Mendoza" },
   ];
+
+  // Cargar doctores en el select de registro de cita
+  const selectCadDoctor = document.getElementById("cad_doctor");
+  if (selectCadDoctor) {
+    // Limpia las opciones excepto la de "Seleccione..."
+    selectCadDoctor.innerHTML = `
+      <option selected disabled value="">Seleccione...</option>
+    `;
+    doctores.forEach((doctor) => {
+      const option = document.createElement("option");
+      option.value = doctor.nombre;
+      option.textContent = doctor.nombre;
+      selectCadDoctor.appendChild(option);
+    });
+  }
+
+  // Cargar doctores en el select de edición de cita
+  const selectEditDoctor = document.getElementById("edit_doctor");
+  if (selectEditDoctor) {
+    // Limpia las opciones excepto la de "Seleccione..."
+    selectEditDoctor.innerHTML = `
+      <option selected disabled value="">Seleccione...</option>
+    `;
+    doctores.forEach((doctor) => {
+      const option = document.createElement("option");
+      option.value = doctor.nombre;
+      option.textContent = doctor.nombre;
+      selectEditDoctor.appendChild(option);
+    });
+  }
 
   // Simular la carga de eventos del doctor
   doctores.forEach((doctor) => {
