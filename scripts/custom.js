@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("registrarModal")
   );
 
+  //Recibe el selector "msgViewEvento"
+  const msgViewEvento = document.getElementById("msgViewEvento");
+
   //Instancia FullCalendar.Calendar y se asigna a la variable calendar
   // y recibe todo el contenido para que lo envie al HTML
   var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -515,4 +518,49 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  //Recibir el selector del botón de eliminar evento
+  document.getElementById("btnEliminarEvento");
+
+  //Verificar que existe el selector btnEliminarEvento
+  if (btnEliminarEvento) {
+    //
+    btnEliminarEvento.addEventListener("click", async () => {
+      //Confirmar si el usuario desea eliminar el evento
+      const confirmacion = window.confirm("Este seguro de eliminar este evento?")
+
+      if(confirmacion){
+
+        //En esta parte consumirías la API para eliminar el evento
+        //Por ahora, solo simula eliminación del evento del calendario
+        
+
+        msgViewEvento.innerHTML = `<div class="alert alert-danger" role="alert">
+          Cita eliminada correctamente.
+        </div>`;
+
+        msg.innerHTML = `<div class="alert alert-success" role="alert">
+          Cita eliminada correctamente.
+        </div>`;
+
+        msgViewEvento.innerHTML = "";
+
+        removerMsg();
+
+        await window.eventoActual.remove(); // Eliminar el evento actual
+
+        //quitar modal de visualizar evento
+        const visualizarModal = bootstrap.Modal.getInstance(
+          document.getElementById("visualizarModal")
+        );
+        if (visualizarModal) {
+          visualizarModal.hide();
+        }
+        //Restablecer vista del modal
+        document.getElementById("visualizarEvento").style.display = "block";
+      }
+
+    });
+  }
+
 });

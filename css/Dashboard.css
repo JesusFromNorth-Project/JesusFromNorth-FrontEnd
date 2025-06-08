@@ -10,7 +10,7 @@ body {
 }
 
 #calendar {
-	max-width: 1100px;
+	max-width: 1320px; /* Para alinear el calendario */
 	margin: 0 auto;
 }
 
