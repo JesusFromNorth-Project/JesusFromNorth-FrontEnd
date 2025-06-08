@@ -562,99 +562,131 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Filtrar eventos por doctor
   const userDoctorSelect = document.getElementById("user_doctor");
+  const userPacienteSelect = document.getElementById("user_paciente");
+
+  function filtrarEventos() {
+    // Obtener valores seleccionados
+    const doctorId = userDoctorSelect ? userDoctorSelect.value : "";
+    const pacienteNombre = userPacienteSelect ? userPacienteSelect.value : "";
+
+    // Lista de doctores para buscar nombre por id
+    const doctores = [
+      { id: "1", nombre: "Pedro Jiménez" },
+      { id: "2", nombre: "Ana Torres" },
+      { id: "3", nombre: "Javier Ruiz" },
+      { id: "4", nombre: "Laura Fernández" },
+      { id: "5", nombre: "Carlos Mendoza" },
+    ];
+    const doctorSeleccionado = doctores.find((d) => d.id === doctorId);
+
+    // Limpiar eventos actuales
+    calendar.removeAllEvents();
+
+    // Filtrar eventos según selección
+    let filtrados = eventosOriginales;
+
+    if (doctorSeleccionado && pacienteNombre) {
+      // Filtrar por ambos
+      filtrados = filtrados.filter(
+        (ev) =>
+          ev.doctor === doctorSeleccionado.nombre &&
+          ev.paciente === pacienteNombre
+      );
+    } else if (doctorSeleccionado) {
+      // Solo doctor
+      filtrados = filtrados.filter(
+        (ev) => ev.doctor === doctorSeleccionado.nombre
+      );
+    } else if (pacienteNombre) {
+      // Solo paciente
+      filtrados = filtrados.filter((ev) => ev.paciente === pacienteNombre);
+    }
+
+    // Agregar eventos filtrados
+    filtrados.forEach((ev) => calendar.addEvent(ev));
+  }
+
+  // Asignar eventos a los selects
   if (userDoctorSelect) {
-    userDoctorSelect.addEventListener("change", function () {
-      const doctorId = this.value;
+    userDoctorSelect.addEventListener("change", filtrarEventos);
+  }
+  if (userPacienteSelect) {
+    userPacienteSelect.addEventListener("change", filtrarEventos);
+  }
 
-      // Busca el nombre del doctor por id
-      const doctores = [
-        { id: "1", nombre: "Pedro Jiménez" },
-        { id: "2", nombre: "Ana Torres" },
-        { id: "3", nombre: "Javier Ruiz" },
-        { id: "4", nombre: "Laura Fernández" },
-        { id: "5", nombre: "Carlos Mendoza" },
-      ];
-      const doctorSeleccionado = doctores.find((d) => d.id === doctorId);
+  // Obtner el elemento doctor con el id "user_doctor"
+  // Este elemento debe tener el atributo data-user-id con el ID del usuario
+  const user = document.getElementById("user_doctor");
 
-      // Limpiar eventos actuales
-      calendar.removeAllEvents();
+  if (user) {
+    //**IMPORTANTE: En esta parte consumirías la API para listar todos los doctores
+    //Por ahora, solo simula la carga de eventos del doctor
+    const doctores = [
+      { id: "1", nombre: "Pedro Jiménez" },
+      { id: "2", nombre: "Ana Torres" },
+      { id: "3", nombre: "Javier Ruiz" },
+      { id: "4", nombre: "Laura Fernández" },
+      { id: "5", nombre: "Carlos Mendoza" },
+    ];
 
-      // Si no hay filtro, mostrar todos
-      if (!doctorSeleccionado) {
-        eventosOriginales.forEach((ev) => calendar.addEvent(ev));
-        return;
-      }
+    // Cargar doctores en el select de registro de cita
+    const selectCadDoctor = document.getElementById("cad_doctor");
+    if (selectCadDoctor) {
+      // Limpia las opciones excepto la de "Seleccione..."
+      selectCadDoctor.innerHTML = `
+      <option selected disabled value="">Seleccione...</option>
+    `;
+      doctores.forEach((doctor) => {
+        const option = document.createElement("option");
+        option.value = doctor.nombre;
+        option.textContent = doctor.nombre;
+        selectCadDoctor.appendChild(option);
+      });
+    }
 
-      // Agregar solo los eventos del doctor seleccionado
-      eventosOriginales
-        .filter((ev) => ev.doctor === doctorSeleccionado.nombre)
-        .forEach((ev) => calendar.addEvent(ev));
+    // Cargar doctores en el select de edición de cita
+    const selectEditDoctor = document.getElementById("edit_doctor");
+    if (selectEditDoctor) {
+      // Limpia las opciones excepto la de "Seleccione..."
+      selectEditDoctor.innerHTML = `
+      <option selected disabled value="">Seleccione...</option>
+    `;
+      doctores.forEach((doctor) => {
+        const option = document.createElement("option");
+        option.value = doctor.nombre;
+        option.textContent = doctor.nombre;
+        selectEditDoctor.appendChild(option);
+      });
+    }
+
+    // Simular la carga de eventos del doctor
+    doctores.forEach((doctor) => {
+      const option = document.createElement("option");
+      option.value = doctor.id;
+      option.textContent = doctor.nombre;
+      user.appendChild(option);
+    });
+  }
+
+  // Lista de pacientes (puedes traerla de una API si lo necesitas)
+  const pacientes = [
+    { id: "1", nombre: "Donkey Kong" },
+    { id: "2", nombre: "Yoshi" },
+    { id: "3", nombre: "Toad" },
+    { id: "4", nombre: "Bowser Koopa" },
+    { id: "5", nombre: "Mario Bros" },
+    { id: "6", nombre: "Princesa Peach" },
+    { id: "7", nombre: "Luigi Bros" },
+  ];
+
+  // Cargar pacientes en el select de filtrado por pacienet
+  const selectCadPaciente = document.getElementById("user_paciente");
+  if (selectCadPaciente) {
+    pacientes.forEach((paciente) => {
+      const option = document.createElement("option");
+      option.value = paciente.nombre;
+      option.textContent = paciente.nombre;
+      selectCadPaciente.appendChild(option);
     });
   }
 });
-
-// Obtner el elemento doctor con el id "user_doctor"
-// Este elemento debe tener el atributo data-user-id con el ID del usuario
-const user = document.getElementById("user_doctor");
-
-if (user) {
-  //**IMPORTANTE: En esta parte consumirías la API para listar todos los doctores
-  //Por ahora, solo simula la carga de eventos del doctor
-  const doctores = [
-    { id: "1", nombre: "Pedro Jiménez" },
-    { id: "2", nombre: "Ana Torres" },
-    { id: "3", nombre: "Javier Ruiz" },
-    { id: "4", nombre: "Laura Fernández" },
-    { id: "5", nombre: "Carlos Mendoza" },
-  ];
-
-  // Cargar doctores en el select de registro de cita
-  const selectCadDoctor = document.getElementById("cad_doctor");
-  if (selectCadDoctor) {
-    // Limpia las opciones excepto la de "Seleccione..."
-    selectCadDoctor.innerHTML = `
-      <option selected disabled value="">Seleccione...</option>
-    `;
-    doctores.forEach((doctor) => {
-      const option = document.createElement("option");
-      option.value = doctor.nombre;
-      option.textContent = doctor.nombre;
-      selectCadDoctor.appendChild(option);
-    });
-  }
-
-  // Cargar doctores en el select de edición de cita
-  const selectEditDoctor = document.getElementById("edit_doctor");
-  if (selectEditDoctor) {
-    // Limpia las opciones excepto la de "Seleccione..."
-    selectEditDoctor.innerHTML = `
-      <option selected disabled value="">Seleccione...</option>
-    `;
-    doctores.forEach((doctor) => {
-      const option = document.createElement("option");
-      option.value = doctor.nombre;
-      option.textContent = doctor.nombre;
-      selectEditDoctor.appendChild(option);
-    });
-  }
-
-  // Simular la carga de eventos del doctor
-  doctores.forEach((doctor) => {
-    const option = document.createElement("option");
-    option.value = doctor.id;
-    option.textContent = doctor.nombre;
-    user.appendChild(option);
-  });
-}
-
-async function listarDoctores() {
-  // Aquí iría la lógica para obtener los doctores desde una API
-  // Por ahora, retornamos un array simulado
-  return [
-    { id: "1", nombre: "Pedro Jiménez" },
-    { id: "2", nombre: "Ana Torres" },
-    { id: "3", nombre: "Javier Ruiz" },
-    { id: "4", nombre: "Laura Fernández" },
-    { id: "5", nombre: "Carlos Mendoza" },
-  ];
-}
