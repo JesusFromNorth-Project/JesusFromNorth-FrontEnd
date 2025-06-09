@@ -1,8 +1,10 @@
+import { AUTH_KEYS, limpiarSesion } from './utils/auth.js';
+
 const API_URL = "http://192.168.18.55:8080/system_clinic/api/v0.1";
 
 // Función para mostrar mensajes de error
 function mostrarError(mensaje) {
-    const errorDiv = document.getElementById("error-message");
+    const errorDiv = document.getElementById("errorMessage");
     if (errorDiv) {
         errorDiv.textContent = mensaje;
         errorDiv.style.display = "block";
@@ -17,6 +19,9 @@ function mostrarError(mensaje) {
 
 // Esperar a que el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
+    // Limpiar sesión previa al cargar la página de login
+    limpiarSesion();
+    
     const form = document.getElementById("loginForm");
     const btnLogin = form.querySelector("button[type='submit']");
     
@@ -54,14 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 // Guardar la información de autenticación
-                localStorage.setItem("jwtToken", data.token);
-                localStorage.setItem("adminId", data.adminId); // Asegúrate de que el backend envíe el adminId
-                localStorage.setItem("adminName", data.username || username);
-                
-                // Guardar el rol del usuario si está disponible
-                if (data.role) {
-                    localStorage.setItem("userRole", data.role);
-                }
+                localStorage.setItem(AUTH_KEYS.TOKEN, data.token);
+                localStorage.setItem(AUTH_KEYS.USER_ID, data.adminId);
+                localStorage.setItem(AUTH_KEYS.USERNAME, data.username || username);
                 
                 // Redirigir al dashboard
                 window.location.href = "Dashboard.html";

@@ -1,5 +1,5 @@
 // Importar la verificación de autenticación
-import { verificarAutenticacion } from './utils/auth.js';
+import { verificarAutenticacion, limpiarSesion, AUTH_KEYS } from './utils/auth.js';
 
 const API_BASE_URL = "http://192.168.18.55:8080/system_clinic/api/v0.1/specialty/";
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarSidebar();
     
     // Configurar el nombre de usuario en el sidebar si existe
-    const adminName = localStorage.getItem('adminName');
+    const adminName = localStorage.getItem(AUTH_KEYS.USERNAME);
     if (adminName) {
         const usernameElement = document.getElementById('username');
         if (usernameElement) {
@@ -27,9 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('adminId');
-            localStorage.removeItem('adminName');
-            window.location.href = '/pages/Login.html';
+            limpiarSesion();
+            window.location.href = 'Login.html';
         });
     }
 });
@@ -111,17 +110,17 @@ async function renderTabla() {
     if (!verificarAutenticacion()) return;
 
     try {
+        const token = localStorage.getItem(AUTH_KEYS.TOKEN);
         const res = await fetch(`${API_BASE_URL}list`, {
             headers: {
-                "Authorization": `Bearer ${localStorage.getItem("adminId")}`
+                "Authorization": `Bearer ${token}`
             }
         });
         
         if (res.status === 401 || res.status === 403) {
             // Token expirado o inválido
-            localStorage.removeItem("adminId");
-            localStorage.removeItem("adminName");
-            window.location.href = "/pages/Login.html";
+            limpiarSesion();
+            window.location.href = 'Login.html';
             return;
         }
         
@@ -184,7 +183,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("adminId")}`
+                    "Authorization": `Bearer ${localStorage.getItem(AUTH_KEYS.TOKEN)}`
                 },
                 body: JSON.stringify({
                     name_specialty: specialty_name
@@ -220,7 +219,7 @@ async function eliminarEspecialidad(id) {
         const res = await fetch(`${API_BASE_URL}${id}`, {
             method: "DELETE",
             headers: {
-                "Authorization": `Bearer ${localStorage.getItem("adminId")}`
+                "Authorization": `Bearer ${localStorage.getItem(AUTH_KEYS.TOKEN)}`
             }
         });
 

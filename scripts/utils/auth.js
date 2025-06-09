@@ -1,18 +1,27 @@
+// Claves para el almacenamiento local
+const AUTH_KEYS = {
+    TOKEN: 'jwtToken',
+    USER_ID: 'adminId',
+    USERNAME: 'adminName'
+};
+
+//Verifica si el usuario está autenticadotrue si está autenticado, false en caso contrario
 function verificarAutenticacion() {
-    const adminId = localStorage.getItem("adminId");
-    const adminName = localStorage.getItem("adminName");
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+    const userId = localStorage.getItem(AUTH_KEYS.USER_ID);
     
-    if (!adminId || !adminName) {
-        // Limpiar cualquier dato de sesión
-        localStorage.removeItem("adminId");
-        localStorage.removeItem("adminName");
-        
-        // Redirigir a la página de login
-        window.location.href = "/pages/Login.html";
+    if (!token || !userId) {
+        limpiarSesion();
+        window.location.href = '../pages/Login.html';
         return false;
     }
     
     return true;
 }
 
-export { verificarAutenticacion };
+//Limpia todos los datos de autenticación
+function limpiarSesion() {
+    Object.values(AUTH_KEYS).forEach(key => localStorage.removeItem(key));
+}
+
+export { verificarAutenticacion, limpiarSesion, AUTH_KEYS};

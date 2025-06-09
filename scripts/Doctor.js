@@ -1,7 +1,7 @@
 // ============================================
 // MÓDULOS Y CONFIGURACIÓN
 // ============================================
-import { verificarAutenticacion } from './utils/auth.js';
+import { verificarAutenticacion, limpiarSesion, AUTH_KEYS } from './utils/auth.js';
 
 // URLs de la API
 const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/doctor/";
@@ -16,7 +16,7 @@ const ESPECIALITY_URL = "http://localhost:8080/system_clinic/api/v0.1/specialty/
  * @returns {Object} Headers de autenticación
  */
 function getAuthHeaders() {
-    const token = localStorage.getItem('jwtToken');
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
     if (!token) {
         console.error('No se encontró el token de autenticación');
         cerrarSesion();
@@ -27,15 +27,13 @@ function getAuthHeaders() {
         'Authorization': `Bearer ${token}`
     };
 }
+
 /**
- * Cierra la sesión del usuario, limpia los datos de autenticación y redirige al login
+ * Cierra la sesión del usuario y redirige al login
  */
 function cerrarSesion() {
-    // Limpiar todos los datos de autenticación
-    ['jwtToken', 'adminId', 'adminName', 'userRole'].forEach(key => 
-        localStorage.removeItem(key)
-    );
-    window.location.href = '/pages/Login.html';
+    limpiarSesion();
+    window.location.href = 'Login.html';
 }
 
 /**
@@ -392,7 +390,7 @@ function actualizarTablaDoctores(doctores) {
     if (!doctores || doctores.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center">No se encontraron doctores.</td>
+                <td colspan="8" class="text-center">No se encontraron doctores.</td>
             </tr>
         `;
         return;
@@ -407,6 +405,14 @@ function actualizarTablaDoctores(doctores) {
             <td>${doctor.email || ''}</td>
             <td>${doctor.phone || ''}</td>
             <td>${doctor.specialty?.specialty_name || doctor.specialty_name || 'No especificada'}</td>
+            <td>
+                <button class="btn btn-sm btn-primary me-1" onclick="editarDoctor('${doctor.id_doctor || doctor.id}')">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="eliminarDoctor('${doctor.id_doctor || doctor.id}')">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </td>
         </tr>
     `).join('');
     
@@ -415,33 +421,75 @@ function actualizarTablaDoctores(doctores) {
 
 // Función para inicializar la página
 async function inicializarPagina() {
-    try {
-        console.log('Inicializando página de doctores...');
-        
-        // Cargar especialidades y doctores en paralelo
-        await Promise.all([
-            cargarEspecialidades(),
-            cargarDoctores()
-        ]);
-        
-        // Configurar el formulario
-        inicializarFormulario();
-        
-        // Configurar los botones de búsqueda
-        const btnBuscarCMP = document.querySelector('#searchCMP')?.nextElementSibling;
-        const btnBuscarNombre = document.querySelector('#searchNombre')?.nextElementSibling;
-        
-        if (btnBuscarCMP) {
-            btnBuscarCMP.addEventListener('click', buscarPorCMP);
-        }
-        
-        if (btnBuscarNombre) {
-            btnBuscarNombre.addEventListener('click', buscarPorNombre);
-        }
-        
-        console.log('Página de doctores inicializada correctamente');
-    } catch (error) {
-        console.error('Error al inicializar la página de doctores:', error);
-        mostrarError('Error al cargar la página. Por favor, recarga la página.');
+    if (!verificarAutenticacion()) return;
+    
+    // Cargar el sidebar
+    cargarSidebar();
+    
+    // Inicializar el formulario
+    inicializarFormulario();
+    
+    // Cargar las especialidades en el select
+    cargarEspecialidades();
+    
+    // Cargar la lista de doctores
+    cargarDoctores();
+    
+    // Configurar los botones de búsqueda si existen
+    const btnBuscarCMP = document.getElementById('buscarCMP');
+    const btnBuscarNombre = document.getElementById('buscarNombre');
+    const btnExportar = document.getElementById('exportarPacientes');
+    
+    if (btnBuscarCMP) {
+        btnBuscarCMP.addEventListener('click', buscarPorCMP);
+    } else {
+        console.warn('No se encontró el botón de búsqueda por CMP');
+    }
+    
+    if (btnBuscarNombre) {
+        btnBuscarNombre.addEventListener('click', buscarPorNombre);
+    } else {
+        console.warn('No se encontró el botón de búsqueda por nombre');
+    }
+    
+    // Configurar el botón de exportar si existe
+    if (btnExportar) {
+        btnExportar.addEventListener('click', () => {
+            mostrarMensaje('Función de exportación no implementada aún', 'info');
+        });
+    } else {
+        console.warn('No se encontró el botón de exportar');
+    }
+    
+    console.log('Página de doctores inicializada');
+}
+
+// ============================================
+// FUNCIONES DE ACCIÓN PARA LOS BOTONES
+// ============================================
+
+/**
+ * Función para manejar la edición de un doctor
+ * @param {string} id - ID del doctor a editar
+ */
+function editarDoctor(id) {
+    console.log('Editando doctor con ID:', id);
+    // Aquí irá la lógica para editar el doctor
+    mostrarMensaje(`Función de edición para el doctor con ID: ${id}`, 'info');
+}
+
+/**
+ * Función para manejar la eliminación de un doctor
+ * @param {string} id - ID del doctor a eliminar
+ */
+function eliminarDoctor(id) {
+    if (confirm('¿Está seguro de que desea eliminar este doctor?')) {
+        console.log('Eliminando doctor con ID:', id);
+        // Aquí irá la lógica para eliminar el doctor
+        mostrarMensaje(`Función de eliminación para el doctor con ID: ${id}`, 'info');
     }
 }
+
+// Hacer que las funciones estén disponibles globalmente
+window.editarDoctor = editarDoctor;
+window.eliminarDoctor = eliminarDoctor;

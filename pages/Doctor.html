@@ -31,88 +31,42 @@
                 <label class="fw-semibold">Nombre</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
-                  <input type="text" class="form-control" placeholder="Nombre" name="nombre" required />
+                  <input type="text" class="form-control" placeholder="Nombre" name="first_name" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
                 <label class="fw-semibold">Apellidos</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
-                  <input type="text" class="form-control" placeholder="Apellidos" name="apellidos" required />
+                  <input type="text" class="form-control" placeholder="Apellidos" name="last_name" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-2 mb-2">
                 <label class="fw-semibold">CMP</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
-                  <input type="text" class="form-control" placeholder="CMP" name="CMP" required />
-                </div>
-              </div>
-              <div class="form-group col-12 col-md-2 mb-2">
-                <label class="fw-semibold">DNI</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
-                  <input type="text" class="form-control" placeholder="DNI" name="dni" required />
-                </div>
-              </div>
-              <div class="form-group col-12 col-md-2 mb-2">
-                <label class="fw-semibold">Fecha de nacimiento</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-birthday-cake"></i></span>
-                  <input type="date" class="form-control" name="birthday" required />
-                </div>
-              </div>
-            </div>
-            <div class="form-row mb-3">
-              <div class="form-group col-12 col-md-3 mb-2">
-                <label class="fw-semibold">Edad</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-hourglass-half"></i></span>
-                  <input type="number" class="form-control" placeholder="Edad" name="edad" min="0" required />
+                  <input type="text" class="form-control" placeholder="CMP" name="cmp" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
-                <label class="fw-semibold">Dirección</label>
+                <label class="fw-semibold">Correo</label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-home"></i></span>
-                  <input type="text" class="form-control" placeholder="Dirección" name="direccion" required />
+                  <span class="input-group-text bg-light"><i class="fa fa-envelope"></i></span>
+                  <input type="email" class="form-control" placeholder="Correo electrónico" name="email" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
                 <label class="fw-semibold">Teléfono</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-phone"></i></span>
-                  <input type="tel" class="form-control" placeholder="Teléfono" name="telefono" required />
-                </div>
-              </div>
-              <div class="form-group col-12 col-md-3 mb-2">
-                <label class="fw-semibold">Celular</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-mobile-alt"></i></span>
-                  <input type="tel" class="form-control" placeholder="Celular" name="celular" required />
-                </div>
-              </div>
-            </div>
-            <div class="form-row mb-3">
-              <div class="form-group col-12 col-md-3 mb-2">
-                <label class="fw-semibold">Username</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
-                  <input type="text" class="form-control" placeholder="Username" name="Username" required />
-                </div>
-              </div>
-              <div class="form-group col-12 col-md-3 mb-2">
-                <label class="fw-semibold">Password</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="fa fa-key"></i></span>
-                  <input type="password" class="form-control" placeholder="Password" name="Password" required />
+                  <input type="tel" class="form-control" placeholder="Teléfono" name="phone" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
                 <label class="fw-semibold">Especialidad</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-stethoscope"></i></span>
-                  <select class="form-control" name="especialidad" id="selectEspecialidad" required>
+                  <select class="form-control" name="specialty_id" id="selectEspecialidad" required>
                     <option value="">Seleccione especialidad</option>
                     <!-- Opciones dinámicas -->
                   </select>
@@ -147,19 +101,16 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>CMP</th>
-            <th>DNI</th>
-            <th>Fecha Nacimiento</th>
-            <th>Edad</th>
-            <th>Dirección</th>
+            <th>Correo</th>
             <th>Teléfono</th>
-            <th>Celular</th>
-            <th>Username</th>
             <th>Especialidad</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody id="tablaDoctores">
+          <!-- Las filas se generarán dinámicamente aquí -->
           <tr>
-            <td colspan="12" class="text-center">
+            <td colspan="8" class="text-center">
               No hay doctores registrados.
             </td>
           </tr>
