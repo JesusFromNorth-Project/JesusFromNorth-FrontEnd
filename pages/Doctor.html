@@ -1,339 +1,201 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registro de Doctor</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" href="/css/Doctor.css" />
-  </head>
-  <body>
-    <!-- Sidebar dinámico -->
-    <div id="sidebar-placeholder"></div>
 
-    <!-- Contenido Principal -->
-    <div class="main-content" style="margin-left: 220px">
-      <h1 class="mb-4">Doctor</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paciente</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/Dashboard.css" />
+  <link rel="stylesheet" href="/css/Doctor.css" />
+</head>
 
-      <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">🩺 Datos del Doctor</div>
+<body>
+  <!-- Sidebar dinámico -->
+  <div id="sidebar-placeholder"></div>
+  <!-- Contenido principal -->
+  <div class="container-fluid contenido-principal">
+    <h1 class="mb-4 text-primary"><i class="fa fa-user"></i> Doctor</h1>
+    <div class="w-100">
+      <div class="card mb-4 shadow-lg border-0" style="background: #f8fbff;">
+        <div class="card-header bg-gradient bg-primary text-white fw-bold rounded-top">
+          <i class="fa fa-address-card"></i> Datos del Doctor
+        </div>
         <div class="card-body">
-          <form id="doctorForm">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">👤</span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="nombre"
-                    placeholder="Nombres"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">👥</span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="apellido"
-                    placeholder="Apellidos"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">🆔</span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="dni"
-                    placeholder="DNI"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">🔖</span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="cmp"
-                    placeholder="CMP"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div class="row mb-3">
-              <div class="col-12">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">🏠</span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="direccion"
-                    placeholder="Dirección"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">📱</span>
-                  <input
-                    type="tel"
-                    class="form-control"
-                    name="telefono"
-                    placeholder="Teléfono celular"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">📞</span>
-                  <input
-                    type="tel"
-                    class="form-control"
-                    name="telefonoFijo"
-                    placeholder="Teléfono fijo"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">✉️</span>
-                  <input
-                    type="email"
-                    class="form-control"
-                    name="correo"
-                    placeholder="Correo electrónico"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="input-group mb-3">
-                  <span class="input-group-text">🔑</span>
-                  <input
-                    type="password"
-                    class="form-control"
-                    name="password"
-                    placeholder="Contraseña"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-12">
+          <!-- ...dentro de tu <div class="card-body">... -->
+          <form id="formDoctor">
+            <div class="form-row mb-3">
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Nombre</label>
                 <div class="input-group">
-                  <span class="input-group-text">🩺</span>
-                  <select
-                    class="form-select"
-                    name="especialidad"
-                    id="selectEspecialidad"
-                    required
-                  >
+                  <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" placeholder="Nombre" name="nombre" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Apellidos</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" placeholder="Apellidos" name="apellidos" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-2 mb-2">
+                <label class="fw-semibold">CMP</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
+                  <input type="text" class="form-control" placeholder="CMP" name="CMP" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-2 mb-2">
+                <label class="fw-semibold">DNI</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
+                  <input type="text" class="form-control" placeholder="DNI" name="dni" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-2 mb-2">
+                <label class="fw-semibold">Fecha de nacimiento</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-birthday-cake"></i></span>
+                  <input type="date" class="form-control" name="birthday" required />
+                </div>
+              </div>
+            </div>
+            <div class="form-row mb-3">
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Edad</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-hourglass-half"></i></span>
+                  <input type="number" class="form-control" placeholder="Edad" name="edad" min="0" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Dirección</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-home"></i></span>
+                  <input type="text" class="form-control" placeholder="Dirección" name="direccion" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Teléfono</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-phone"></i></span>
+                  <input type="tel" class="form-control" placeholder="Teléfono" name="telefono" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Celular</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-mobile-alt"></i></span>
+                  <input type="tel" class="form-control" placeholder="Celular" name="celular" required />
+                </div>
+              </div>
+            </div>
+            <div class="form-row mb-3">
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Username</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" placeholder="Username" name="Username" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Password</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-key"></i></span>
+                  <input type="password" class="form-control" placeholder="Password" name="Password" required />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Especialidad</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-stethoscope"></i></span>
+                  <select class="form-control" name="especialidad" id="selectEspecialidad" required>
                     <option value="">Seleccione especialidad</option>
                     <!-- Opciones dinámicas -->
                   </select>
                 </div>
               </div>
             </div>
-
-            <div class="text-end">
-              <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+            <div class="form-row">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary px-4 shadow-sm">Guardar</button>
+              </div>
             </div>
           </form>
         </div>
       </div>
-
-      <!-- Búsqueda -->
-      <div class="d-flex align-items-center mb-3" style="gap: 2rem">
-        <h5 class="mb-0 me-4">Doctor</h5>
-        <div class="d-flex align-items-center me-5">
-          <input
-            type="text"
-            class="form-control form-control-sm me-2"
-            style="width: 120px"
-            placeholder="CMP"
-            id="searchCMP"
-          />
-          <button class="btn btn-sm btn-primary">Buscar</button>
-        </div>
-        <div class="d-flex align-items-center">
-          <input
-            type="text"
-            class="form-control form-control-sm me-2"
-            style="width: 140px"
-            placeholder="Nombre"
-            id="searchNombre"
-          />
-          <button class="btn btn-sm btn-primary">Buscar</button>
-        </div>
+      <!-- Buscador y tabla -->
+      <div class="mb-3 d-flex align-items-center">
+        <h4 class="mb-0 mr-3 text-primary"><i class="fa fa-search"></i> Doctor</h4>
+        <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 120px"
+          placeholder="DNI" id="searchID" />
+        <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
+        <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 140px"
+          placeholder="CMP" id="searchNombre" />
+        <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
+        <button class="btn btn-success btn-sm" id="exportarPacientes">
+          <i class="fa fa-file-excel"></i> Exportar Pacientes
+        </button>
       </div>
-
-      <!-- Tabla -->
-      <table class="table table-bordered table-striped">
-        <thead class="table-light">
+      <table class="table table-bordered table-striped w-100 shadow-sm rounded">
+        <thead class="table-primary">
           <tr>
             <th>ID</th>
             <th>Nombre</th>
-            <th>Apellido</th>
+            <th>Apellidos</th>
             <th>CMP</th>
-            <th>Correo</th>
+            <th>DNI</th>
+            <th>Fecha Nacimiento</th>
+            <th>Edad</th>
+            <th>Dirección</th>
             <th>Teléfono</th>
+            <th>Celular</th>
+            <th>Username</th>
             <th>Especialidad</th>
           </tr>
         </thead>
         <tbody id="tablaDoctores">
           <tr>
-            <td colspan="7" class="text-center">
+            <td colspan="12" class="text-center">
               No hay doctores registrados.
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+  </div>
 
-    <!-- Modal de Edición -->
-    <div class="modal fade" id="editarDoctorModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Editar Doctor</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="editarDoctorForm">
-              <input type="hidden" name="doctorId" />
-              <div class="mb-3">
-                <label class="form-label">Nombre</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="nombre"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Apellido</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="apellido"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Correo</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  name="correo"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Teléfono</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="telefono"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Especialidad</label>
-                <select class="form-select" name="especialidad" required>
-                  <!-- Se llenará dinámicamente -->
-                </select>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              onclick="guardarEdicion()"
-            >
-              Guardar cambios
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <script> // Cargar el sidebar dinámicamente y resaltar el enlace activo
+    document.addEventListener("DOMContentLoaded", () => {
 
-    <!-- Modal de Detalles -->
-    <div class="modal fade" id="detallesDoctorModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Detalles del Doctor</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body" id="detallesDoctorBody">
-            <!-- Se llenará dinámicamente -->
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      let role = localStorage.getItem("role");
+      let sideBar = null;
+      if (role == "ADMIN") {
+        sideBar = "../components/SidebarAdmin.html";
+      } else {
+        sideBar = "../components/SidebarDoctor.html";
+      }
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/scripts/Doctor.js"></script>
-  </body>
+      fetch(sideBar)
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-placeholder").innerHTML = html;
+          const path = window.location.pathname.split("/").pop().toLowerCase();
+          const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+          links.forEach((link) => {
+            if (link.getAttribute("href").toLowerCase().includes(path)) {
+              link.classList.remove("text-dark");
+              link.classList.add("text-primary");
+            }
+          });
+        })
+        .catch((err) => console.error("Error al cargar sidebar:", err));
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

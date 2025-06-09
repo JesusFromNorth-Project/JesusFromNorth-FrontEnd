@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica Jesus From North</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="/css/index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <!-- Logo opcional -->
+            <img src="../pages/img/jesus.png" alt="Logo" height="38" class="me-2">
+            <a class="navbar-brand fw-bold fs-4 text-primary" href="#">Clínica Jesus From North</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <a href="login.html" class="btn btn-outline-secondary ms-lg-3 mt-2 mt-lg-0 px-4 fw-semibold">Iniciar
+                    sesión</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Carousel -->
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <img src="https://img-cdn.pixlr.com/image-generator/history/6837b237e46db318abe3b8b6/06a217ef-ca50-42bd-b07d-04fb0550586e/preview.webp"
+                    class="d-block w-100" alt="Programa Materno">
+                <div class="carousel-caption text-start" style="left: 10%; right: 50%; top: 20%; bottom: auto;">
+                    <h5 class="text-uppercase text-warning fw-bold">Programas maternos</h5>
+                    <h2 class="text-dark fw-bold mb-3">¡Te acompañamos en el momento<br><span style="color: purple;">más
+                            feliz de tu vida!</span></h2>
+                    <a href="#informacion" class="btn btn-warning btn-lg shadow-sm">
+                        Más información aquí
+                    </a>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=1200&q=80"
+                    class="d-block w-100" alt="Reconocimiento médico">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="fw-bold text-light">Reconocimiento a la excelencia</h2>
+                    <p class="fs-5 text-light mb-2">Premiados por nuestro compromiso y calidad en atención médica</p>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd23?auto=format&fit=crop&w=1200&q=80"
+                    class="d-block w-100" alt="Especialidad médica">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="fw-bold text-light">Especialistas a tu servicio</h2>
+                    <p class="fs-5 text-light mb-2">Contamos con profesionales en las principales especialidades médicas
+                    </p>
+                </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1511174511562-5f97f4f4e0c8?auto=format&fit=crop&w=1200&q=80"
+                    class="d-block w-100" alt="Atención cercana">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="fw-bold text-light">Estamos cerca de ti</h2>
+                    <p class="fs-5 text-light mb-2">Reserva tu cita en línea y recibe atención personalizada</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- Servicios -->
+    <div class="container py-5">
+    <h3 class="section-title">¿En qué podemos ayudarte hoy?</h3>
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card card-service shadow-sm">
+                <div class="card-body text-center">
+                    <div class="icon-circle">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Staff Médico">
+                    </div>
+                    <h5 class="card-title">Staff Médico</h5>
+                    <p class="card-text">Consulta a nuestros especialistas certificados.</p>
+                    <a href="#" class="btn btn-outline-primary">Ver más</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-service shadow-sm">
+                <div class="card-body text-center">
+                    <div class="icon-circle">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921822.png" alt="Reserva una cita">
+                    </div>
+                    <h5 class="card-title">Reserva una cita</h5>
+                    <p class="card-text">Agenda tu consulta médica en línea.</p>
+                    <a href="#" class="btn btn-outline-primary">Reservar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-service shadow-sm">
+                <div class="card-body text-center">
+                    <div class="icon-circle">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png" alt="Emergencias">
+                    </div>
+                    <h5 class="card-title">Emergencias</h5>
+                    <p class="card-text">Atención inmediata las 24 horas.</p>
+                    <a href="#" class="btn btn-outline-primary">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Casos de éxito -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <h3 class="section-title">Casos de éxitos</h3>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-5">
+                    <div class="card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&fit=crop&w=600&q=80"
+                            class="card-img-top" alt="Caso de éxito 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Cuidamos de ti y quienes más quieres</h5>
+                            <p class="card-text">Historias reales de pacientes que mejoraron su calidad de vida con
+                                nosotros.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="card shadow-sm">
+                        <div class="ratio ratio-16x9">
+                            <iframe src="https://www.youtube.com/embed/7k6r2bJzA9k" title="Testimonio"
+                                allowfullscreen></iframe>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Testimonio en video</h5>
+                            <p class="card-text">Conoce la experiencia de nuestros pacientes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convenios -->
+    <div class="container py-5">
+        <h3 class="section-title text-center mb-4">Convenios</h3>
+        <div class="bg-light rounded shadow-sm p-4">
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
+                <img src="../pages/img/essalud-seeklogo.png" class="partner-logo" alt="EsSalud">
+                <img src="../pages/img/sanitas-seeklogo.png" class="partner-logo" alt="Sanitas">
+                <img src="../pages/img/pacifico-seguros-seeklogo.png" class="partner-logo" alt="Pacífico">
+                <img src="../pages/img/rimac-seguros-seeklogo.png" class="partner-logo" alt="Rimac">
+            </div>
+        </div>
+    </div>
+
+    <!-- Buenas Noticias -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <h3 class="section-title">Buenas Noticias</h3>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=600&q=80"
+                            class="card-img-top" alt="Noticia 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Nueva sala de emergencias</h5>
+                            <p class="card-text">Inauguramos una moderna sala de emergencias para una mejor atención.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=600&q=80"
+                            class="card-img-top" alt="Noticia 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Reconocimiento a nuestro staff</h5>
+                            <p class="card-text">Nuestro equipo médico fue premiado por su excelencia y dedicación.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80"
+                            class="card-img-top" alt="Noticia 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Campaña de salud gratuita</h5>
+                            <p class="card-text">Realizamos campañas de salud para la comunidad local.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-primary text-white pt-5 pb-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- Contacto y dirección -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">¡Queremos verte bien!</h5>
+                    <p class="mb-1"><i class="bi bi-telephone"></i> (01) 613-4444 / 920 014 510</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i> Av. Carlos Izaguirre 153, Independencia</p>
+                    <p class="mb-1 small">20517738701 Clínica Jesus Del Norte S.A.C.</p>
+                </div>
+                <!-- Políticas y enlaces -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">Enlaces útiles</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-underline">Políticas de privacidad</a></li>
+                        <li><a href="#" class="text-white text-decoration-underline">Buzón de sugerencias</a></li>
+                        <li><a href="#" class="text-white text-decoration-underline">Solicitud ARCO</a></li>
+                        <li><a href="#" class="text-white text-decoration-underline">Derechos y deberes</a></li>
+                    </ul>
+                    <div class="mt-3">
+                        <span class="fw-bold">Contáctanos:</span>
+                        <a href="mailto:info@clinicajesusdelnorte.com" class="text-white ms-2"><i
+                                class="bi bi-envelope"></i></a>
+                    </div>
+                    <div class="mt-2">
+                        <span class="fw-bold">¡Síguenos!</span>
+                        <a href="#" class="text-white ms-2"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white ms-2"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white ms-2"><i class="bi bi-youtube"></i></a>
+                    </div>
+                    <div class="mt-3">
+                        <span class="fw-bold">Descarga nuestra APP:</span>
+                        <a href="#" class="ms-2"><img
+                                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                                alt="Google Play" height="30"></a>
+                        <a href="#" class="ms-2"><img
+                                src="https://upload.wikimedia.org/wikipedia/commons/6/67/App_Store_%28iOS%29.svg"
+                                alt="App Store" height="30"></a>
+                    </div>
+                </div>
+                <!-- Red de clínicas -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">Red de Clínicas San Pablo</h5>
+                    <ul class="list-unstyled small">
+                        <li>Clínica San Pablo Surco</li>
+                        <li>Clínica Santa Martha del Sur</li>
+                        <li>Clínica San Pablo La Victoria</li>
+                        <li>Clínica San Gabriel</li>
+                        <li>Clínica San Juan Bautista</li>
+                        <li>Clínica San Pablo Huaraz</li>
+                        <li>Clínica San Pablo Trujillo</li>
+                        <li>Clínica San Pablo Arequipa</li>
+                        <li>Chacarilla – Medicina Física y Rehabilitación</li>
+                        <li>Unidades San Pablo</li>
+                        <li>Ambulancias Cardiomóvil</li>
+                        <li>Dermoesthetik San Pablo</li>
+                        <li>Medik Center San Pablo – Los Olivos</li>
+                        <li>San Pablo Salud</li>
+                        <li>Diagnóstico por Imágenes Tomomedic</li>
+                        <li>Qualab</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-light">
+            <div class="text-center small">
+                &copy; 2025 Clínica Jesus Del Norte S.A.C. | Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

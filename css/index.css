@@ -1,17 +1,79 @@
+.navbar {
+    letter-spacing: 0.5px;
+}
+.navbar .navbar-brand {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    letter-spacing: 1px;
+}
+.navbar .btn-outline-light {
+    border-width: 2px;
+    transition: background 0.2s, color 0.2s;
+}
+.navbar .btn-outline-light:hover {
+    background: #fff;
+    color: #0a0000;
+}
 .section-title {
     color: #4B2E83;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
     text-align: center;
 }
+/* Carousel: imágenes más chicas */
+#mainCarousel .carousel-item img {
+    max-height: 350px;
+    object-fit: cover;
+    width: 100%;
+}
 
 .card-service {
     border: none;
-    text-align: center;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    transition: transform 0.18s, box-shadow 0.18s;
+    position: relative;
+    overflow: hidden;
+    
 }
-
-.card-service .card-body {
-    padding: 1.5rem;
+.card-service::before {
+    content: "";
+    display: block;
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, #0d6efd 60%, #00bcd4 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.card-service:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+}
+.card-service .icon-circle {
+    background: #f1f6fb;
+    border-radius: 50%;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px auto;
+    box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+}
+.card-service img {
+    width: 38px !important;
+    height: 38px !important;
+    object-fit: contain;
+}
+.card-service .card-title {
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 0.5rem;
+}
+.card-service .btn {
+    border-radius: 20px;
+    font-weight: 500;
+    margin-top: 10px;
 }
 
 .partner-logo {

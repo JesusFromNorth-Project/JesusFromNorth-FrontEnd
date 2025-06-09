@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paciente</title>
@@ -8,20 +9,179 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/Dashboard.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="/css/Paciente.css" />
+</head>
+
+<body>
     <!-- Sidebar dinámico -->
     <div id="sidebar-placeholder"></div>
-
     <!-- Contenido principal -->
-    <div class="main-content" style="margin-left: 220px">
-      <h2 class="mb-4">Gestión de Pacientes</h2>
-      <!-- Contenido de la página de pacientes -->
+    <div class="container-fluid contenido-principal">
+        <h1 class="mb-4 text-primary"><i class="fa fa-user"></i> Paciente</h1>
+        <div class="w-100">
+            <div class="card mb-4 shadow-lg border-0" style="background: #f8fbff;">
+                <div class="card-header bg-gradient bg-primary text-white fw-bold rounded-top">
+                    <i class="fa fa-address-card"></i> Datos del Paciente
+                </div>
+                <div class="card-body">
+                    <form id="formPaciente">
+                        <div class="form-row mb-3">
+                            <div class="form-group col-12 col-md-3 mb-2">
+                                <label class="fw-semibold">Nombre</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" placeholder="Nombre" name="nombre"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-3 mb-2">
+                                <label class="fw-semibold">Apellidos</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
+                                    <input type="text" class="form-control" placeholder="Apellidos" name="apellidos"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-2 mb-2">
+                                <label class="fw-semibold">DNI</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
+                                    <input type="text" class="form-control" placeholder="DNI" name="dni" required />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-2 mb-2">
+                                <label class="fw-semibold">Fecha de Nacimiento</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-birthday-cake"></i></span>
+                                    <input type="date" class="form-control" name="birthday" required />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-2 mb-2">
+                                <label class="fw-semibold">Edad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-hourglass-half"></i></span>
+                                    <input type="number" class="form-control" placeholder="Edad" name="edad" min="0"
+                                        required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col-12 col-md-3 mb-2">
+                                <label class="fw-semibold">Dirección</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-home"></i></span>
+                                    <input type="text" class="form-control" placeholder="Dirección" name="direccion"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-3 mb-2">
+                                <label class="fw-semibold">Teléfono</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-phone"></i></span>
+                                    <input type="tel" class="form-control" placeholder="Teléfono" name="telefono"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-3 mb-2">
+                                <label class="fw-semibold">Celular</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-mobile-alt"></i></span>
+                                    <input type="tel" class="form-control" placeholder="Celular" name="celular"
+                                        required />
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3 d-flex align-items-center mb-2">
+                                <label class="mr-2 mb-0 fw-semibold">Género:</label>
+                                <label class="mr-3 mb-0"><input type="radio" name="genero" value="H"> H</label>
+                                <label class="mb-0"><input type="radio" name="genero" value="M"> M</label>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col-12">
+                                <label class="fw-semibold">Antecedente</label>
+                                <textarea class="form-control" name="antecedente" rows="2"
+                                    placeholder="Antecedente"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col text-end">
+                                <button type="submit" class="btn btn-primary mt-3 px-5 shadow-sm">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Buscador y tabla -->
+            <div class="mb-3 d-flex align-items-center">
+                <h4 class="mb-0 mr-3 text-primary"><i class="fa fa-search"></i> Paciente</h4>
+                <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 120px"
+                    placeholder="Apellido" id="searchID" />
+                <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
+                <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 140px"
+                    placeholder="Dni" id="searchNombre" />
+                <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
+                <button class="btn btn-success btn-sm" id="exportarPacientes">
+                    <i class="fa fa-file-excel"></i> Exportar Pacientes
+                </button>
+            </div>
+
+        </div>
+        <table class="table table-bordered table-striped w-100 shadow-sm rounded">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Edad</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Celular</th>
+                    <th>Dirección</th>
+                    <th>Género</th>
+                    <th>Antecedente</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPacientes">
+                <tr>
+                    <td colspan="12" class="text-center">
+                        No hay pacientes registrados.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/scripts/Paciente.js"></script>
-  </body>
+    <script> // Cargar el sidebar dinámicamente y resaltar el enlace activo
+        document.addEventListener("DOMContentLoaded", () => {
+
+            let role = localStorage.getItem("role");
+            let sideBar = null;
+            if (role == "ADMIN") {
+                sideBar = "../components/SidebarAdmin.html";
+            } else {
+                sideBar = "../components/SidebarDoctor.html";
+            }
+
+            fetch(sideBar)
+                .then((res) => res.text())
+                .then((html) => {
+                    document.getElementById("sidebar-placeholder").innerHTML = html;
+                    const path = window.location.pathname.split("/").pop().toLowerCase();
+                    const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+                    links.forEach((link) => {
+                        if (link.getAttribute("href").toLowerCase().includes(path)) {
+                            link.classList.remove("text-dark");
+                            link.classList.add("text-primary");
+                        }
+                    });
+                })
+                .catch((err) => console.error("Error al cargar sidebar:", err));
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

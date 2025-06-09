@@ -26,11 +26,11 @@
 
         .main-content {
             margin-left: 240px;
-            padding: 2rem 2rem 0 2rem;
+            padding: 1rem 2rem 0 2rem;
         }
 
         .card-cita {
-            min-width: 420px;
+            min-width: 1020px;
             max-width: 500px;
         }
 
@@ -47,4 +47,33 @@
             background: #b6e0fe !important;
         }
 
-      
+        .card-cita {
+            border-radius: 1.5rem !important;
+            box-shadow: 0 6px 32px rgba(37, 99, 235, 0.10) !important;
+            padding-top: 5px;
+            border: none !important;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #2563eb 60%, #58a2eb 100%);
+            color: #fff;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(90deg, #174bbd 60%, #58a2eb 100%);
+            color: #fff;
+        }
+
+        .input-group-text {
+            background: #e8f0fe !important;
+            color: #2563eb !important;
+            border: none !important;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 0.1rem rgba(37, 99, 235, 0.10) !important;
+        }
