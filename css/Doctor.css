@@ -1,6 +1,30 @@
 
 body {
-	padding-top: 50px;
+    padding-top: 50px;
+}
+
+/* Estilos para la tabla de doctores */
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Anchos de columnas en rems */
+thead th:nth-child(1) { width: 3rem; }   /* # (número de fila) */
+thead th:nth-child(2) { width: 10rem; } /* Nombre */
+thead th:nth-child(3) { width: 10rem; } /* Apellidos */
+thead th:nth-child(4) { width: 8rem; }  /* DNI */
+thead th:nth-child(5) { width: 8rem; }  /* CMP */
+thead th:nth-child(6) { width: 15rem; } /* Correo */
+thead th:nth-child(7) { width: 8rem; }  /* Teléfono */
+thead th:nth-child(8) { width: 12rem; } /* Especialidad */
+thead th:nth-child(9) { width: 12rem; } /* Acciones */
+
+/* Asegurar que las celdas del cuerpo respeten el ancho */
+tbody td {
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .contenido-principal {
     margin-left: 240px;

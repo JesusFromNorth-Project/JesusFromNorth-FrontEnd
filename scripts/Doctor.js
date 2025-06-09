@@ -200,10 +200,6 @@ async function cargarEspecialidades() {
     }
 }
 
-/**
- * Maneja el envío del formulario de registro de doctor
- * @param {Event} event - Evento de envío del formulario
- */
 async function manejarEnvioFormulario(event) {
     event.preventDefault();
     
@@ -222,19 +218,17 @@ async function manejarEnvioFormulario(event) {
         
         // Obtener los valores del formulario
         const doctorData = {
-            first_name: formData.get('nombre'),
-            last_name: formData.get('apellido'),
-            email: formData.get('correo'),
-            address: formData.get('direccion'),
-            phone: formData.get('telefono'),
-            landline_phone: formData.get('telefonoFijo'),
+            first_name: formData.get('first_name'),
+            last_name: formData.get('last_name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
             dni: formData.get('dni'),
             cmp: formData.get('cmp'),
-            username: formData.get('correo'),
-            password: formData.get('password')
+            username: formData.get('Username'),
+            password: formData.get('Password')
         };
         
-        const especialidadId = formData.get('especialidad');
+        const especialidadId = formData.get('specialty_id');
         
         // Validar que se haya seleccionado una especialidad
         if (!especialidadId) {
@@ -247,24 +241,30 @@ async function manejarEnvioFormulario(event) {
         const url = `${API_BASE_URL}save/assignSpecialty/${especialidadId}`;
         console.log('URL de la petición:', url);
         
-        const headers = getAuthHeaders();
+        // Asegúrate de incluir Content-Type
+        const headers = {
+            ...getAuthHeaders(),
+            'Content-Type': 'application/json'
+        };
+        
         console.log('Headers de la petición:', headers);
         
         const response = await fetch(url, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify(doctorData)
+            body: JSON.stringify(doctorData),
+            credentials: 'include'  // Importante para enviar cookies/tokens
         });
         
-        // Primero obtenemos la respuesta como JSON
-        const result = await response.json();
-        console.log('Respuesta del servidor:', result);
-        
-        // Luego verificamos si hubo un error
+        // Primero verificamos si la respuesta es exitosa
         if (!response.ok) {
             const error = await handleApiError(response);
             throw error;
         }
+        
+        // Si llegamos aquí, la respuesta es exitosa, intentamos parsear el JSON
+        const result = await response.json();
+        console.log('Respuesta del servidor:', result);
         
         // Si llegamos aquí, la petición fue exitosa
         mostrarExito(result.message || 'Doctor registrado exitosamente');
@@ -283,14 +283,15 @@ async function manejarEnvioFormulario(event) {
             submitButton.textContent = originalButtonText;
         }
     }
-
 }
 
 // Función para inicializar el formulario
 function inicializarFormulario() {
-    const form = document.getElementById('doctorForm');
+    const form = document.getElementById('formDoctor');
     if (form) {
         form.addEventListener('submit', manejarEnvioFormulario);
+    } else {
+        console.error('No se encontró el formulario con ID formDoctor');
     }
 }
 
@@ -390,17 +391,18 @@ function actualizarTablaDoctores(doctores) {
     if (!doctores || doctores.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center">No se encontraron doctores.</td>
+                <td colspan="9" class="text-center">No se encontraron doctores.</td>
             </tr>
         `;
         return;
     }
     
-    tbody.innerHTML = doctores.map(doctor => `
+    tbody.innerHTML = doctores.map((doctor, index) => `
         <tr>
-            <td>${doctor.id_doctor || doctor.id || ''}</td>
+            <td>${index + 1}</td>
             <td>${doctor.first_name || ''}</td>
             <td>${doctor.last_name || ''}</td>
+            <td>${doctor.dni || ''}</td>
             <td>${doctor.cmp || ''}</td>
             <td>${doctor.email || ''}</td>
             <td>${doctor.phone || ''}</td>
