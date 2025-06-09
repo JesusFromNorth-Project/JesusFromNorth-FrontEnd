@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5080/system_clinic/api/v0.1";
+const API_URL = "http://192.168.18.55:8080/system_clinic/api/v0.1";
 
 // Función para mostrar mensajes de error
 function mostrarError(mensaje) {
