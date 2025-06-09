@@ -28,10 +28,10 @@
           <form id="formDoctor">
             <div class="form-row mb-3">
               <div class="form-group col-12 col-md-3 mb-2">
-                <label class="fw-semibold">Nombre</label>
+                <label class="fw-semibold">Nombres</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
-                  <input type="text" class="form-control" placeholder="Nombre" name="first_name" required />
+                  <input type="text" class="form-control" placeholder="Nombres" name="first_name" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
@@ -66,7 +66,21 @@
                 <label class="fw-semibold">Teléfono</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-phone"></i></span>
-                  <input type="tel" class="form-control" placeholder="Teléfono" name="phone" required />
+                  <input type="tel" class="form-control" placeholder="Teléfono" name="phone" />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Dirección</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-map-marker-alt"></i></span>
+                  <input type="text" class="form-control" placeholder="Dirección" name="address" />
+                </div>
+              </div>
+              <div class="form-group col-12 col-md-3 mb-2">
+                <label class="fw-semibold">Teléfono Fijo</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="fa fa-phone"></i></span>
+                  <input type="tel" class="form-control" placeholder="Teléfono fijo" name="landline_phone" />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
@@ -82,16 +96,16 @@
                 <label class="fw-semibold">Username</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-user"></i></span>
-                  <input type="text" class="form-control" placeholder="Username" name="Username" required />
+                  <input type="text" class="form-control" placeholder="Username" name="username" required />
                 </div>
               </div>
               <div class="form-group col-12 col-md-3 mb-2">
                 <label class="fw-semibold">Password</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light"><i class="fa fa-key"></i></span>
-                  <input type="password" class="form-control" placeholder="Password" name="Password" required />
+                  <input type="password" class="form-control" placeholder="Password" name="password" required />
                 </div>
-            </div>
+              </div>
             <div class="form-row">
               <div class="col-12">
                 <button type="submit" class="btn btn-primary px-4 shadow-sm">Guardar</button>
@@ -101,17 +115,38 @@
         </div>
       </div>
       <!-- Buscador y tabla -->
-      <div class="mb-3 d-flex align-items-center">
-        <h4 class="mb-0 mr-3 text-primary"><i class="fa fa-search"></i> Doctor</h4>
-        <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 120px"
-          placeholder="DNI" id="searchID" />
-        <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
-        <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 140px"
-          placeholder="CMP" id="searchNombre" />
-        <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
-        <button class="btn btn-success btn-sm" id="exportarPacientes">
-          <i class="fa fa-file-excel"></i> Exportar Pacientes
-        </button>
+      <div class="mb-3 d-flex align-items-center flex-wrap gap-3">
+        <h4 class="mb-0 text-primary"><i class="fa fa-search"></i> Buscar Doctor</h4>
+        
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <!-- Búsqueda por DNI -->
+          <div class="input-group" style="width: 280px;">
+            <input type="text" 
+                  class="form-control form-control-sm border-primary" 
+                  placeholder="Buscar por DNI" 
+                  id="searchDNI" />
+            <button class="btn btn-outline-primary btn-sm" type="button" id="buscarDNI">
+              <i class="fa fa-search"></i> Buscar
+            </button>
+          </div>
+          <div class="input-group" style="width: 280px;">
+            <input type="text" 
+                  class="form-control form-control-sm border-primary" 
+                  placeholder="Buscar por CMP" 
+                  id="searchCMP" />
+            <button class="btn btn-outline-primary btn-sm" type="button" id="buscarCMP">
+              <i class="fa fa-search"></i> Buscar
+            </button>
+          </div>
+          
+          <button class="btn btn-outline-secondary btn-sm" type="button" id="mostrarTodos">
+            <i class="fa fa-list"></i> Mostrar Todos
+          </button>
+          
+          <button class="btn btn-success btn-sm" type="button" id="exportarPacientes">
+            <i class="fa fa-file-excel"></i> Exportar
+          </button>
+        </div>
       </div>
       <table class="table table-bordered table-striped shadow-sm rounded">
         <thead class="table-primary">

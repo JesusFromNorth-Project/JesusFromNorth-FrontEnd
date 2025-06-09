@@ -200,12 +200,102 @@ async function cargarEspecialidades() {
     }
 }
 
+/**
+ * Valida los datos del formulario de doctor
+ * @param {FormData} formData - Datos del formulario a validar
+ * @returns {string[]} Array de mensajes de error
+ */
+function validarFormularioDoctor(formData) {
+    const errors = [];
+    
+    // Validar campos obligatorios
+    if (!formData.get('first_name')?.trim()) {
+        errors.push('El nombre es obligatorio');
+    }
+    
+    if (!formData.get('last_name')?.trim()) {
+        errors.push('Los apellidos son obligatorios');
+    }
+    
+    if (!formData.get('dni')?.trim()) {
+        errors.push('El DNI es obligatorio');
+    }
+    
+    if (!formData.get('cmp')?.trim()) {
+        errors.push('El CMP es obligatorio');
+    }
+    
+    if (!formData.get('email')?.trim()) {
+        errors.push('El correo electrónico es obligatorio');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.get('email'))) {
+        errors.push('El correo electrónico no es válido');
+    }
+    
+    // Validar contraseña solo para nuevos registros
+    const isEditing = document.querySelector('button[type="submit"]')?.dataset.editing === 'true';
+    if (!isEditing && !formData.get('password')?.trim()) {
+        errors.push('La contraseña es obligatoria');
+    }
+    
+    return errors;
+}
+
+/**
+ * Configura el botón de cancelar edición
+ */
+function configurarBotonCancelar() {
+    const btnCancelar = document.createElement('button');
+    btnCancelar.type = 'button';
+    btnCancelar.className = 'btn btn-secondary ms-2';
+    btnCancelar.innerHTML = '<i class="fas fa-times me-1"></i> Cancelar';
+    btnCancelar.onclick = cancelarEdicion;
+    
+    const form = document.getElementById('formDoctor');
+    const submitButton = form?.querySelector('button[type="submit"]');
+    
+    if (submitButton && !document.getElementById('btnCancelarEdicion')) {
+        btnCancelar.id = 'btnCancelarEdicion';
+        submitButton.parentNode.appendChild(btnCancelar);
+    }
+}
+
+/**
+ * Cancela la edición y restablece el formulario
+ */
+function cancelarEdicion() {
+    const form = document.getElementById('formDoctor');
+    if (!form) return;
+    
+    // Restablecer el formulario
+    form.reset();
+    
+    // Restaurar el botón de enviar
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.textContent = 'Registrar Doctor';
+        submitButton.innerHTML = '<i class="fas fa-save me-1"></i> Registrar Doctor';
+        delete submitButton.dataset.editing;
+        delete submitButton.dataset.doctorId;
+    }
+    
+    // Eliminar el botón de cancelar
+    const btnCancelar = document.getElementById('btnCancelarEdicion');
+    if (btnCancelar) {
+        btnCancelar.remove();
+    }
+    
+    // Desplazarse al principio del formulario
+    form.scrollIntoView({ behavior: 'smooth' });
+}
+
 async function manejarEnvioFormulario(event) {
     event.preventDefault();
     
     const form = event.target;
     const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton?.textContent;
+    const originalButtonText = submitButton?.innerHTML;
+    const isEditing = submitButton?.dataset.editing === 'true';
+    const doctorId = submitButton?.dataset.doctorId;
     
     try {
         // Deshabilitar el botón de envío
@@ -216,17 +306,32 @@ async function manejarEnvioFormulario(event) {
         
         const formData = new FormData(form);
         
-        // Obtener los valores del formulario
+        // Validar el formulario
+        const errores = validarFormularioDoctor(formData);
+        if (errores.length > 0) {
+            mostrarError(errores.join('<br>'));
+            return;
+        }
+        
+        // Obtener los valores del formulario según el modelo
         const doctorData = {
             first_name: formData.get('first_name'),
             last_name: formData.get('last_name'),
             email: formData.get('email'),
-            phone: formData.get('phone'),
+            phone: formData.get('phone') || null,
+            address: formData.get('address') || null,
+            landline_phone: formData.get('landline_phone') || null,
             dni: formData.get('dni'),
             cmp: formData.get('cmp'),
-            username: formData.get('Username'),
-            password: formData.get('Password')
+            username: formData.get('username')
+            // No incluir la contraseña a menos que se esté cambiando
         };
+        
+        // Si hay una contraseña y no está vacía, incluirla
+        const password = formData.get('password');
+        if (password) {
+            doctorData.password = password;
+        }
         
         const especialidadId = formData.get('specialty_id');
         
@@ -235,52 +340,72 @@ async function manejarEnvioFormulario(event) {
             throw new Error('Por favor seleccione una especialidad');
         }
         
-        console.log('Datos del doctor:', JSON.stringify(doctorData, null, 2));
-        console.log('ID de especialidad:', especialidadId);
+        let url, method;
         
-        const url = `${API_BASE_URL}save/assignSpecialty/${especialidadId}`;
+        if (isEditing && doctorId) {
+            // Actualizar doctor existente
+            url = `${API_BASE_URL}${doctorId}`;
+            method = 'PATCH';
+            // Incluir el ID de la especialidad en el cuerpo
+            doctorData.id_specialty = especialidadId;
+        } else {
+            // Crear nuevo doctor
+            url = `${API_BASE_URL}save/assignSpecialty/${especialidadId}`;
+            method = 'POST';
+            // Asegurarse de que la contraseña esté presente para nuevos doctores
+            if (!password) {
+                throw new Error('La contraseña es obligatoria para nuevos doctores');
+            }
+        }
+        
         console.log('URL de la petición:', url);
+        console.log('Método:', method);
+        console.log('Datos del doctor:', doctorData);
         
-        // Asegúrate de incluir Content-Type
         const headers = {
             ...getAuthHeaders(),
             'Content-Type': 'application/json'
         };
         
-        console.log('Headers de la petición:', headers);
-        
         const response = await fetch(url, {
-            method: 'POST',
+            method: method,
             headers: headers,
             body: JSON.stringify(doctorData),
-            credentials: 'include'  // Importante para enviar cookies/tokens
+            credentials: 'include'
         });
         
-        // Primero verificamos si la respuesta es exitosa
         if (!response.ok) {
             const error = await handleApiError(response);
             throw error;
         }
         
-        // Si llegamos aquí, la respuesta es exitosa, intentamos parsear el JSON
         const result = await response.json();
         console.log('Respuesta del servidor:', result);
         
-        // Si llegamos aquí, la petición fue exitosa
-        mostrarExito(result.message || 'Doctor registrado exitosamente');
+        // Mostrar mensaje de éxito
+        mostrarExito(result.message || (isEditing ? 'Doctor actualizado exitosamente' : 'Doctor registrado exitosamente'));
+        
+        // Limpiar el formulario
         form.reset();
+        
+        // Si estábamos editando, restaurar el botón a su estado original
+        if (isEditing && submitButton) {
+            submitButton.innerHTML = 'Registrar Doctor';
+            delete submitButton.dataset.editing;
+            delete submitButton.dataset.doctorId;
+        }
         
         // Actualizar la lista de doctores
         await cargarDoctores();
         
     } catch (error) {
-        console.error('Error al registrar doctor:', error);
+        console.error('Error al procesar el formulario:', error);
         mostrarError(error.message || 'Error al conectar con el servidor');
     } finally {
         // Restaurar el botón de envío
         if (submitButton) {
             submitButton.disabled = false;
-            submitButton.textContent = originalButtonText;
+            submitButton.innerHTML = originalButtonText;
         }
     }
 }
@@ -295,7 +420,10 @@ function inicializarFormulario() {
     }
 }
 
-// Funciones de búsqueda
+/**
+ * Busca un doctor por su número de colegiatura (CMP)
+ * Endpoint: GET /doctor/getCMP?cmp={cmp}
+ */
 async function buscarPorCMP() {
     const cmp = document.getElementById('searchCMP')?.value.trim();
     if (!cmp) {
@@ -304,9 +432,20 @@ async function buscarPorCMP() {
     }
     
     try {
+        const btnBuscar = document.getElementById('buscarCMP');
+        const originalText = btnBuscar.innerHTML;
+        
+        // Mostrar estado de carga
+        btnBuscar.disabled = true;
+        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Buscando...';
+        
         const response = await fetch(`${API_BASE_URL}getCMP?cmp=${encodeURIComponent(cmp)}`, {
             headers: getAuthHeaders()
         });
+        
+        // Restaurar estado del botón
+        btnBuscar.disabled = false;
+        btnBuscar.innerHTML = originalText;
         
         if (!response.ok) {
             const error = await handleApiError(response);
@@ -314,15 +453,79 @@ async function buscarPorCMP() {
         }
         
         const result = await response.json();
+        
         // Mostrar resultados en la tabla
-        actualizarTablaDoctores(result.data || [result]);
+        if (result.data) {
+            actualizarTablaDoctores([result.data]);
+        } else {
+            mostrarError('No se encontró ningún doctor con el CMP proporcionado');
+            actualizarTablaDoctores([]);
+        }
         
     } catch (error) {
         console.error('Error al buscar doctor por CMP:', error);
-        mostrarError(error.message || 'Error al buscar doctor');
+        mostrarError(error.message || 'Error al buscar doctor por CMP');
     }
 }
 
+// Hacer que la función esté disponible globalmente
+window.buscarPorCMP = buscarPorCMP;
+
+/**
+ * Busca un doctor por su número de DNI
+ * Endpoint: GET /doctor/getDNI?dni={dni}
+ */
+async function buscarPorDNI() {
+    const dni = document.getElementById('searchDNI')?.value.trim();
+    if (!dni) {
+        mostrarError('Por favor ingrese un DNI para buscar');
+        return;
+    }
+    
+    try {
+        const btnBuscar = document.getElementById('buscarDNI');
+        const originalText = btnBuscar.innerHTML;
+        
+        // Mostrar estado de carga
+        btnBuscar.disabled = true;
+        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Buscando...';
+        
+        const response = await fetch(`${API_BASE_URL}getDNI?dni=${encodeURIComponent(dni)}`, {
+            headers: getAuthHeaders()
+        });
+        
+        // Restaurar estado del botón
+        btnBuscar.disabled = false;
+        btnBuscar.innerHTML = originalText;
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        
+        // Mostrar resultados en la tabla
+        if (result.data) {
+            actualizarTablaDoctores([result.data]);
+        } else {
+            mostrarError('No se encontró ningún doctor con el DNI proporcionado');
+            actualizarTablaDoctores([]);
+        }
+        
+    } catch (error) {
+        console.error('Error al buscar doctor por DNI:', error);
+        mostrarError(error.message || 'Error al buscar doctor por DNI');
+    }
+}
+
+// Hacer que la función esté disponible globalmente
+window.buscarPorDNI = buscarPorDNI;
+
+/**
+ * Busca doctores por nombre
+ * Endpoint: GET /doctor/search?name={nombre}
+ */
 async function buscarPorNombre() {
     const nombre = document.getElementById('searchNombre')?.value.trim();
     if (!nombre) {
@@ -437,30 +640,50 @@ async function inicializarPagina() {
     // Cargar la lista de doctores
     cargarDoctores();
     
-    // Configurar los botones de búsqueda si existen
+    // Configurar los botones de búsqueda y eventos
+    const btnBuscarDNI = document.getElementById('buscarDNI');
     const btnBuscarCMP = document.getElementById('buscarCMP');
-    const btnBuscarNombre = document.getElementById('buscarNombre');
+    const btnMostrarTodos = document.getElementById('mostrarTodos');
     const btnExportar = document.getElementById('exportarPacientes');
     
+    // Configurar búsqueda por DNI
+    if (btnBuscarDNI) {
+        btnBuscarDNI.addEventListener('click', buscarPorDNI);
+        
+        // Permitir búsqueda con Enter
+        document.getElementById('searchDNI')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarPorDNI();
+            }
+        });
+    } else {
+        console.warn('No se encontró el botón de búsqueda por DNI');
+    }
+    
+    // Configurar búsqueda por CMP
     if (btnBuscarCMP) {
         btnBuscarCMP.addEventListener('click', buscarPorCMP);
+        
+        // Permitir búsqueda con Enter
+        document.getElementById('searchCMP')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarPorCMP();
+            }
+        });
     } else {
         console.warn('No se encontró el botón de búsqueda por CMP');
     }
     
-    if (btnBuscarNombre) {
-        btnBuscarNombre.addEventListener('click', buscarPorNombre);
-    } else {
-        console.warn('No se encontró el botón de búsqueda por nombre');
+    // Configurar botón Mostrar Todos
+    if (btnMostrarTodos) {
+        btnMostrarTodos.addEventListener('click', cargarDoctores);
     }
     
-    // Configurar el botón de exportar si existe
+    // Configurar botón de exportar
     if (btnExportar) {
-        btnExportar.addEventListener('click', () => {
-            mostrarMensaje('Función de exportación no implementada aún', 'info');
-        });
-    } else {
-        console.warn('No se encontró el botón de exportar');
+        btnExportar.addEventListener('click', exportarAExcel);
     }
     
     console.log('Página de doctores inicializada');
@@ -474,24 +697,174 @@ async function inicializarPagina() {
  * Función para manejar la edición de un doctor
  * @param {string} id - ID del doctor a editar
  */
-function editarDoctor(id) {
-    console.log('Editando doctor con ID:', id);
-    // Aquí irá la lógica para editar el doctor
-    mostrarMensaje(`Función de edición para el doctor con ID: ${id}`, 'info');
+async function editarDoctor(id) {
+    try {
+        console.log('Obteniendo datos del doctor con ID:', id);
+        
+        // 1. Obtener los datos actuales del doctor
+        const response = await fetch(`${API_BASE_URL}${id}`, {
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        const doctor = result.data;
+        
+        if (!doctor) {
+            throw new Error('No se encontraron datos del doctor');
+        }
+        
+        console.log('Datos del doctor obtenidos:', doctor);
+        
+        // 2. Llenar el formulario con los datos actuales
+        const form = document.getElementById('formDoctor');
+        if (!form) {
+            throw new Error('No se encontró el formulario de doctores');
+        }
+        
+        // Mapear los campos del formulario con los datos del doctor
+        const fields = {
+            'first_name': 'first_name',
+            'last_name': 'last_name',
+            'email': 'email',
+            'phone': 'phone',
+            'address': 'address',
+            'landline_phone': 'landline_phone',
+            'dni': 'dni',
+            'cmp': 'cmp',
+            'username': 'username'
+        };
+        
+        // Llenar los campos del formulario
+        Object.entries(fields).forEach(([fieldName, doctorField]) => {
+            if (form.elements[fieldName]) {
+                form.elements[fieldName].value = doctor[doctorField] || '';
+            }
+        });
+        
+        // Establecer la especialidad si existe
+        if (doctor.specialty_id && form.elements['specialty_id']) {
+            form.elements['specialty_id'].value = doctor.specialty_id;
+        } else if (doctor.specialty && doctor.specialty.id_specialty) {
+            form.elements['specialty_id'].value = doctor.specialty.id_specialty;
+        }
+        
+        // 3. Cambiar el texto del botón de enviar
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fas fa-save me-1"></i> Actualizar Doctor';
+            submitButton.dataset.editing = 'true';
+            submitButton.dataset.doctorId = id;
+            
+            // Mostrar el botón de cancelar
+            configurarBotonCancelar();
+        }
+        
+        // 4. Desplazarse al formulario
+        form.scrollIntoView({ behavior: 'smooth' });
+        
+        // Mostrar mensaje de éxito
+        mostrarExito('Datos del doctor cargados. Puede modificar la información y guardar los cambios.');
+        
+    } catch (error) {
+        console.error('Error al cargar datos del doctor:', error);
+        mostrarError(error.message || 'Error al cargar los datos del doctor');
+    }
 }
 
 /**
  * Función para manejar la eliminación de un doctor
  * @param {string} id - ID del doctor a eliminar
  */
-function eliminarDoctor(id) {
-    if (confirm('¿Está seguro de que desea eliminar este doctor?')) {
-        console.log('Eliminando doctor con ID:', id);
-        // Aquí irá la lógica para eliminar el doctor
-        mostrarMensaje(`Función de eliminación para el doctor con ID: ${id}`, 'info');
+async function eliminarDoctor(id) {
+    if (!confirm('¿Está seguro de que desea eliminar este doctor? Esta acción no se puede deshacer.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        console.log('Doctor eliminado:', result);
+        
+        // Mostrar mensaje de éxito
+        mostrarExito('Doctor eliminado correctamente');
+        
+        // Actualizar la lista de doctores
+        await cargarDoctores();
+        
+    } catch (error) {
+        console.error('Error al eliminar el doctor:', error);
+        mostrarError(error.message || 'Error al eliminar el doctor');
+    }
+}
+
+/**
+ * Exporta la lista de doctores a un archivo Excel
+ */
+async function exportarAExcel() {
+    const btnExportar = document.getElementById('exportarPacientes');
+    if (!btnExportar) return;
+    
+    const originalText = btnExportar.innerHTML;
+    
+    try {
+        // Mostrar estado de carga
+        btnExportar.disabled = true;
+        btnExportar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Exportando...';
+        
+        const response = await fetch(`${API_BASE_URL}export/excel`, {
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        // Obtener el blob del archivo
+        const blob = await response.blob();
+        
+        // Crear un enlace temporal para descargar el archivo
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `doctores_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Limpiar
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        // Mostrar mensaje de éxito
+        mostrarExito('Exportación completada correctamente');
+        
+    } catch (error) {
+        console.error('Error al exportar a Excel:', error);
+        mostrarError(error.message || 'Error al exportar la lista de doctores');
+    } finally {
+        // Restaurar el botón de exportar
+        if (btnExportar) {
+            btnExportar.disabled = false;
+            btnExportar.innerHTML = originalText;
+        }
     }
 }
 
 // Hacer que las funciones estén disponibles globalmente
 window.editarDoctor = editarDoctor;
 window.eliminarDoctor = eliminarDoctor;
+window.exportarAExcel = exportarAExcel;
