@@ -1,5 +1,5 @@
-// Importar la verificación de autenticación
-import { verificarAutenticacion } from '/scripts/utils/auth.js';
+// Importar utilidades de autenticación
+import { verificarAutenticacion, limpiarSesion, AUTH_KEYS } from '/scripts/utils/auth.js';
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarSidebar();
     
     // Configurar el nombre de usuario en el sidebar si existe
-    const adminName = localStorage.getItem('adminName');
-    if (adminName) {
+    const username = localStorage.getItem(AUTH_KEYS.USERNAME);
+    if (username) {
         const usernameElement = document.getElementById('username');
         if (usernameElement) {
-            usernameElement.textContent = adminName;
+            usernameElement.textContent = username;
         }
     }
     
@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('adminId');
-            localStorage.removeItem('adminName');
+            limpiarSesion();
             window.location.href = '/pages/Login.html';
         });
     }
@@ -55,31 +54,33 @@ function mostrarError(mensaje) {
 // Cargar el sidebar
 async function cargarSidebar() {
     try {
-        const response = await fetch("/components/Sidebar.html");
-        if (!response.ok) throw new Error('Error al cargar el sidebar');
-        
-        const html = await response.text();
-        const sidebarElement = document.getElementById("sidebar-placeholder");
-        if (!sidebarElement) {
-            console.error('No se encontró el elemento con id "sidebar-placeholder"');
-            return;
+        const response = await fetch('/components/Sidebar.html');
+        if (!response.ok) {
+            throw new Error('Error al cargar el sidebar');
         }
-        
-        sidebarElement.innerHTML = html;
-
-        // Resaltar el enlace activo según la página actual
-        const path = window.location.pathname.split("/").pop().toLowerCase();
-        const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-        
-        links.forEach((link) => {
-            const href = link.getAttribute("href")?.toLowerCase();
-            if (href && href.includes(path)) {
-                link.classList.remove("text-dark");
-                link.classList.add("text-primary");
-            }
-        });
+        const html = await response.text();
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.innerHTML = html;
+            // Asegurarse de que el sidebar esté visible
+            document.body.classList.add('sidebar-visible');
+            
+            // Resaltar el enlace activo según la página actual
+            const path = window.location.pathname.split('/').pop().toLowerCase();
+            const links = sidebar.querySelectorAll('a.nav-link');
+            
+            links.forEach((link) => {
+                const href = link.getAttribute('href')?.toLowerCase();
+                if (href && href.includes(path)) {
+                    link.classList.remove('text-dark');
+                    link.classList.add('text-primary');
+                }
+            });
+        } else {
+            console.error('No se encontró el elemento con id "sidebar"');
+        }
     } catch (error) {
-        console.error("Error al cargar sidebar:", error);
-        mostrarError("Error al cargar la interfaz");
+        console.error('Error al cargar sidebar:', error);
+        mostrarError('Error al cargar la interfaz');
     }
 }
