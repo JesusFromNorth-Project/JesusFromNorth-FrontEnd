@@ -1,11 +1,11 @@
 // ============================================
 // MÓDULOS Y CONFIGURACIÓN
 // ============================================
-import { verificarAutenticacion } from '/scripts/utils/auth.js';
+import { verificarAutenticacion } from './utils/auth.js';
 
 // URLs de la API
-const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/doctor/";
-const ESPECIALITY_URL = "http://localhost:5080/system_clinic/api/v0.1/specialty/";
+const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/doctor/";
+const ESPECIALITY_URL = "http://localhost:8080/system_clinic/api/v0.1/specialty/";
 
 // ============================================
 // MANEJO DE AUTENTICACIÓN
@@ -27,14 +27,14 @@ function getAuthHeaders() {
         'Authorization': `Bearer ${token}`
     };
 }
-
 /**
- * Cierra la sesión del usuario y redirige al login
+ * Cierra la sesión del usuario, limpia los datos de autenticación y redirige al login
  */
 function cerrarSesion() {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('adminId');
-    localStorage.removeItem('adminName');
+    // Limpiar todos los datos de autenticación
+    ['jwtToken', 'adminId', 'adminName', 'userRole'].forEach(key => 
+        localStorage.removeItem(key)
+    );
     window.location.href = '/pages/Login.html';
 }
 
@@ -83,9 +83,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('adminId');
-            localStorage.removeItem('adminName');
-            window.location.href = '/pages/Login.html';
+            // Usar la función cerrarSesion para asegurar consistencia
+            cerrarSesion();
         });
     }
     

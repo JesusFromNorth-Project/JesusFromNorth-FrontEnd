@@ -1,7 +1,7 @@
 // Importar la verificación de autenticación
 import { verificarAutenticacion } from '/scripts/utils/auth.js';
 
-const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/specialty/";
+const API_BASE_URL = "http://192.168.18.55:8080/system_clinic/api/v0.1/specialty/";
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
