@@ -1,39 +1,15 @@
-// Importar la verificación de autenticación
+// 1. IMPORTACIONES
 import { verificarAutenticacion, limpiarSesion, AUTH_KEYS } from './utils/auth.js';
 
-const API_BASE_URL = "http://192.168.18.55:8080/system_clinic/api/v0.1/specialty/";
+// 2. CONSTANTES Y URLS
+const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/specialty/";
 
-// Inicialización cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', async () => {
-    // Verificar autenticación
-    if (!verificarAutenticacion()) {
-        return;
-    }
-    
-    // Cargar el sidebar
-    await cargarSidebar();
-    
-    // Configurar el nombre de usuario en el sidebar si existe
-    const adminName = localStorage.getItem(AUTH_KEYS.USERNAME);
-    if (adminName) {
-        const usernameElement = document.getElementById('username');
-        if (usernameElement) {
-            usernameElement.textContent = adminName;
-        }
-    }
-    
-    // Configurar el cierre de sesión
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            limpiarSesion();
-            window.location.href = 'Login.html';
-        });
-    }
-});
-
-// Mostrar mensajes
+// 3. FUNCIONES SÍNCRONAS
+/**
+ * Muestra un mensaje en la interfaz
+ * @param {string} mensaje - Texto del mensaje a mostrar
+ * @param {string} tipo - Tipo de mensaje (danger, success, etc.)
+ */
 function mostrarMensaje(mensaje, tipo = 'danger') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
@@ -45,15 +21,26 @@ function mostrarMensaje(mensaje, tipo = 'danger') {
     setTimeout(() => alertDiv.remove(), 5000);
 }
 
+/**
+ * Muestra un mensaje de éxito
+ * @param {string} mensaje - Texto del mensaje
+ */
 function mostrarExito(mensaje) {
     mostrarMensaje(mensaje, 'success');
 }
 
+/**
+ * Muestra un mensaje de error
+ * @param {string} mensaje - Texto del mensaje de error
+ */
 function mostrarError(mensaje) {
     mostrarMensaje(mensaje, 'danger');
 }
 
-// Cargar el sidebar
+// 4. FUNCIONES ASÍNCRONAS
+/**
+ * Carga el componente Sidebar y configura sus eventos
+ */
 async function cargarSidebar() {
     try {
         const response = await fetch("../components/Sidebar.html");
@@ -69,7 +56,7 @@ async function cargarSidebar() {
         sidebarElement.innerHTML = html;
 
         // Configurar el nombre de usuario en el sidebar después de cargarlo
-        const adminName = localStorage.getItem('adminName');
+        const adminName = localStorage.getItem(AUTH_KEYS.USERNAME);
         if (adminName) {
             const usernameElement = document.getElementById('username');
             if (usernameElement) {
@@ -82,9 +69,8 @@ async function cargarSidebar() {
         if (logoutLink) {
             logoutLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('adminId');
-                localStorage.removeItem('adminName');
-                window.location.href = '/pages/Login.html';
+                limpiarSesion();
+                window.location.href = 'Login.html';
             });
         }
 
@@ -105,7 +91,9 @@ async function cargarSidebar() {
     }
 }
 
-// Renderizar tabla de especialidades
+/**
+ * Renderiza la tabla de especialidades obtenidas del servidor
+ */
 async function renderTabla() {
     if (!verificarAutenticacion()) return;
 
@@ -157,59 +145,10 @@ async function renderTabla() {
     }
 }
 
-// Hacer que las funciones estén disponibles globalmente
-window.eliminarEspecialidad = eliminarEspecialidad;
-window.verServicios = verServicios;
-
-// Inicialización
-window.addEventListener("DOMContentLoaded", async () => {
-    if (!verificarAutenticacion()) return;
-    
-    // Cargar el sidebar
-    await cargarSidebar();
-
-    // Configurar formulario
-    document.getElementById("especialidadForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const specialty_name = this.specialty_name.value.trim();
-        
-        if (!specialty_name) {
-            mostrarError("El nombre de la especialidad es requerido");
-            return;
-        }
-
-        try {
-            const res = await fetch(API_BASE_URL, {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem(AUTH_KEYS.TOKEN)}`
-                },
-                body: JSON.stringify({
-                    name_specialty: specialty_name
-                })
-            });
-
-            const data = await res.json();
-            
-            if (res.ok) {
-                mostrarExito("Especialidad guardada exitosamente");
-                this.reset();
-                await renderTabla();
-            } else {
-                mostrarError(data.message || "Error al guardar la especialidad");
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            mostrarError("Error de conexión con el servidor");
-        }
-    });
-
-    // Cargar datos iniciales
-    renderTabla();
-});
-
-// Eliminar especialidad
+/**
+ * Elimina una especialidad por su ID
+ * @param {string} id - ID de la especialidad a eliminar
+ */
 async function eliminarEspecialidad(id) {
     if (!verificarAutenticacion()) return;
     
@@ -236,18 +175,25 @@ async function eliminarEspecialidad(id) {
     }
 }
 
-// Ver servicios de la especialidad
+/**
+ * Obtiene y muestra los servicios asociados a una especialidad
+ * @param {string} id - ID de la especialidad
+ */
 async function verServicios(id) {
     if (!verificarAutenticacion()) return;
 
     try {
-        const res = await fetch(`${API_BASE_URL}/${id}/services`);
+        const res = await fetch(`${API_BASE_URL}${id}/services`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem(AUTH_KEYS.TOKEN)}`
+            }
+        });
         const data = await res.json();
         
         if (res.ok) {
             const servicios = data.data.services || [];
-            // Aquí puedes mostrar los servicios en un modal o en otra sección
             console.log('Servicios:', servicios);
+            // Aquí puedes mostrar los servicios en un modal o en otra sección
         } else {
             mostrarError(data.message || "Error al obtener los servicios");
         }
@@ -256,3 +202,99 @@ async function verServicios(id) {
         mostrarError("Error de conexión con el servidor");
     }
 }
+
+// 5. EVENTOS Y ASIGNACIONES GLOBALES
+// Hacer que las funciones estén disponibles globalmente
+window.eliminarEspecialidad = eliminarEspecialidad;
+window.verServicios = verServicios;
+
+// Inicialización de la aplicación
+window.addEventListener("DOMContentLoaded", async () => {
+    // Verificar autenticación
+    if (!verificarAutenticacion()) {
+        window.location.href = 'Login.html';
+        return;
+    }
+    
+    // Cargar el sidebar
+    await cargarSidebar();
+
+    // Configurar formulario de especialidades
+    const formulario = document.getElementById("especialidadForm");
+    if (formulario) {
+        formulario.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            
+            // Obtener referencias a los elementos del formulario
+            const submitButton = this.querySelector('button[type="submit"]');
+            const inputEspecialidad = this.elements['especialidad'];
+            const originalButtonText = submitButton?.innerHTML;
+            
+            // Obtener y validar el valor del campo
+            const nombreEspecialidad = inputEspecialidad?.value.trim();
+            
+            // Validaciones
+            if (!nombreEspecialidad) {
+                mostrarError("El nombre de la especialidad es requerido");
+                inputEspecialidad?.focus();
+                return;
+            }
+            
+            if (nombreEspecialidad.length < 3) {
+                mostrarError("El nombre debe tener al menos 3 caracteres");
+                inputEspecialidad?.focus();
+                return;
+            }
+            
+            if (nombreEspecialidad.length > 100) {
+                mostrarError("El nombre no puede tener más de 100 caracteres");
+                inputEspecialidad?.focus();
+                return;
+            }
+            
+            // Sanitizar el nombre (remover caracteres especiales)
+            const nombreSpeciality = nombreEspecialidad.replace(/[^\w\sáéíóúÁÉÍÓÚñÑ.,-]/gi, '');
+            
+            // Deshabilitar botón y mostrar indicador de carga
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+            }
+
+            try {
+                const res = await fetch(API_BASE_URL, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem(AUTH_KEYS.TOKEN)}`
+                    },
+                    body: JSON.stringify({
+                        name_specialty: nombreSpeciality
+                    })
+                });
+
+                const data = await res.json();
+                
+                if (res.ok) {
+                    mostrarExito("Especialidad guardada exitosamente");
+                    this.reset();
+                    await renderTabla();
+                } else {
+                    mostrarError(data.message || "Error al guardar la especialidad");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarError("Error de conexión con el servidor");
+            } finally {
+                // Restaurar estado del botón
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
+            }
+        });
+    }
+
+    // Cargar datos iniciales
+    renderTabla();
+});
