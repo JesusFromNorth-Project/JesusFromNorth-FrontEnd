@@ -1,15 +1,42 @@
-// ============================================
-// MÓDULOS Y CONFIGURACIÓN
-// ============================================
+// 1. IMPORTACIONES
 import { verificarAutenticacion, limpiarSesion, AUTH_KEYS } from './utils/auth.js';
 
-// URLs de la API
+// 2. CONSTANTES Y URLS
 const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/doctor/";
 const ESPECIALITY_URL = "http://localhost:8080/system_clinic/api/v0.1/specialty/";
 
-// ============================================
-// MANEJO DE AUTENTICACIÓN
-// ============================================
+// 3. FUNCIONES SÍNCRONAS
+/**
+ * Muestra un mensaje en la interfaz
+ * @param {string} mensaje - Texto del mensaje a mostrar
+ * @param {string} tipo - Tipo de mensaje (danger, success, etc.)
+ */
+function mostrarMensaje(mensaje, tipo = 'danger') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.querySelector('.main-content')?.insertAdjacentElement('afterbegin', alertDiv);
+    setTimeout(() => alertDiv.remove(), 5000);
+}
+
+/**
+ * Muestra un mensaje de éxito
+ * @param {string} mensaje - Texto del mensaje
+ */
+function mostrarExito(mensaje) {
+    mostrarMensaje(mensaje, 'success');
+}
+
+/**
+ * Muestra un mensaje de error
+ * @param {string} mensaje - Texto del mensaje de error
+ */
+function mostrarError(mensaje) {
+    mostrarMensaje(mensaje, 'danger');
+}
 
 /**
  * Obtiene los headers de autenticación para las peticiones a la API
@@ -34,170 +61,6 @@ function getAuthHeaders() {
 function cerrarSesion() {
     limpiarSesion();
     window.location.href = 'Login.html';
-}
-
-/**
- * Maneja los errores de la API, especialmente los de autenticación
- * @param {Response} response - Respuesta de la API
- * @returns {Promise<Error>} Error con el mensaje correspondiente
- */
-async function handleApiError(response) {
-    if (response.status === 401 || response.status === 403) {
-        console.error('Error de autenticación - Token expirado o inválido');
-        cerrarSesion();
-        return new Error('Sesión expirada. Por favor, inicie sesión nuevamente.');
-    }
-    
-    const error = await response.json().catch(() => ({}));
-    console.error('Error en la petición:', error);
-    return new Error(error.message || 'Error en la petición al servidor');
-}
-
-// ============================================
-// INICIALIZACIÓN DE LA PÁGINA
-// ============================================
-
-// Inicialización cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', async () => {
-    // Verificar autenticación
-    if (!verificarAutenticacion()) {
-        return;
-    }
-    
-    // Cargar el sidebar
-    await cargarSidebar();
-    
-    // Configurar el nombre de usuario en el sidebar si existe
-    const adminName = localStorage.getItem('adminName');
-    if (adminName) {
-        const usernameElement = document.getElementById('username');
-        if (usernameElement) {
-            usernameElement.textContent = adminName;
-        }
-    }
-    
-    // Configurar el cierre de sesión
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Usar la función cerrarSesion para asegurar consistencia
-            cerrarSesion();
-        });
-    }
-    
-    // Inicializar la página de doctores
-    await inicializarPagina();
-});
-
-// Mostrar mensajes
-function mostrarMensaje(mensaje, tipo = 'danger') {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        ${mensaje}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    document.querySelector('.main-content')?.insertAdjacentElement('afterbegin', alertDiv);
-    setTimeout(() => alertDiv.remove(), 5000);
-}
-
-function mostrarExito(mensaje) {
-    mostrarMensaje(mensaje, 'success');
-}
-
-function mostrarError(mensaje) {
-    mostrarMensaje(mensaje, 'danger');
-}
-
-// Cargar el sidebar
-async function cargarSidebar() {
-    try {
-        const response = await fetch("/components/Sidebar.html");
-        if (!response.ok) throw new Error('Error al cargar el sidebar');
-        
-        const html = await response.text();
-        const sidebarElement = document.getElementById("sidebar-placeholder");
-        if (!sidebarElement) {
-            console.error('No se encontró el elemento con id "sidebar-placeholder"');
-            return;
-        }
-        
-        sidebarElement.innerHTML = html;
-
-        // Resaltar el enlace activo según la página actual
-        const path = window.location.pathname.split("/").pop().toLowerCase();
-        const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-        
-        links.forEach((link) => {
-            const href = link.getAttribute("href")?.toLowerCase();
-            if (href && href.includes(path)) {
-                link.classList.remove("text-dark");
-                link.classList.add("text-primary");
-            }
-        });
-    } catch (error) {
-        console.error("Error al cargar sidebar:", error);
-        mostrarError("Error al cargar la interfaz");
-    }
-}
-
-// Función para cargar las especialidades en el select
-async function cargarEspecialidades() {
-    try {
-        console.log('Iniciando carga de especialidades...');
-        const headers = getAuthHeaders();
-        console.log('Headers:', headers);
-        
-        const response = await fetch(ESPECIALITY_URL + "list", {
-            headers: headers
-        });
-        
-        console.log('Respuesta recibida:', response);
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error en la respuesta:', errorText);
-            const error = await handleApiError(response);
-            throw error;
-        }
-        
-        const result = await response.json();
-        console.log('Datos de especialidades recibidos:', result);
-        
-        const selectEspecialidad = document.getElementById('selectEspecialidad');
-        
-        if (!selectEspecialidad) {
-            console.error('No se encontró el elemento selectEspecialidad');
-            return [];
-        }
-        
-        // Limpiar opciones existentes excepto la primera
-        while (selectEspecialidad.options.length > 1) {
-            selectEspecialidad.remove(1);
-        }
-        
-        // Verificar que result.data existe y es un array
-        if (!result.data || !Array.isArray(result.data)) {
-            console.error('Formato de datos inesperado:', result);
-            throw new Error('Formato de datos inesperado al cargar especialidades');
-        }
-        
-        // Agregar las especialidades al select
-        result.data.forEach(especialidad => {
-            const option = document.createElement('option');
-            option.value = especialidad.id_specialty || especialidad.id;
-            option.textContent = especialidad.specialty_name || especialidad.name || 'Sin nombre';
-            selectEspecialidad.appendChild(option);
-        });
-        
-        console.log('Especialidades cargadas correctamente en el selector');
-        return result.data;
-    } catch (error) {
-        console.error('Error al cargar especialidades en el selector:', error);
-        mostrarError('No se pudieron cargar las especialidades en el selector');
-        return [];
-    }
 }
 
 /**
@@ -288,6 +151,348 @@ function cancelarEdicion() {
     form.scrollIntoView({ behavior: 'smooth' });
 }
 
+// Inicialización cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', async () => {
+    // Verificar autenticación
+    if (!verificarAutenticacion()) {
+        return;
+    }
+    
+    // Inicializar la página de doctores
+    await inicializarPagina();
+});
+
+// 4. FUNCIONES ASÍNCRONAS
+/**
+ * Maneja los errores de la API, especialmente los de autenticación
+ * @param {Response} response - Respuesta de la API
+ * @returns {Promise<Error>} Error con el mensaje correspondiente
+ */
+async function handleApiError(response) {
+    if (response.status === 401 || response.status === 403) {
+        console.error('Error de autenticación - Token expirado o inválido');
+        cerrarSesion();
+        return new Error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+    }
+    
+    const error = await response.json().catch(() => ({}));
+    console.error('Error en la petición:', error);
+    return new Error(error.message || 'Error en la petición al servidor');
+}
+
+/**
+ * Carga el sidebar
+ */
+async function cargarSidebar() {
+    try {
+        const response = await fetch("/components/Sidebar.html");
+        if (!response.ok) throw new Error('Error al cargar el sidebar');
+        
+        const html = await response.text();
+        const sidebarElement = document.getElementById("sidebar-placeholder");
+        if (!sidebarElement) {
+            console.error('No se encontró el elemento con id "sidebar-placeholder"');
+            return;
+        }
+        
+        sidebarElement.innerHTML = html;
+
+        // Resaltar el enlace activo según la página actual
+        const path = window.location.pathname.split("/").pop().toLowerCase();
+        const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+        
+        links.forEach((link) => {
+            const href = link.getAttribute("href")?.toLowerCase();
+            if (href && href.includes(path)) {
+                link.classList.remove("text-dark");
+                link.classList.add("text-primary");
+            }
+        });
+    } catch (error) {
+        console.error("Error al cargar sidebar:", error);
+        mostrarError("Error al cargar la interfaz");
+    }
+}
+
+/**
+ * Carga las especialidades en el select
+ */
+async function cargarEspecialidades() {
+    try {
+        console.log('Iniciando carga de especialidades...');
+        const headers = getAuthHeaders();
+        console.log('Headers:', headers);
+        
+        const response = await fetch(ESPECIALITY_URL + "list", {
+            headers: headers
+        });
+        
+        console.log('Respuesta recibida:', response);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error en la respuesta:', errorText);
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        console.log('Datos de especialidades recibidos:', result);
+        
+        const selectEspecialidad = document.getElementById('selectEspecialidad');
+        
+        if (!selectEspecialidad) {
+            console.error('No se encontró el elemento selectEspecialidad');
+            return [];
+        }
+        
+        // Limpiar opciones existentes excepto la primera
+        while (selectEspecialidad.options.length > 1) {
+            selectEspecialidad.remove(1);
+        }
+        
+        // Verificar que result.data existe y es un array
+        if (!result.data || !Array.isArray(result.data)) {
+            console.error('Formato de datos inesperado:', result);
+            throw new Error('Formato de datos inesperado al cargar especialidades');
+        }
+        
+        // Agregar las especialidades al select
+        result.data.forEach(especialidad => {
+            const option = document.createElement('option');
+            option.value = especialidad.id_specialty || especialidad.id;
+            option.textContent = especialidad.specialty_name || especialidad.name || 'Sin nombre';
+            selectEspecialidad.appendChild(option);
+        });
+        
+        console.log('Especialidades cargadas correctamente en el selector');
+        return result.data;
+    } catch (error) {
+        console.error('Error al cargar especialidades en el selector:', error);
+        mostrarError('No se pudieron cargar las especialidades en el selector');
+        return [];
+    }
+}
+
+/**
+ * Busca un doctor por su número de colegiatura (CMP)
+ * Endpoint: GET /doctor/getCMP?cmp={cmp}
+ */
+async function buscarPorCMP() {
+    const cmp = document.getElementById('searchCMP')?.value.trim();
+    if (!cmp) {
+        mostrarError('Por favor ingrese un CMP para buscar');
+        return;
+    }
+    
+    try {
+        const btnBuscar = document.getElementById('buscarCMP');
+        const originalText = btnBuscar.innerHTML;
+        
+        // Mostrar estado de carga
+        btnBuscar.disabled = true;
+        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Buscando...';
+        
+        const response = await fetch(`${API_BASE_URL}getCMP?cmp=${encodeURIComponent(cmp)}`, {
+            headers: getAuthHeaders()
+        });
+        
+        // Restaurar estado del botón
+        btnBuscar.disabled = false;
+        btnBuscar.innerHTML = originalText;
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        
+        // Mostrar resultados en la tabla
+        if (result.data) {
+            actualizarTablaDoctores([result.data]);
+        } else {
+            mostrarError('No se encontró ningún doctor con el CMP proporcionado');
+            actualizarTablaDoctores([]);
+        }
+        
+    } catch (error) {
+        console.error('Error al buscar doctor por CMP:', error);
+        mostrarError(error.message || 'Error al buscar doctor por CMP');
+    }
+}
+
+/**
+ * Busca un doctor por su DNI
+ * Endpoint: GET /doctor/getDNI?dni={dni}
+ */
+async function buscarPorDNI() {
+    const dni = document.getElementById('searchDNI')?.value.trim();
+    if (!dni) {
+        mostrarError('Por favor ingrese un DNI para buscar');
+        return;
+    }
+    
+    try {
+        const btnBuscar = document.getElementById('buscarDNI');
+        const originalText = btnBuscar.innerHTML;
+        
+        // Mostrar estado de carga
+        btnBuscar.disabled = true;
+        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Buscando...';
+        
+        const response = await fetch(`${API_BASE_URL}getDNI?dni=${encodeURIComponent(dni)}`, {
+            headers: getAuthHeaders()
+        });
+        
+        // Restaurar estado del botón
+        btnBuscar.disabled = false;
+        btnBuscar.innerHTML = originalText;
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        
+        // Mostrar resultados en la tabla
+        if (result.data) {
+            actualizarTablaDoctores([result.data]);
+        } else {
+            mostrarError('No se encontró ningún doctor con el DNI proporcionado');
+            actualizarTablaDoctores([]);
+        }
+        
+    } catch (error) {
+        console.error('Error al buscar doctor por DNI:', error);
+        mostrarError(error.message || 'Error al buscar doctor por DNI');
+    }
+}
+
+/**
+ * Busca doctores por nombre
+ * Endpoint: GET /doctor/search?name={nombre}
+ */
+async function buscarPorNombre() {
+    const nombre = document.getElementById('searchNombre')?.value.trim();
+    if (!nombre) {
+        mostrarError('Por favor ingrese un nombre para buscar');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}search?name=${encodeURIComponent(nombre)}`, {
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        // Mostrar resultados en la tabla
+        actualizarTablaDoctores(result.data || []);
+        
+    } catch (error) {
+        console.error('Error al buscar doctores por nombre:', error);
+        mostrarError(error.message || 'Error al buscar doctores');
+    }
+}
+
+/**
+ * Carga la lista de doctores
+ */
+async function cargarDoctores() {
+    try {
+        console.log('Cargando lista de doctores...');
+        const response = await fetch(`${API_BASE_URL}list?page=0`, {
+            headers: getAuthHeaders()
+        });
+        
+        console.log('Respuesta de lista de doctores:', response);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error al cargar doctores:', errorText);
+            const error = await handleApiError(response);
+            throw error;
+        }
+        
+        const result = await response.json();
+        console.log('Datos de doctores recibidos:', result);
+        
+        // Actualizar la tabla con los doctores
+        actualizarTablaDoctores(result.data || []);
+        return result.data;
+    } catch (error) {
+        console.error('Error al cargar la lista de doctores:', error);
+        mostrarError(error.message || 'Error al cargar la lista de doctores');
+        throw error;
+    }
+}
+
+/**
+ * Actualiza la tabla de doctores
+ * @param {Array} doctores - Lista de doctores a mostrar en la tabla
+ */
+function actualizarTablaDoctores(doctores) {
+    const tbody = document.getElementById('tablaDoctores');
+    if (!tbody) {
+        console.error('No se encontró el elemento tbody para la tabla de doctores');
+        return;
+    }
+    
+    if (!doctores || doctores.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center">No se encontraron doctores.</td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = doctores.map((doctor, index) => `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${doctor.first_name || ''}</td>
+            <td>${doctor.last_name || ''}</td>
+            <td>${doctor.dni || ''}</td>
+            <td>${doctor.cmp || ''}</td>
+            <td>${doctor.email || ''}</td>
+            <td>${doctor.phone || ''}</td>
+            <td>${doctor.specialty?.specialty_name || doctor.specialty_name || 'No especificada'}</td>
+            <td>
+                <button class="btn btn-sm btn-primary me-1" onclick="editarDoctor('${doctor.id_doctor || doctor.id}')">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="eliminarDoctor('${doctor.id_doctor || doctor.id}')">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    
+    console.log('Tabla de doctores actualizada:', doctores);
+}
+
+/**
+ * Inicializa el formulario
+ */
+function inicializarFormulario() {
+    const form = document.getElementById('formDoctor');
+    if (form) {
+        form.addEventListener('submit', manejarEnvioFormulario);
+    } else {
+        console.error('No se encontró el formulario con ID formDoctor');
+    }
+}
+
+/**
+ * Maneja el envío del formulario
+ * @param {Event} event - Evento de envío del formulario
+ */
 async function manejarEnvioFormulario(event) {
     event.preventDefault();
     
@@ -410,235 +615,23 @@ async function manejarEnvioFormulario(event) {
     }
 }
 
-// Función para inicializar el formulario
-function inicializarFormulario() {
-    const form = document.getElementById('formDoctor');
-    if (form) {
-        form.addEventListener('submit', manejarEnvioFormulario);
-    } else {
-        console.error('No se encontró el formulario con ID formDoctor');
-    }
-}
-
 /**
- * Busca un doctor por su número de colegiatura (CMP)
- * Endpoint: GET /doctor/getCMP?cmp={cmp}
+ * Inicializa la página
  */
-async function buscarPorCMP() {
-    const cmp = document.getElementById('searchCMP')?.value.trim();
-    if (!cmp) {
-        mostrarError('Por favor ingrese un CMP para buscar');
-        return;
-    }
-    
-    try {
-        const btnBuscar = document.getElementById('buscarCMP');
-        const originalText = btnBuscar.innerHTML;
-        
-        // Mostrar estado de carga
-        btnBuscar.disabled = true;
-        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Buscando...';
-        
-        const response = await fetch(`${API_BASE_URL}getCMP?cmp=${encodeURIComponent(cmp)}`, {
-            headers: getAuthHeaders()
-        });
-        
-        // Restaurar estado del botón
-        btnBuscar.disabled = false;
-        btnBuscar.innerHTML = originalText;
-        
-        if (!response.ok) {
-            const error = await handleApiError(response);
-            throw error;
-        }
-        
-        const result = await response.json();
-        
-        // Mostrar resultados en la tabla
-        if (result.data) {
-            actualizarTablaDoctores([result.data]);
-        } else {
-            mostrarError('No se encontró ningún doctor con el CMP proporcionado');
-            actualizarTablaDoctores([]);
-        }
-        
-    } catch (error) {
-        console.error('Error al buscar doctor por CMP:', error);
-        mostrarError(error.message || 'Error al buscar doctor por CMP');
-    }
-}
-
-// Hacer que la función esté disponible globalmente
-window.buscarPorCMP = buscarPorCMP;
-
-/**
- * Busca un doctor por su número de DNI
- * Endpoint: GET /doctor/getDNI?dni={dni}
- */
-async function buscarPorDNI() {
-    const dni = document.getElementById('searchDNI')?.value.trim();
-    if (!dni) {
-        mostrarError('Por favor ingrese un DNI para buscar');
-        return;
-    }
-    
-    try {
-        const btnBuscar = document.getElementById('buscarDNI');
-        const originalText = btnBuscar.innerHTML;
-        
-        // Mostrar estado de carga
-        btnBuscar.disabled = true;
-        btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Buscando...';
-        
-        const response = await fetch(`${API_BASE_URL}getDNI?dni=${encodeURIComponent(dni)}`, {
-            headers: getAuthHeaders()
-        });
-        
-        // Restaurar estado del botón
-        btnBuscar.disabled = false;
-        btnBuscar.innerHTML = originalText;
-        
-        if (!response.ok) {
-            const error = await handleApiError(response);
-            throw error;
-        }
-        
-        const result = await response.json();
-        
-        // Mostrar resultados en la tabla
-        if (result.data) {
-            actualizarTablaDoctores([result.data]);
-        } else {
-            mostrarError('No se encontró ningún doctor con el DNI proporcionado');
-            actualizarTablaDoctores([]);
-        }
-        
-    } catch (error) {
-        console.error('Error al buscar doctor por DNI:', error);
-        mostrarError(error.message || 'Error al buscar doctor por DNI');
-    }
-}
-
-// Hacer que la función esté disponible globalmente
-window.buscarPorDNI = buscarPorDNI;
-
-/**
- * Busca doctores por nombre
- * Endpoint: GET /doctor/search?name={nombre}
- */
-async function buscarPorNombre() {
-    const nombre = document.getElementById('searchNombre')?.value.trim();
-    if (!nombre) {
-        mostrarError('Por favor ingrese un nombre para buscar');
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}search?name=${encodeURIComponent(nombre)}`, {
-            headers: getAuthHeaders()
-        });
-        
-        if (!response.ok) {
-            const error = await handleApiError(response);
-            throw error;
-        }
-        
-        const result = await response.json();
-        // Mostrar resultados en la tabla
-        actualizarTablaDoctores(result.data || []);
-        
-    } catch (error) {
-        console.error('Error al buscar doctores por nombre:', error);
-        mostrarError(error.message || 'Error al buscar doctores');
-    }
-}
-
-// Función para cargar la lista de doctores
-async function cargarDoctores() {
-    try {
-        console.log('Cargando lista de doctores...');
-        const response = await fetch(`${API_BASE_URL}list?page=0`, {
-            headers: getAuthHeaders()
-        });
-        
-        console.log('Respuesta de lista de doctores:', response);
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error al cargar doctores:', errorText);
-            const error = await handleApiError(response);
-            throw error;
-        }
-        
-        const result = await response.json();
-        console.log('Datos de doctores recibidos:', result);
-        
-        // Actualizar la tabla con los doctores
-        actualizarTablaDoctores(result.data || []);
-        return result.data;
-    } catch (error) {
-        console.error('Error al cargar la lista de doctores:', error);
-        mostrarError(error.message || 'Error al cargar la lista de doctores');
-        throw error;
-    }
-}
-
-// Función para actualizar la tabla de doctores
-function actualizarTablaDoctores(doctores) {
-    const tbody = document.getElementById('tablaDoctores');
-    if (!tbody) {
-        console.error('No se encontró el elemento tbody para la tabla de doctores');
-        return;
-    }
-    
-    if (!doctores || doctores.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9" class="text-center">No se encontraron doctores.</td>
-            </tr>
-        `;
-        return;
-    }
-    
-    tbody.innerHTML = doctores.map((doctor, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${doctor.first_name || ''}</td>
-            <td>${doctor.last_name || ''}</td>
-            <td>${doctor.dni || ''}</td>
-            <td>${doctor.cmp || ''}</td>
-            <td>${doctor.email || ''}</td>
-            <td>${doctor.phone || ''}</td>
-            <td>${doctor.specialty?.specialty_name || doctor.specialty_name || 'No especificada'}</td>
-            <td>
-                <button class="btn btn-sm btn-primary me-1" onclick="editarDoctor('${doctor.id_doctor || doctor.id}')">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="eliminarDoctor('${doctor.id_doctor || doctor.id}')">
-                    <i class="fas fa-trash"></i> Eliminar
-                </button>
-            </td>
-        </tr>
-    `).join('');
-    
-    console.log('Tabla de doctores actualizada:', doctores);
-}
-
-// Función para inicializar la página
 async function inicializarPagina() {
     if (!verificarAutenticacion()) return;
     
     // Cargar el sidebar
-    cargarSidebar();
+    await cargarSidebar();
     
     // Inicializar el formulario
     inicializarFormulario();
     
     // Cargar las especialidades en el select
-    cargarEspecialidades();
+    await cargarEspecialidades();
     
     // Cargar la lista de doctores
-    cargarDoctores();
+    await cargarDoctores();
     
     // Configurar los botones de búsqueda y eventos
     const btnBuscarDNI = document.getElementById('buscarDNI');
@@ -689,12 +682,8 @@ async function inicializarPagina() {
     console.log('Página de doctores inicializada');
 }
 
-// ============================================
-// FUNCIONES DE ACCIÓN PARA LOS BOTONES
-// ============================================
-
 /**
- * Función para manejar la edición de un doctor
+ * Edita un doctor
  * @param {string} id - ID del doctor a editar
  */
 async function editarDoctor(id) {
@@ -777,7 +766,7 @@ async function editarDoctor(id) {
 }
 
 /**
- * Función para manejar la eliminación de un doctor
+ * Elimina un doctor
  * @param {string} id - ID del doctor a eliminar
  */
 async function eliminarDoctor(id) {
@@ -829,6 +818,10 @@ async function exportarAExcel() {
             headers: getAuthHeaders()
         });
         
+        // Restaurar estado del botón
+        btnExportar.disabled = false;
+        btnExportar.innerHTML = originalText;
+        
         if (!response.ok) {
             const error = await handleApiError(response);
             throw error;
@@ -864,7 +857,10 @@ async function exportarAExcel() {
     }
 }
 
+// 5. EVENTOS Y ASIGNACIONES GLOBALES
 // Hacer que las funciones estén disponibles globalmente
+window.buscarPorCMP = buscarPorCMP;
+window.buscarPorDNI = buscarPorDNI;
 window.editarDoctor = editarDoctor;
 window.eliminarDoctor = eliminarDoctor;
 window.exportarAExcel = exportarAExcel;

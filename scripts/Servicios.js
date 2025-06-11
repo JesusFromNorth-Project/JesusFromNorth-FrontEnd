@@ -1,40 +1,15 @@
-// Importar la verificación de autenticación
-import { verificarAutenticacion } from '/scripts/utils/auth.js';
+// 1. IMPORTACIONES
+import { verificarAutenticacion, limpiarSesion, AUTH_KEYS } from '/scripts/utils/auth.js';
 
+// 2. CONSTANTES Y URLS
 const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/service/";
 
-// Inicialización cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', async () => {
-    // Verificar autenticación
-    if (!verificarAutenticacion()) {
-        return;
-    }
-    
-    // Cargar el sidebar
-    await cargarSidebar();
-    
-    // Configurar el nombre de usuario en el sidebar si existe
-    const adminName = localStorage.getItem('adminName');
-    if (adminName) {
-        const usernameElement = document.getElementById('username');
-        if (usernameElement) {
-            usernameElement.textContent = adminName;
-        }
-    }
-    
-    // Configurar el cierre de sesión
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('adminId');
-            localStorage.removeItem('adminName');
-            window.location.href = '/pages/Login.html';
-        });
-    }
-});
-
-// Mostrar mensajes
+// 3. FUNCIONES SÍNCRONAS
+/**
+ * Muestra un mensaje en la interfaz
+ * @param {string} mensaje - Texto del mensaje a mostrar
+ * @param {string} tipo - Tipo de mensaje (danger, success, etc.)
+ */
 function mostrarMensaje(mensaje, tipo = 'danger') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
@@ -46,11 +21,26 @@ function mostrarMensaje(mensaje, tipo = 'danger') {
     setTimeout(() => alertDiv.remove(), 5000);
 }
 
+/**
+ * Muestra un mensaje de éxito
+ * @param {string} mensaje - Texto del mensaje
+ */
+function mostrarExito(mensaje) {
+    mostrarMensaje(mensaje, 'success');
+}
+
+/**
+ * Muestra un mensaje de error
+ * @param {string} mensaje - Texto del mensaje de error
+ */
 function mostrarError(mensaje) {
     mostrarMensaje(mensaje, 'danger');
 }
 
-// Cargar el sidebar
+// 4. FUNCIONES ASÍNCRONAS
+/**
+ * Carga el sidebar y configura los eventos
+ */
 async function cargarSidebar() {
     try {
         const response = await fetch("/components/Sidebar.html");
@@ -81,3 +71,39 @@ async function cargarSidebar() {
         mostrarError("Error al cargar la interfaz");
     }
 }
+
+// 5. EVENTOS Y ASIGNACIONES GLOBALES
+// Inicialización cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', async () => {
+    // Verificar autenticación
+    if (!verificarAutenticacion()) {
+        return;
+    }
+    
+    // Cargar el sidebar
+    await cargarSidebar();
+    
+    // Configurar el nombre de usuario en el sidebar si existe
+    const adminName = localStorage.getItem(AUTH_KEYS.USERNAME);
+    if (adminName) {
+        const usernameElement = document.getElementById('username');
+        if (usernameElement) {
+            usernameElement.textContent = adminName;
+        }
+    }
+    
+    // Configurar el cierre de sesión
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            limpiarSesion();
+            window.location.href = 'Login.html';
+        });
+    }
+});
+
+// Hacer que las funciones estén disponibles globalmente
+window.mostrarMensaje = mostrarMensaje;
+window.mostrarExito = mostrarExito;
+window.mostrarError = mostrarError;
