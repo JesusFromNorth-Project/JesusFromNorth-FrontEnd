@@ -313,45 +313,9 @@
     <!-- Incluye bootstrap al calendar NO TOCAR-->
     <script src="../scripts/core/locales-all.global.min.js"></script>
     <script src="../scripts/custom_1.js"></script>
-
-    <!-- Script para cargar el sidebar externo -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        let role = localStorage.getItem("role");
-
-        let sideBar = null;
-
-        if (role == "ADMIN") {
-          sideBar = "../components/Sidebar.html";
-        } else {
-          sideBar = "../components/Sidebar.html";
-        }
-
-        fetch(sideBar)
-          .then((res) => res.text())
-          .then((html) => {
-            document.getElementById("sidebar-placeholder").innerHTML = html;
-
-            // Resaltar el enlace activo según la página actual
-            const path = window.location.pathname
-              .split("/")
-              .pop()
-              .toLowerCase();
-            const links = document.querySelectorAll(
-              "#sidebar-placeholder a.nav-link"
-            );
-            links.forEach((link) => {
-              if (link.getAttribute("href").toLowerCase().includes(path)) {
-                link.classList.remove("text-dark");
-                link.classList.add("text-primary");
-              }
-            });
-          })
-          .catch((err) => console.error("Error al cargar sidebar:", err));
-      });
-    </script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../scripts/Dashboard.js"></script>
 </body>
 
 </html>
