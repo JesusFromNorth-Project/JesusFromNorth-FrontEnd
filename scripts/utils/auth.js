@@ -9,13 +9,11 @@ const AUTH_KEYS = {
 function verificarAutenticacion() {
     const token = localStorage.getItem(AUTH_KEYS.TOKEN);
     const userId = localStorage.getItem(AUTH_KEYS.USER_ID);
-    
     if (!token || !userId) {
         limpiarSesion();
         window.location.href = '../pages/Login.html';
         return false;
     }
-    
     return true;
 }
 
