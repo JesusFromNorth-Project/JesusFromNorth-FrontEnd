@@ -41,9 +41,15 @@ function mostrarError(mensaje) {
 /**
  * Carga el componente Sidebar y configura sus eventos
  */
+// Cargar el sidebar basado en el rol del usuario
 async function cargarSidebar() {
     try {
-        const response = await fetch("../components/Sidebar.html");
+        const role = localStorage.getItem("role");
+        let sideBarPath = role === "ADMIN" ? 
+            "../components/SidebarAdmin.html" :
+            "../components/SidebarDoctor.html";
+
+        const response = await fetch(sideBarPath);
         if (!response.ok) throw new Error('Error al cargar el sidebar');
         
         const html = await response.text();
@@ -54,25 +60,6 @@ async function cargarSidebar() {
         }
         
         sidebarElement.innerHTML = html;
-
-        // Configurar el nombre de usuario en el sidebar después de cargarlo
-        const adminName = localStorage.getItem(AUTH_KEYS.USERNAME);
-        if (adminName) {
-            const usernameElement = document.getElementById('username');
-            if (usernameElement) {
-                usernameElement.textContent = adminName;
-            }
-        }
-
-        // Configurar el cierre de sesión
-        const logoutLink = document.getElementById('logout-link');
-        if (logoutLink) {
-            logoutLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                limpiarSesion();
-                window.location.href = 'Login.html';
-            });
-        }
 
         // Resaltar el enlace activo según la página actual
         const path = window.location.pathname.split("/").pop().toLowerCase();

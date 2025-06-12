@@ -2,7 +2,8 @@
 const AUTH_KEYS = {
     TOKEN: 'jwtToken',
     USER_ID: 'adminId',
-    USERNAME: 'adminName'
+    USERNAME: 'adminName',
+    ROLE: 'role'
 };
 
 //Verifica si el usuario está autenticadotrue si está autenticado, false en caso contrario

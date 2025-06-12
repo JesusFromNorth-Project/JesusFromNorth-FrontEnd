@@ -58,12 +58,15 @@ function mapearDatosFormulario(datosFormulario) {
 }
 
 // 4. FUNCIONES ASÍNCRONAS
-/**
- * Carga el sidebar y configura los eventos
- */
+// Cargar el sidebar basado en el rol del usuario
 async function cargarSidebar() {
     try {
-        const response = await fetch("/components/Sidebar.html");
+        const role = localStorage.getItem("role");
+        let sideBarPath = role === "ADMIN" ? 
+            "../components/SidebarAdmin.html" :
+            "../components/SidebarDoctor.html";
+
+        const response = await fetch(sideBarPath);
         if (!response.ok) throw new Error('Error al cargar el sidebar');
         
         const html = await response.text();

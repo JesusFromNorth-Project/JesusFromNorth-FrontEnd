@@ -53,7 +53,7 @@ async function cargarSidebar() {
     try {
         const role = localStorage.getItem("role");
         let sideBarPath = role === "ADMIN" ? 
-            "../components/SidebarAdmin.html" : 
+            "../components/SidebarAdmin.html" :
             "../components/SidebarDoctor.html";
 
         const response = await fetch(sideBarPath);

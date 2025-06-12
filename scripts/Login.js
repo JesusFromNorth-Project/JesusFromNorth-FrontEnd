@@ -2,7 +2,7 @@
 import { AUTH_KEYS, limpiarSesion } from './utils/auth.js';
 
 // 2. CONSTANTES Y URLS
-const API_URL = "http://192.168.18.55:8080/system_clinic/api/v0.1";
+const API_URL = "http://localhost:8080/system_clinic/api/v0.1";
 
 // 3. FUNCIONES SÍNCRONAS
 /**
@@ -61,6 +61,7 @@ async function iniciarSesion(username, password, btnLogin) {
             localStorage.setItem(AUTH_KEYS.TOKEN, data.token);
             localStorage.setItem(AUTH_KEYS.USER_ID, data.adminId);
             localStorage.setItem(AUTH_KEYS.USERNAME, data.username || username);
+            localStorage.setItem(AUTH_KEYS.ROLE, data.role);
             
             // Redirigir al dashboard
             window.location.href = "Dashboard.html";
