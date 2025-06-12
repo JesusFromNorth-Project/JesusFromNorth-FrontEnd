@@ -374,37 +374,6 @@ async function buscarPorDNI() {
 }
 
 /**
- * Busca doctores por nombre
- * Endpoint: GET /doctor/search?name={nombre}
- */
-async function buscarPorNombre() {
-    const nombre = document.getElementById('searchNombre')?.value.trim();
-    if (!nombre) {
-        mostrarError('Por favor ingrese un nombre para buscar');
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}search?name=${encodeURIComponent(nombre)}`, {
-            headers: getAuthHeaders()
-        });
-        
-        if (!response.ok) {
-            const error = await handleApiError(response);
-            throw error;
-        }
-        
-        const result = await response.json();
-        // Mostrar resultados en la tabla
-        actualizarTablaDoctores(result.data || []);
-        
-    } catch (error) {
-        console.error('Error al buscar doctores por nombre:', error);
-        mostrarError(error.message || 'Error al buscar doctores');
-    }
-}
-
-/**
  * Carga la lista de doctores
  */
 async function cargarDoctores() {
@@ -521,7 +490,14 @@ async function manejarEnvioFormulario(event) {
             return;
         }
         
-        // Obtener los valores del formulario según el modelo
+        // 1. Obtener headers de autenticación
+        const headers = getAuthHeaders();
+        if (Object.keys(headers).length === 0) {
+            throw new Error('No se pudo autenticar la solicitud');
+        }
+        headers['Content-Type'] = 'application/json';
+        
+        // 2. Obtener datos básicos del formulario
         const doctorData = {
             first_name: formData.get('first_name'),
             last_name: formData.get('last_name'),
@@ -532,37 +508,49 @@ async function manejarEnvioFormulario(event) {
             dni: formData.get('dni'),
             cmp: formData.get('cmp'),
             username: formData.get('username')
-            // No incluir la contraseña a menos que se esté cambiando
         };
         
-        // Si hay una contraseña y no está vacía, incluirla
-        const password = formData.get('password');
-        if (password) {
+        // 3. Determinar si es creación o actualización
+        const isNewDoctor = !isEditing || !doctorId;
+        let url;
+        let method;
+        
+        if (isNewDoctor) {
+            // Para nuevo doctor (POST)
+            const adminId = localStorage.getItem(AUTH_KEYS.USER_ID);
+            if (!adminId) {
+                throw new Error('No se pudo identificar al administrador');
+            }
+            
+            const specialtyId = formData.get('specialty_id');
+            if (!specialtyId) {
+                throw new Error('Debe seleccionar una especialidad');
+            }
+            
+            // Validar contraseña para nuevo doctor
+            const password = formData.get('password');
+            if (!password || password.trim() === '') {
+                throw new Error('La contraseña es obligatoria para nuevos doctores');
+            }
+            
             doctorData.password = password;
-        }
-        
-        const especialidadId = formData.get('specialty_id');
-        
-        // Validar que se haya seleccionado una especialidad
-        if (!especialidadId) {
-            throw new Error('Por favor seleccione una especialidad');
-        }
-        
-        let url, method;
-        
-        if (isEditing && doctorId) {
-            // Actualizar doctor existente
+            url = `${API_BASE_URL}save/assignAdmin/${adminId}/assignSpecialty/${specialtyId}`;
+            method = 'POST';
+        } else {
+            // Para actualización (PATCH)
             url = `${API_BASE_URL}${doctorId}`;
             method = 'PATCH';
-            // Incluir el ID de la especialidad en el cuerpo
-            doctorData.id_specialty = especialidadId;
-        } else {
-            // Crear nuevo doctor
-            url = `${API_BASE_URL}save/assignSpecialty/${especialidadId}`;
-            method = 'POST';
-            // Asegurarse de que la contraseña esté presente para nuevos doctores
-            if (!password) {
-                throw new Error('La contraseña es obligatoria para nuevos doctores');
+            
+            // Incluir la especialidad en el cuerpo para actualización
+            const specialtyId = formData.get('specialty_id');
+            if (specialtyId) {
+                doctorData.id_specialty = specialtyId;
+            }
+            
+            // Solo incluir contraseña si se proporciona una nueva
+            const newPassword = formData.get('password');
+            if (newPassword && newPassword.trim() !== '') {
+                doctorData.password = newPassword;
             }
         }
         
@@ -570,11 +558,7 @@ async function manejarEnvioFormulario(event) {
         console.log('Método:', method);
         console.log('Datos del doctor:', doctorData);
         
-        const headers = {
-            ...getAuthHeaders(),
-            'Content-Type': 'application/json'
-        };
-        
+        // 4. Realizar la petición
         const response = await fetch(url, {
             method: method,
             headers: headers,
@@ -582,6 +566,7 @@ async function manejarEnvioFormulario(event) {
             credentials: 'include'
         });
         
+        // 5. Manejar la respuesta
         if (!response.ok) {
             const error = await handleApiError(response);
             throw error;

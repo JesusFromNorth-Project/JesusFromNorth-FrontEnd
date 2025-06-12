@@ -57,11 +57,32 @@ async function iniciarSesion(username, password, btnLogin) {
         const data = await response.json();
 
         if (response.ok) {
-            // Guardar la información de autenticación
+            // 1. Guardar el token
             localStorage.setItem(AUTH_KEYS.TOKEN, data.token);
-            localStorage.setItem(AUTH_KEYS.USER_ID, data.adminId);
-            localStorage.setItem(AUTH_KEYS.USERNAME, data.username || username);
-            localStorage.setItem(AUTH_KEYS.ROLE, data.role);
+            
+            // 2. Verificar si es administrador o doctor
+            const adminId = data.data?.id_admin;
+            const usernameToStore = data.data?.username || username;
+            
+            if (adminId) {
+                // Es administrador
+                localStorage.setItem(AUTH_KEYS.USER_ID, adminId);
+            } else {
+                // Es doctor
+                console.log('Iniciando sesión como doctor');
+                localStorage.setItem(AUTH_KEYS.USER_ID, usernameToStore);
+            }
+            
+            // 3. Guardar la información de autenticación común
+            localStorage.setItem(AUTH_KEYS.USERNAME, usernameToStore);
+            localStorage.setItem(AUTH_KEYS.ROLE, data.role || 'user');
+            
+            console.log('Datos guardados en localStorage:', {
+                userId: adminId || usernameToStore,
+                username: usernameToStore,
+                role: data.role || 'user',
+                isAdmin: !!adminId
+            });
             
             // Redirigir al dashboard
             window.location.href = "Dashboard.html";
