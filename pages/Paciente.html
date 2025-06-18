@@ -8,12 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/Dashboard.css" />
-    <link rel="stylesheet" href="/css/Paciente.css" />
+    <link rel="stylesheet" href="../css/Dashboard.css" />
+    <link rel="stylesheet" href="../css/Paciente.css" />
 </head>
 
 <body>
-    
     <!-- Sidebar dinámico -->
     <div id="sidebar-placeholder"></div>
     <!-- Contenido principal -->
@@ -91,7 +90,14 @@
                                         required />
                                 </div>
                             </div>
-                            <div class="form-group col-md-3 d-flex align-items-center mb-2">
+                            <div class="form-group col-12 col-md-3 mb-2">
+                                <label class="fw-semibold">Correo Electrónico</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa fa-envelope"></i></span>
+                                    <input type="email" class="form-control" placeholder="correo@ejemplo.com" name="email" />
+                                </div>
+                            </div>
+                            <div class="form-group col-12 col-md-3 d-flex align-items-center mb-2">
                                 <label class="mr-2 mb-0 fw-semibold">Género:</label>
                                 <label class="mr-3 mb-0"><input type="radio" name="genero" value="H"> H</label>
                                 <label class="mb-0"><input type="radio" name="genero" value="M"> M</label>
@@ -106,7 +112,16 @@
                         </div>
                         <div class="form-row">
                             <div class="col text-end">
-                                <button type="submit" class="btn btn-primary mt-3 px-5 shadow-sm">Guardar</button>
+                                <button type="submit" class="btn btn-primary mt-3 px-5 shadow-sm" id="btnGuardar">
+                                    <i class="fas fa-save"></i> Guardar
+                                </button>
+                                <button type="button" class="btn btn-warning mt-3 px-4 shadow-sm text-white d-none" id="btnActualizar">
+                                    <i class="fas fa-sync"></i> Actualizar
+                                </button>
+                                <button type="button" class="btn btn-secondary mt-3 px-4 shadow-sm ms-2 d-none" id="btnCancelar">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <input type="hidden" id="pacienteId" value="">
                             </div>
                         </div>
                     </form>
@@ -114,14 +129,16 @@
             </div>
             <!-- Buscador y tabla -->
             <div class="mb-3 d-flex align-items-center">
-                <h4 class="mb-0 mr-3 text-primary"><i class="fa fa-search"></i> Paciente</h4>
-                <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 120px"
-                    placeholder="Apellido" id="searchID" />
-                <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
+                <h4 class="mb-0 mr-3 text-primary"><i class="fa fa-search"></i> Buscar Paciente</h4>
                 <input type="text" class="form-control form-control-sm mr-2 border-primary" style="width: 140px"
-                    placeholder="Dni" id="searchNombre" />
-                <button class="btn btn-outline-primary btn-sm mr-3">Buscar</button>
-                <button class="btn btn-success btn-sm" id="exportarPacientes">
+                    placeholder="Ingrese DNI" id="searchDni" />
+                <button class="btn btn-outline-primary btn-sm" id="btnBuscarDni">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <button class="btn btn-outline-secondary btn-sm ml-2" type="button" id="mostrarTodos">
+                    <i class="fa fa-list"></i> Mostrar Todos
+                </button>
+                <button class="btn btn-success btn-sm ml-3" id="exportarPacientes">
                     <i class="fa fa-file-excel"></i> Exportar Pacientes
                 </button>
             </div>
@@ -130,23 +147,18 @@
         <table class="table table-bordered table-striped w-100 shadow-sm rounded">
             <thead class="table-primary">
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Fecha Nacimiento</th>
-                    <th>Edad</th>
-                    <th>Correo</th>
-                    <th>Teléfono</th>
-                    <th>Celular</th>
-                    <th>Dirección</th>
-                    <th>Género</th>
-                    <th>Antecedente</th>
+                    <th style="width: 10px;">Orden</th>
+                    <th style="width: 120px;">Nombre</th>
+                    <th style="width: 120px;">Apellido</th>
+                    <th style="width: 100px;">DNI</th>
+                    <th style="width: 180px;">Correo</th>
+                    <th style="width: 120px;">Teléfono</th>
+                    <th style="width: 150px;">Acciones</th>
                 </tr>
             </thead>
             <tbody id="tablaPacientes">
                 <tr>
-                    <td colspan="12" class="text-center">
+                    <td colspan="13" class="text-center">
                         No hay pacientes registrados.
                     </td>
                 </tr>
@@ -154,34 +166,6 @@
         </table>
     </div>
     </div>
-
-    <script> // Cargar el sidebar dinámicamente y resaltar el enlace activo
-        document.addEventListener("DOMContentLoaded", () => {
-
-            let role = localStorage.getItem("role");
-            let sideBar = null;
-            if (role == "ADMIN") {
-                sideBar = "../components/Sidebar.html";
-            } else {
-                sideBar = "../components/Sidebar.html";
-            }
-
-            fetch(sideBar)
-                .then((res) => res.text())
-                .then((html) => {
-                    document.getElementById("sidebar-placeholder").innerHTML = html;
-                    const path = window.location.pathname.split("/").pop().toLowerCase();
-                    const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-                    links.forEach((link) => {
-                        if (link.getAttribute("href").toLowerCase().includes(path)) {
-                            link.classList.remove("text-dark");
-                            link.classList.add("text-primary");
-                        }
-                    });
-                })
-                .catch((err) => console.error("Error al cargar sidebar:", err));
-        });
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="../scripts/Paciente.js"></script>
 </body>

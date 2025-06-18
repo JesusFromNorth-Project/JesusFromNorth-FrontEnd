@@ -693,7 +693,17 @@ async function inicializarPagina() {
 
   // Configurar botón Mostrar Todos
   if (btnMostrarTodos) {
-    btnMostrarTodos.addEventListener("click", cargarDoctores);
+    btnMostrarTodos.addEventListener("click", async () => {
+      try {
+        const doctor = await cargarDoctores(0);
+        actualizarTablaDoctores(doctor);
+        btnBuscarDNI.value = "";
+        btnBuscarCMP.value = "";
+      } catch (error) {
+        console.error("Error al cargar todos los doctores:", error);
+        mostrarError("Error al cargar la lista de doctores");
+      }
+    });
   }
 
   // Configurar botón de exportar
