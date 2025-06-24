@@ -1,0 +1,44 @@
+
+body {
+    padding-top: 50px;
+}
+
+/* Estilos para la tabla de doctores */
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Anchos de columnas en rems */
+thead th:nth-child(1) { width: 3rem; }   /* # (número de fila) */
+thead th:nth-child(2) { width: 8rem; } /* Nombre */
+thead th:nth-child(3) { width: 8rem; } /* Apellidos */
+thead th:nth-child(4) { width: 6rem; }  /* DNI */
+thead th:nth-child(5) { width: 6rem; }  /* CMP */
+thead th:nth-child(6) { width: 10rem; } /* Correo */
+thead th:nth-child(7) { width: 8rem; }  /* Teléfono */
+thead th:nth-child(8) { width: 8rem; } /* Especialidad */
+thead th:nth-child(9) { width: 10rem; } /* Acciones */
+
+/* Asegurar que las celdas del cuerpo respeten el ancho */
+tbody td {
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.contenido-principal {
+    margin-left: 240px;
+    padding-right: 2.0rem;
+}
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%) !important;
+}
+.input-group-text.bg-light {
+    background: #f9f7f1 !important;
+}
+.table-primary th {
+    background: #e3eaff !important;
+    color: #1e293b;
+}
+
+   
