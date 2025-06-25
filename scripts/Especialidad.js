@@ -119,25 +119,23 @@ async function renderTabla() {
     }
 
     especialidades.forEach((esp) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-                <td>${esp.id_specialty || ""}</td>
-                <td>${esp.specialty_name || ""}</td>
-                <td>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarEspecialidad('${
-                      esp.id_specialty || ""
-                    }')">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                    <button class="btn btn-info btn-sm ms-2" onclick="verServicios('${
-                      esp.id_specialty || ""
-                    }')">
-                        <i class="fas fa-list"></i> Ver Servicios
-                    </button>
-                </td>
-            `;
-      tbody.appendChild(tr);
-    });
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${esp.id_specialty || ""}</td>
+    <td>${esp.specialty_name || ""}</td>
+    <td>
+      <div class="d-flex flex-column">
+        <button class="btn btn-danger btn-sm mb-2" onclick="eliminarEspecialidad('${esp.id_specialty || ""}')">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+        <button class="btn btn-info btn-sm ms-4" onclick="verServicios('${esp.id_specialty || ""}')">
+          <i class="fas fa-list"></i> Ver Servicios
+        </button>
+      </div>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
   } catch (error) {
     console.error("Error:", error);
     mostrarError("Error al cargar las especialidades");
