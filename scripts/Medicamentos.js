@@ -57,21 +57,36 @@ function mostrarError(mensaje) {
   mostrarMensaje(mensaje, "danger");
 }
 
-// Cargar el sidebar
+
+// Cargar el sidebar (con soporte para rol ADMIN)
 async function cargarSidebar() {
   try {
-    const response = await fetch("/components/Sidebar.html");
+    // Detectar el rol desde localStorage
+    const role = localStorage.getItem("role");
+
+    // Si es ADMIN, usar SidebarAdmin.html, si no Sidebar.html
+    const sidebarPath =
+      role === "ADMIN"
+        ? "/components/SidebarAdmin.html"
+        : "/components/Sidebar.html";
+
+    // Cargar el archivo correspondiente
+    const response = await fetch(sidebarPath);
     if (!response.ok) {
       throw new Error("Error al cargar el sidebar");
     }
+
+    // Insertar el HTML en el placeholder
     const html = await response.text();
-    const sidebar = document.getElementById("sidebar");
+    const sidebar = document.getElementById("sidebar-placeholder");
+
     if (sidebar) {
       sidebar.innerHTML = html;
-      // Asegurarse de que el sidebar esté visible
+
+      // Mostrar sidebar (si es responsive o con animación)
       document.body.classList.add("sidebar-visible");
 
-      // Resaltar el enlace activo según la página actual
+      // Detectar la página activa y resaltar su link
       const path = window.location.pathname.split("/").pop().toLowerCase();
       const links = sidebar.querySelectorAll("a.nav-link");
 
@@ -79,14 +94,16 @@ async function cargarSidebar() {
         const href = link.getAttribute("href")?.toLowerCase();
         if (href && href.includes(path)) {
           link.classList.remove("text-dark");
-          link.classList.add("text-primary");
+          link.classList.add("text-primary", "fw-bold");
         }
       });
     } else {
-      console.error('No se encontró el elemento con id "sidebar"');
+      console.error('No se encontró el elemento con id "sidebar-placeholder"');
     }
   } catch (error) {
     console.error("Error al cargar sidebar:", error);
-    mostrarError("Error al cargar la interfaz");
+    if (typeof mostrarError === "function") {
+      mostrarError("Error al cargar la interfaz");
+    }
   }
 }

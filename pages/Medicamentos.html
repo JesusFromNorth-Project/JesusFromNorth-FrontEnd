@@ -16,62 +16,94 @@
     <div id="sidebar-placeholder"></div>
     <!-- Contenido Principal -->
     <div class="main-content" style="margin-left:220px; padding:32px 32px 0 32px;">
+        <!-- Titulo Principal -->
+        <h2 class="mb-4" style="font-family:'Comic Sans MS', cursive; font-size:2.5rem; color:#2563eb;">
+            <i class="fa fa-pills"></i> Medicamentos
+        </h2>
         <!-- Formulario de Medicamento -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <i class="fa fa-pills"></i> Datos del Medicamento
+                <i class="fa fa-capsules"></i> Datos del Medicamento
             </div>
             <div class="card-body">
                 <form id="form-medicamento">
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label>Fecha de Registro</label>
-                            <input type="date" class="form-control" name="medicine_date" required>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-calendar-alt"></i></span>
+                                <input type="date" class="form-control" name="medicine_date" required>
+                            </div>
                         </div>
                         <div class="form-group col-md-4">
                             <label>Nombre</label>
-                            <input type="text" class="form-control" name="medicine_name" placeholder="Nombre del medicamento" required>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-pills"></i></span>
+                                <input type="text" class="form-control" name="medicine_name" placeholder="Nombre del medicamento" required>
+                            </div>
                         </div>
                         <div class="form-group col-md-4">
                             <label>Tipo</label>
-                            <input type="text" class="form-control" name="medicine_type" placeholder="Tipo" required>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
+                                <input type="text" class="form-control" name="medicine_type" placeholder="Tipo" required>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Descripción</label>
-                            <input type="text" class="form-control" name="medicine_description" placeholder="Descripción">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-align-left"></i></span>
+                                <input type="text" class="form-control" name="medicine_description" placeholder="Descripción">
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Efectos Secundarios</label>
-                            <input type="text" class="form-control" name="medicine_side_effect" placeholder="Efectos secundarios">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-exclamation-triangle"></i></span>
+                                <input type="text" class="form-control" name="medicine_side_effect" placeholder="Efectos secundarios">
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2">Guardar</button>
+                    <button type="submit" class="btn btn-primary mt-2 px-4">
+                        <i class="fa fa-save"></i> Guardar
+                    </button>
                 </form>
             </div>
         </div>
 
         <!-- Tabla de Medicamentos -->
         <div class="card">
-            <div class="card-header bg-light">
-                <i class="fa fa-search"></i> Buscar Medicamento
-                <div class="float-right">
-                    <input type="text" id="buscar-medicamento" class="form-control form-control-sm d-inline-block" style="width:200px;" placeholder="Ingrese nombre">
-                    <button class="btn btn-success btn-sm ml-2">Registrar Medicamento</button>
+            <div class="card-header bg-light d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fa fa-search"></i> Buscar Medicamento
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-group input-group-sm mr-2" style="width:220px;">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input type="text" id="buscar-medicamento" class="form-control" placeholder="Ingrese nombre">
+                    </div>
+                    <div class="input-group input-group-sm mr-2" style="width:220px;">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        <input type="text" id="buscar-medicamento" class="form-control" placeholder="Ingrese ID">
+                    </div>
+                    <button class="btn btn-success btn-sm ml-2">
+                        <i class="fa fa-plus"></i> Registrar Medicamento
+                    </button>
                 </div>
             </div>
             <div class="card-body p-2">
                 <table class="table table-bordered table-hover table-sm mb-0">
-                    <thead class="thead-light">
+                    <thead>
                         <tr>
                             <th>#</th>
-                            <th>Fecha</th>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Descripción</th>
-                            <th>Efectos Secundarios</th>
-                            <th>Acciones</th>
+                            <th><i class="fa fa-calendar-alt"></i> Fecha</th>
+                            <th><i class="fa fa-pills"></i> Nombre</th>
+                            <th><i class="fa fa-tag"></i> Tipo</th>
+                            <th><i class="fa fa-align-left"></i> Descripción</th>
+                            <th><i class="fa fa-exclamation-triangle"></i> Efectos Secundarios</th>
+                            <th><i class="fa fa-cogs"></i> Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,8 +116,12 @@
                             <td>Alivia el dolor y la fiebre</td>
                             <td>Náuseas, erupción</td>
                             <td>
-                                <button class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Editar</button>
-                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Eliminar</button>
+                                <button class="btn btn-primary btn-sm mr-1">
+                                    <i class="fa fa-pen"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fa fa-trash"></i> Eliminar
+                                </button>
                             </td>
                         </tr>
                         <!-- Más filas dinámicamente -->
@@ -95,10 +131,7 @@
         </div>
     </div>
 
-    <script>
-        // Aquí puedes agregar la lógica JS para manejar el formulario y la tabla
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-      <script type="module" src="../scripts/Recetas.js"></script>
+    <script type="module" src="../scripts/Medicamentos.js"></script>
 </body>
 </html>
