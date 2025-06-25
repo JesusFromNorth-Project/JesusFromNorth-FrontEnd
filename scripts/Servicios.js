@@ -24,8 +24,8 @@ function getAuthHeaders() {
   }
   return {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`,
-    "Accept": "application/json"
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 }
 
@@ -49,7 +49,9 @@ function mostrarMensaje(mensaje, tipo = "danger") {
     ${mensaje}
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   `;
-  document.querySelector(".main-content")?.insertAdjacentElement("afterbegin", alertDiv);
+  document
+    .querySelector(".main-content")
+    ?.insertAdjacentElement("afterbegin", alertDiv);
   setTimeout(() => alertDiv.remove(), 5000);
 }
 
@@ -77,9 +79,10 @@ function mostrarError(mensaje) {
 async function cargarSidebar() {
   try {
     const role = localStorage.getItem("role");
-    const sideBarPath = role === "ADMIN" 
-      ? "../components/SidebarAdmin.html" 
-      : "../components/SidebarDoctor.html";
+    const sideBarPath =
+      role === "ADMIN"
+        ? "../components/SidebarAdmin.html"
+        : "../components/SidebarDoctor.html";
 
     const response = await fetch(sideBarPath);
     if (!response.ok) throw new Error("Error al cargar el sidebar");
@@ -116,26 +119,45 @@ function resaltarEnlaceActivo() {
 }
 
 /**
- * Carga las especialidades desde la API
+ * Carga las especialidades en los selects
  */
 async function cargarEspecialidades() {
   try {
-    const response = await fetch(`${SPECIALTY_URL}list/all`, {
-      method: 'GET',
-      headers: getAuthHeaders()
+    console.log("Iniciando carga de especialidades...");
+    const headers = getAuthHeaders();
+    console.log("Headers:", headers);
+
+    const response = await fetch(`${SPECIALTY_URL}list`, {
+      headers: headers,
     });
 
+    console.log("Respuesta recibida:", response);
+
     if (!response.ok) {
-      throw new Error('Error al cargar las especialidades');
+      const errorText = await response.text();
+      console.error("Error en la respuesta:", errorText);
+      throw new Error("Error al cargar las especialidades");
     }
 
-    const data = await response.json();
-    const especialidades = data.data || [];
-    actualizarSelectsEspecialidades(especialidades);
-    return especialidades;
+    const result = await response.json();
+    console.log("Datos de especialidades recibidos:", result);
+
+    // Verificar que result.data existe y es un array
+    if (!result.data || !Array.isArray(result.data)) {
+      console.error("Formato de datos inesperado:", result);
+      throw new Error("Formato de datos inesperado al cargar especialidades");
+    }
+
+    // Actualizar los selects con las especialidades
+    actualizarSelectsEspecialidades(result.data);
+
+    console.log("Especialidades cargadas correctamente en los selectores");
+    return result.data;
   } catch (error) {
-    console.error('Error al cargar especialidades:', error);
-    mostrarError('Error al cargar las especialidades');
+    console.error("Error al cargar especialidades:", error);
+    mostrarError(
+      "No se pudieron cargar las especialidades. Por favor, intente nuevamente."
+    );
     return [];
   }
 }
@@ -146,31 +168,42 @@ async function cargarEspecialidades() {
  */
 function actualizarSelectsEspecialidades(especialidades) {
   const selectForm = document.querySelector('select[name="especialidad"]');
-  const selectBusqueda = document.getElementById('filtroEspecialidad');
-  
+  const selectBusqueda = document.getElementById("filtroEspecialidad");
+
   // Limpiar opciones existentes
   if (selectForm) {
-    selectForm.innerHTML = '<option value="" selected disabled>Seleccione una especialidad</option>';
+    selectForm.innerHTML =
+      '<option value="" selected disabled>Seleccione una especialidad</option>';
   }
   if (selectBusqueda) {
-    selectBusqueda.innerHTML = '<option value="" selected>Todas las especialidades</option>';
+    selectBusqueda.innerHTML =
+      '<option value="" selected>Todas las especialidades</option>';
   }
-  
+
   // Agregar opciones
-  especialidades.forEach(esp => {
+  especialidades.forEach((esp) => {
+    const id = esp.id_specialty || esp.id;
+    const nombre = esp.specialty_name || esp.name || "Sin nombre";
+
     if (selectForm) {
-      const option = document.createElement('option');
-      option.value = esp.id;
-      option.textContent = esp.name || 'Sin nombre';
+      const option = document.createElement("option");
+      option.value = id;
+      option.textContent = nombre;
       selectForm.appendChild(option);
     }
-    
+
     if (selectBusqueda) {
-      const optionBusqueda = document.createElement('option');
-      optionBusqueda.value = esp.id;
-      optionBusqueda.textContent = esp.name || 'Sin nombre';
+      const optionBusqueda = document.createElement("option");
+      optionBusqueda.value = id;
+      optionBusqueda.textContent = nombre;
       selectBusqueda.appendChild(optionBusqueda);
     }
+  });
+
+  console.log("Selects de especialidades actualizados:", {
+    totalEspecialidades: especialidades.length,
+    selectForm: selectForm ? "Encontrado" : "No encontrado",
+    selectBusqueda: selectBusqueda ? "Encontrado" : "No encontrado",
   });
 }
 
@@ -180,23 +213,35 @@ function actualizarSelectsEspecialidades(especialidades) {
  */
 async function cargarServicios(specialtyId) {
   try {
-    let url = `${API_BASE_URL}list/all`;
-    if (specialtyId) {
-      url = `${API_BASE_URL}list/bySpeciality/${specialtyId}`;
+    // Mostrar mensaje indicando que se necesita seleccionar una especialidad
+    if (!specialtyId) {
+      actualizarTablaServicios([]);
+      return;
     }
-    
+
+    // Si hay un ID de especialidad, buscar servicios para esa especialidad
+    const url = `${API_BASE_URL}list/bySpeciality/${specialtyId}`;
+
     const response = await fetch(url, {
-      method: 'GET',
-      headers: getAuthHeaders()
+      method: "GET",
+      headers: getAuthHeaders(),
     });
 
-    if (!response.ok) throw new Error('Error al cargar los servicios');
-    
+    if (!response.ok) {
+      // Si no hay servicios para esta especialidad, mostrar la tabla vacía
+      if (response.status === 404) {
+        actualizarTablaServicios([]);
+        return;
+      }
+      throw new Error("Error al cargar los servicios");
+    }
+
     const data = await response.json();
-    actualizarTablaServicios(data.data);
+    actualizarTablaServicios(data.data || []);
   } catch (error) {
-    console.error('Error al cargar servicios:', error);
-    mostrarError('Error al cargar los servicios');
+    console.error("Error al cargar servicios:", error);
+    mostrarError("Error al cargar los servicios");
+    actualizarTablaServicios([]);
   }
 }
 
@@ -205,16 +250,18 @@ async function cargarServicios(specialtyId) {
  * @param {Array} servicios - Array de servicios a mostrar
  */
 function actualizarTablaServicios(servicios = []) {
-  const tbody = document.querySelector('#tablaServicios tbody');
+  const tbody = document.querySelector("#tablaServicios tbody");
   if (!tbody) {
-    console.error('No se encontró el elemento tbody para la tabla de servicios');
+    console.error(
+      "No se encontró el elemento tbody para la tabla de servicios"
+    );
     return;
   }
 
-  tbody.innerHTML = '';
+  tbody.innerHTML = "";
 
   if (!servicios || servicios.length === 0) {
-    const tr = document.createElement('tr');
+    const tr = document.createElement("tr");
     tr.innerHTML = `
       <td colspan="4" class="text-center py-4">
         <i class="fas fa-info-circle me-2"></i>
@@ -224,18 +271,19 @@ function actualizarTablaServicios(servicios = []) {
     return;
   }
 
-  servicios.forEach(servicio => {
-    const tr = document.createElement('tr');
+  servicios.forEach((servicio) => {
+    const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${servicio.name_Service || servicio.name || 'N/A'}</td>
-      <td>${servicio.specialtyName || servicio.specialty?.specialty_name || 'N/A'}</td>
+      <td>${servicio.name_Service || servicio.name || "N/A"}</td>
+      <td>${
+        servicio.specialtyName || servicio.specialty?.specialty_name || "N/A"
+      }</td>
       <td>$${(servicio.price || 0).toFixed(2)}</td>
       <td>
         <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-primary" onclick="editarServicio('${servicio.id}')">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-danger" onclick="eliminarServicio('${servicio.id}')">
+          <button class="btn btn-sm btn-outline-danger" onclick="eliminarServicio('${
+            servicio.id
+          }')">
             <i class="fas fa-trash"></i>
           </button>
         </div>
@@ -250,7 +298,7 @@ function actualizarTablaServicios(servicios = []) {
  */
 async function manejarEnvioFormularioServicio(e) {
   e.preventDefault();
-  
+
   const form = e.target;
   const formData = new FormData(form);
   const submitButton = form.querySelector('button[type="submit"]');
@@ -260,7 +308,8 @@ async function manejarEnvioFormularioServicio(e) {
     // Deshabilitar botón y mostrar carga
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
+      submitButton.innerHTML =
+        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...';
     }
 
     // Validar formulario
@@ -277,21 +326,21 @@ async function manejarEnvioFormularioServicio(e) {
 
     const servicioData = {
       name_Service: formData.get("nombre").trim(),
-      price: parseFloat(formData.get("costo").trim())
+      price: parseFloat(formData.get("costo").trim()),
     };
 
     const specialtyId = formData.get("especialidad").trim();
     const url = `${API_BASE_URL}save/assignSpecialty/${specialtyId}`;
 
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: headers,
-      body: JSON.stringify(servicioData)
+      body: JSON.stringify(servicioData),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Error al procesar la solicitud');
+      throw new Error(error.message || "Error al procesar la solicitud");
     }
 
     const result = await response.json();
@@ -304,7 +353,7 @@ async function manejarEnvioFormularioServicio(e) {
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.innerHTML = originalButtonText || 'Guardar';
+      submitButton.innerHTML = originalButtonText || "Guardar";
     }
   }
 }
@@ -378,11 +427,11 @@ async function inicializarPagina() {
     await cargarServicios();
 
     // Configurar el botón de búsqueda
-    const btnBuscar = document.getElementById('btnBuscar');
+    const btnBuscar = document.getElementById("btnBuscar");
     if (btnBuscar) {
-      btnBuscar.addEventListener('click', () => {
-        const select = document.getElementById('filtroEspecialidad');
-        const especialidadId = select ? select.value : '';
+      btnBuscar.addEventListener("click", () => {
+        const select = document.getElementById("filtroEspecialidad");
+        const especialidadId = select ? select.value : "";
         cargarServicios(especialidadId || undefined);
       });
     }
@@ -390,7 +439,9 @@ async function inicializarPagina() {
     console.log("Página de servicios inicializada");
   } catch (error) {
     console.error("Error al inicializar la página:", error);
-    mostrarError("Error al cargar la página. Por favor, recarga e intenta de nuevo.");
+    mostrarError(
+      "Error al cargar la página. Por favor, recarga e intenta de nuevo."
+    );
   }
 }
 
