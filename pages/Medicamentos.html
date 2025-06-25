@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medicamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/Dashboard.css" />
+    <link rel="stylesheet" href="/css/Medicamentos.css" />
+</head>
+
+<body>
+    <!-- Sidebar dinámico -->
+    <div id="sidebar-placeholder"></div>
+    <!-- Contenido Principal -->
+    <div class="main-content" style="margin-left:220px; padding:32px 32px 0 32px;">
+        <!-- Formulario de Medicamento -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="fa fa-pills"></i> Datos del Medicamento
+            </div>
+            <div class="card-body">
+                <form id="form-medicamento">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Fecha de Registro</label>
+                            <input type="date" class="form-control" name="medicine_date" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Nombre</label>
+                            <input type="text" class="form-control" name="medicine_name" placeholder="Nombre del medicamento" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Tipo</label>
+                            <input type="text" class="form-control" name="medicine_type" placeholder="Tipo" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Descripción</label>
+                            <input type="text" class="form-control" name="medicine_description" placeholder="Descripción">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Efectos Secundarios</label>
+                            <input type="text" class="form-control" name="medicine_side_effect" placeholder="Efectos secundarios">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de Medicamentos -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <i class="fa fa-search"></i> Buscar Medicamento
+                <div class="float-right">
+                    <input type="text" id="buscar-medicamento" class="form-control form-control-sm d-inline-block" style="width:200px;" placeholder="Ingrese nombre">
+                    <button class="btn btn-success btn-sm ml-2">Registrar Medicamento</button>
+                </div>
+            </div>
+            <div class="card-body p-2">
+                <table class="table table-bordered table-hover table-sm mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Efectos Secundarios</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplo de fila -->
+                        <tr>
+                            <td>1</td>
+                            <td>2025-06-25</td>
+                            <td>Paracetamol</td>
+                            <td>Analgésico</td>
+                            <td>Alivia el dolor y la fiebre</td>
+                            <td>Náuseas, erupción</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Editar</button>
+                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Eliminar</button>
+                            </td>
+                        </tr>
+                        <!-- Más filas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Aquí puedes agregar la lógica JS para manejar el formulario y la tabla
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      <script type="module" src="../scripts/Recetas.js"></script>
+</body>
+</html>

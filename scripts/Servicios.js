@@ -6,7 +6,7 @@ import {
 } from "/scripts/utils/auth.js";
 
 // 2. CONSTANTES Y URLS
-const API_BASE_URL = "http://localhost:5080/system_clinic/api/v0.1/service/";
+const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/service/";
 
 // 3. FUNCIONES SÍNCRONAS
 /**
