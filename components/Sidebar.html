@@ -1,36 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
-	<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
-<link rel="stylesheet" href="...css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel - Clínica</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="./../css/Sidebar.css" />
 </head>
-<nav
-	class="border-end"
-	style="background-color: #58a2eb; width: 220px; min-height: 100vh; position: fixed; left: 0; top: 0"> 
-	<div class="p-3 d-flex flex-column justify-content-between" style="height: 100vh">
-		<div>
-			<h4 class="mb-4 text-primary"><i class="fas fa-notes-medical me-2"></i>Menú</h4>
-			<ul class="nav flex-column">
-				<li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Dashboard.html"><i class="fas fa-chart-line me-2"></i> Dashboard</a></li>
-				<!-- <li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Doctor.html"><i class="fas fa-user-md me-2"></i> Doctor</a></li> -->
-				<!-- <li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Paciente.html"><i class="fas fa-user-injured me-2"></i> Paciente</a></li> -->
-				<!-- <li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Citas.html"><i class="fas fa-calendar-check me-2"></i> Citas </a></li> -->
-				<li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Medicamentos.html"><i class="fas fa-pills me-2"></i>Medicamentos</a></li>
-				<li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Atenciones.html"><i class="fas fa-pills me-2"></i>Atenciones</a></li>
-				
-				<!-- Gestionar Atenciones tablas -->
-				<li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Gestion.html"><i class="fas fa-tasks me-2"></i> Gestión</a></li>
-				<!-- <li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Especialidad.html"><i class="fas fa-stethoscope me-2"></i> Especialidad</a></li> -->
-				<!-- <li class="nav-item mb-2"><a class="nav-link text-dark" href="../pages/Servicios.html"><i class="fas fa-concierge-bell me-2"></i> Servicio</a></li> -->
-      </ul>
-		</div>
-		<div>
-            <hr />
-			<div id="sidebar-user" class="mb-2 text-center text-white fw-bold"></div>
-			<a href="/pages/Login.html" id="logout-link" class="nav-link text-danger d-flex align-items-center">
-                <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+<body>
+
+  <!-- Botón hamburguesa para pantallas pequeñas -->
+ <button id="toggle-sidebar">
+  <i class="fas fa-bars"></i>
+</button>
+
+  <!-- Sidebar fijo -->
+  <nav id="sidebar" class="sidebar-menu border-end" style="background-color: #58a2eb; width: 220px; min-height: 100vh; position: fixed; left: 0; top: 0">
+    <div class="p-3 d-flex flex-column justify-content-between" style="height: 100vh">
+      <div>
+        <h4 class="mb-4 text-primary"><i class="fas fa-notes-medical me-2"></i>Menú</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Dashboard.html">
+              <i class="fas fa-chart-line me-2"></i> Dashboard
             </a>
-        </div>
-	</div>
-</nav>
+          </li>
+
+          <!-- <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Doctor.html">
+              <i class="fas fa-user-md me-2"></i> Doctor
+            </a>
+          </li> -->
+
+          <!-- <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Paciente.html">
+              <i class="fas fa-user-injured me-2"></i> Paciente
+            </a>
+          </li> -->
+
+          <!-- <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Citas.html">
+              <i class="fas fa-calendar-check me-2"></i> Citas 
+            </a>
+          </li> -->
+
+          <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Medicamentos.html">
+              <i class="fas fa-pills me-2"></i> Medicamentos
+            </a>
+          </li>
+
+          <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Atenciones.html">
+              <i class="fas fa-pills me-2"></i> Atenciones
+            </a>
+          </li>
+
+          <!-- Gestionar Atenciones tablas -->
+          <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Gestion.html">
+              <i class="fas fa-tasks me-2"></i> Gestión
+            </a>
+          </li>
+
+          <!-- <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Especialidad.html">
+              <i class="fas fa-stethoscope me-2"></i> Especialidad
+            </a>
+          </li> -->
+
+          <!-- <li class="nav-item mb-2">
+            <a class="nav-link text-dark" href="../pages/Servicios.html">
+              <i class="fas fa-concierge-bell me-2"></i> Servicio
+            </a>
+          </li> -->
+        </ul>
+      </div>
+
+      <div>
+        <hr />
+        <div id="sidebar-user" class="mb-2 text-center text-white fw-bold"></div>
+        <a href="/pages/Login.html" id="logout-link" class="nav-link text-danger d-flex align-items-center">
+          <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+        </a>
+      </div>
+    </div>
+  </nav>
+ <div class="overlay" id="overlay"></div>
+  <!-- Scripts -->
+ <script type="module" src="./../scripts/Sidebar.js"></script>
+</body>
+</html>
