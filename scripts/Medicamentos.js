@@ -57,34 +57,38 @@ function mostrarError(mensaje) {
   mostrarMensaje(mensaje, "danger");
 }
 
-// Cargar el sidebar
+// Cargar el sidebar basado en el rol del usuario
 async function cargarSidebar() {
   try {
-    const response = await fetch("/components/Sidebar.html");
-    if (!response.ok) {
-      throw new Error("Error al cargar el sidebar");
-    }
+    const role = localStorage.getItem("role");
+    let sideBarPath =
+      role === "ADMIN"
+        ? "../components/SidebarAdmin.html"
+        : "../components/SidebarDoctor.html";
+
+    const response = await fetch(sideBarPath);
+    if (!response.ok) throw new Error("Error al cargar el sidebar");
+
     const html = await response.text();
-    const sidebar = document.getElementById("sidebar");
-    if (sidebar) {
-      sidebar.innerHTML = html;
-      // Asegurarse de que el sidebar esté visible
-      document.body.classList.add("sidebar-visible");
-
-      // Resaltar el enlace activo según la página actual
-      const path = window.location.pathname.split("/").pop().toLowerCase();
-      const links = sidebar.querySelectorAll("a.nav-link");
-
-      links.forEach((link) => {
-        const href = link.getAttribute("href")?.toLowerCase();
-        if (href && href.includes(path)) {
-          link.classList.remove("text-dark");
-          link.classList.add("text-primary");
-        }
-      });
-    } else {
-      console.error('No se encontró el elemento con id "sidebar"');
+    const sidebarElement = document.getElementById("sidebar-placeholder");
+    if (!sidebarElement) {
+      console.error('No se encontró el elemento con id "sidebar-placeholder"');
+      return;
     }
+
+    sidebarElement.innerHTML = html;
+
+    // Resaltar el enlace activo según la página actual
+    const path = window.location.pathname.split("/").pop().toLowerCase();
+    const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
+
+    links.forEach((link) => {
+      const href = link.getAttribute("href")?.toLowerCase();
+      if (href && href.includes(path)) {
+        link.classList.remove("text-dark");
+        link.classList.add("text-primary");
+      }
+    });
   } catch (error) {
     console.error("Error al cargar sidebar:", error);
     mostrarError("Error al cargar la interfaz");
