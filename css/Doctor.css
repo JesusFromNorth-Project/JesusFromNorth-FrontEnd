@@ -40,5 +40,41 @@ tbody td {
     background: #e3eaff !important;
     color: #1e293b;
 }
+/* --- RESPONSIVE --- */
+@media (max-width: 991.98px) {
+    .contenido-principal {
+        margin-left: 0;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+    table {
+        font-size: 0.95rem;
+    }
+    thead th,
+    tbody td {
+        padding: 0.4rem;
+    }
+}
+@media (max-width: 767.98px) {
+    .contenido-principal {
+        margin-left: 0;
+        padding: 0.5rem;
+    }
+    table {
+        font-size: 0.90rem;
+    }
+    thead th,
+    tbody td {
+        padding: 0.3rem;
+    }
+    /* Permite scroll horizontal en tablas grandes */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    /* Opcional: hace que los th no tengan ancho fijo en móvil */
+    thead th {
+        width: auto !important;
+    }
+}
 
    

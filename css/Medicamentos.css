@@ -1,115 +1,140 @@
- html,
+html, 
  body {
-     height: 100%;
-     background: #f4f8fb;
-     background: linear-gradient(120deg, #e0e7ef 0%, #f4f8fb 50%, #c7d2fe 100%);
- }
+    height: 100%;
+    background: #f4f8fb;
+    background: linear-gradient(120deg, #e0e7ef 0%, #f4f8fb 50%, #c7d2fe 100%);
+}
 
- body {
-     min-height: 100vh;
- }
+body {
+    min-height: 100vh;
+}
 
- .main-content {
-     min-height: 100vh;
-     width: 100%;
-     max-width: 1600px;
-     margin-left: 220px;
-     padding: 32px 32px 0 32px;
-     display: flex;
-     flex-direction: column;
-     justify-content: flex-start;
- }
+.contenido-principal {
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1600px;
+    margin-left: 240px;
+    padding: 32px 32px 0 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
 
- .card {
-     border-radius: 12px;
-     box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
-     width: 100%;
- }
+.card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+    width: 100%;
+}
 
- .card-header {
-     border-radius: 12px 12px 0 0 !important;
- }
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+}
 
- .card-header.bg-primary {
-     background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%) !important;
- }
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%) !important;
+}
 
- .form-control,
- .input-group-text {
-     border-radius: 6px !important;
- }
+.form-control,
+.input-group-text {
+    border-radius: 6px !important;
+}
 
- .input-group-text {
-     background: #e9ecef;
- }
+.input-group-text {
+    background: #e9ecef;
+}
 
- .btn-primary,
- .btn-success {
-     border-radius: 6px;
- }
+.btn-primary,
+.btn-success {
+    border-radius: 6px;
+}
 
- .btn-primary {
-     background: #2563eb;
-     border: none;
- }
+.btn-primary {
+    background: #2563eb;
+    border: none;
+}
 
- .btn-primary:hover {
-     background: #1d4ed8;
- }
+.btn-primary:hover {
+    background: #1d4ed8;
+}
 
- .btn-success {
-     background: #22c55e;
-     border: none;
- }
+.btn-success {
+    background: #22c55e;
+    border: none;
+}
 
- .btn-success:hover {
-     background: #16a34a;
- }
+.btn-success:hover {
+    background: #16a34a;
+}
 
- .btn-danger {
-     background: #ef4444;
-     border: none;
- }
+.btn-danger {
+    background: #ef4444;
+    border: none;
+}
 
- .btn-danger:hover {
-     background: #dc2626;
- }
+.btn-danger:hover {
+    background: #dc2626;
+}
 
- .table th,
- .table td {
-     vertical-align: middle !important;
- }
+.table th,
+.table td {
+    vertical-align: middle !important;
+}
 
- .table thead th {
-     background: #e0e7ef;
-     color: #22223b;
- }
+.table thead th {
+    background: #e0e7ef;
+    color: #22223b;
+}
 
- .input-group .form-control {
-     border-left: 0;
- }
+.input-group .form-control {
+    border-left: 0;
+}
 
- /* Responsive */
- @media (max-width: 1400px) {
-     .main-content {
-         max-width: 100vw;
-         padding: 24px 8px 0 8px;
-     }
- }
+/* --- RESPONSIVE --- */
+@media (max-width: 1400px) {
+    .contenido-principal {
+        max-width: 100vw;
+        padding: 24px 8px 0 8px;
+    }
+}
 
- @media (max-width: 991px) {
-     .main-content {
-         margin-left: 0 !important;
-         padding: 12px 2px 0 2px !important;
-     }
- }
+@media (max-width: 991.98px) {
+    .contenido-principal {
+        margin-left: 0 !important;
+        padding: 12px 2px 0 2px !important;
+    }
+    .card {
+        margin-bottom: 1rem;
+    }
+    table {
+        font-size: 0.95rem;
+    }
+    .table th,
+    .table td {
+        padding: 0.4rem;
+    }
+}
 
- @media (max-width: 600px) {
-     .main-content {
-         padding: 2px !important;
-     }
-
-     .card {
-         padding: 0;
-     }
- }
+@media (max-width: 767.98px) {
+    .contenido-principal {
+        margin-left: 0;
+        padding: 0.5rem !important;
+    }
+    .card {
+        padding: 0;
+    }
+    table {
+        font-size: 0.90rem;
+    }
+    .table th,
+    .table td {
+        padding: 0.3rem;
+    }
+    /* Scroll horizontal en tablas grandes */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    /* Quita anchos fijos en th para móvil */
+    .table th {
+        width: auto !important;
+    }
+}
