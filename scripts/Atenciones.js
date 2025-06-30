@@ -1,9 +1,5 @@
-// Importar utilidades de autenticación
-import {
-  verificarAutenticacion,
-  limpiarSesion,
-  AUTH_KEYS,
-} from "/scripts/utils/auth.js";
+// Importar la verificación de autenticación
+import { verificarAutenticacion } from "/scripts/utils/auth.js";
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", async () => {
@@ -16,11 +12,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   await cargarSidebar();
 
   // Configurar el nombre de usuario en el sidebar si existe
-  const username = localStorage.getItem(AUTH_KEYS.USERNAME);
-  if (username) {
+  const adminName = localStorage.getItem("adminName");
+  if (adminName) {
     const usernameElement = document.getElementById("username");
     if (usernameElement) {
-      usernameElement.textContent = username;
+      usernameElement.textContent = adminName;
     }
   }
 
@@ -29,7 +25,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (logoutLink) {
     logoutLink.addEventListener("click", (e) => {
       e.preventDefault();
-      limpiarSesion();
+      localStorage.removeItem("adminId");
+      localStorage.removeItem("adminName");
       window.location.href = "/pages/Login.html";
     });
   }
@@ -49,14 +46,9 @@ function mostrarMensaje(mensaje, tipo = "danger") {
   setTimeout(() => alertDiv.remove(), 5000);
 }
 
-function mostrarExito(mensaje) {
-  mostrarMensaje(mensaje, "success");
-}
-
 function mostrarError(mensaje) {
   mostrarMensaje(mensaje, "danger");
 }
-
 // Cargar el sidebar (con soporte para rol ADMIN)
 async function cargarSidebar() {
   try {
@@ -99,20 +91,6 @@ async function cargarSidebar() {
     } else {
       console.error('No se encontró el elemento con id "sidebar-placeholder"');
     }
-
-    sidebarElement.innerHTML = html;
-
-    // Resaltar el enlace activo según la página actual
-    const path = window.location.pathname.split("/").pop().toLowerCase();
-    const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
-
-    links.forEach((link) => {
-      const href = link.getAttribute("href")?.toLowerCase();
-      if (href && href.includes(path)) {
-        link.classList.remove("text-dark");
-        link.classList.add("text-primary");
-      }
-    });
   } catch (error) {
     console.error("Error al cargar sidebar:", error);
     if (typeof mostrarError === "function") {

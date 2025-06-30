@@ -73,6 +73,29 @@ document.addEventListener("DOMContentLoaded", function () {
   mostrarNombreUsuario();
   configurarCerrarSesion();
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleButton = document.getElementById("toggle-sidebar");
+  const sidebar = document.getElementById("sidebar");
+
+  if (toggleButton && sidebar) {
+    toggleButton.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      document.body.classList.toggle("sidebar-open");
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (
+      window.innerWidth <= 768 &&
+      document.body.classList.contains("sidebar-open") &&
+      !sidebar.contains(e.target) &&
+      !toggleButton.contains(e.target)
+    ) {
+      sidebar.classList.remove("active");
+      document.body.classList.remove("sidebar-open");
+    }
+  });
+});
 
 // Hacer que las funciones estén disponibles globalmente si es necesario
 window.verificarAutenticacion = verificarAutenticacion;
