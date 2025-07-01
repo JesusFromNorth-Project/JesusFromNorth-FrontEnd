@@ -18,28 +18,28 @@ const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/medicine";
  * @param {string} tipo - Tipo de mensaje (danger, success, etc.)
  */
 function mostrarMensaje(mensaje, tipo = "danger") {
-  const alertDiv = document.createElement("div");
-  alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
-  alertDiv.innerHTML = `
+	const alertDiv = document.createElement("div");
+	alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+	alertDiv.innerHTML = `
     ${mensaje}
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   `;
-  
-  // Buscar el contenedor principal del contenido
-  const mainContainer = document.querySelector(".contenido-principal");
-  if (mainContainer) {
-    mainContainer.insertAdjacentElement("afterbegin", alertDiv);
-  } else {
-    // Si no se encuentra, insertar al principio del body
-    document.body.insertAdjacentElement("afterbegin", alertDiv);
-  }
-  
-  // Eliminar el mensaje después de 5 segundos
-  setTimeout(() => {
-    if (alertDiv.parentNode) {
-      alertDiv.remove();
-    }
-  }, 5000);
+
+	// Buscar el contenedor principal del contenido
+	const mainContainer = document.querySelector(".contenido-principal");
+	if (mainContainer) {
+		mainContainer.insertAdjacentElement("afterbegin", alertDiv);
+	} else {
+		// Si no se encuentra, insertar al principio del body
+		document.body.insertAdjacentElement("afterbegin", alertDiv);
+	}
+
+	// Eliminar el mensaje después de 5 segundos
+	setTimeout(() => {
+		if (alertDiv.parentNode) {
+			alertDiv.remove();
+		}
+	}, 5000);
 }
 
 /**
@@ -47,7 +47,7 @@ function mostrarMensaje(mensaje, tipo = "danger") {
  * @param {string} mensaje - Texto del mensaje
  */
 function mostrarExito(mensaje) {
-  mostrarMensaje(mensaje, "success");
+	mostrarMensaje(mensaje, "success");
 }
 
 /**
@@ -55,11 +55,85 @@ function mostrarExito(mensaje) {
  * @param {string} mensaje - Texto del mensaje de error
  */
 function mostrarError(mensaje) {
-  mostrarMensaje(mensaje, "danger");
+	mostrarMensaje(mensaje, "danger");
 }
 
 // =============================================
-// 4. FUNCIONES ASÍNCRONAS
+// 4. FUNCIONES DE BÚSQUEDA
+// =============================================
+
+/**
+ * Busca medicamentos por fecha
+ * @param {string} date - Fecha en formato YYYY-MM-DD
+ * @param {number} page - Número de página (0-based)
+ */
+async function buscarMedicamentosPorFecha(date, page = 0) {
+  try {
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+    if (!token) {
+      mostrarError('No se encontró el token de autenticación');
+      return [];
+    }
+
+    const response = await fetch(`${API_BASE_URL}/list/by-date?date=${date}&page=${page}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Error al buscar medicamentos por fecha');
+    }
+
+    const result = await response.json();
+    return result.data || [];
+  } catch (error) {
+    console.error('Error en buscarMedicamentosPorFecha:', error);
+    mostrarError(error.message || 'Error al buscar medicamentos por fecha');
+    return [];
+  }
+}
+
+/**
+ * Busca un medicamento por nombre
+ * @param {string} nombre - Nombre del medicamento a buscar
+ */
+async function buscarMedicamentoPorNombre(nombre) {
+  try {
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+    if (!token) {
+      mostrarError('No se encontró el token de autenticación');
+      return [];
+    }
+
+    const response = await fetch(`${API_BASE_URL}/?name_medicine=${encodeURIComponent(nombre)}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 404) {
+      return [];
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Error al buscar el medicamento por nombre');
+    }
+
+    const result = await response.json();
+    // Convertir a array para mantener consistencia con otros métodos
+    return result.data ? [result.data] : [];
+  } catch (error) {
+    console.error('Error en buscarMedicamentoPorNombre:', error);
+    mostrarError(error.message || 'Error al buscar el medicamento por nombre');
+    return [];
+  }
+}
+
+// =============================================
+// 5. FUNCIONES ASÍNCRONAS
 // =============================================
 
 /**
@@ -68,28 +142,28 @@ function mostrarError(mensaje) {
  * @returns {Promise<Array>} - Lista de medicamentos
  */
 async function obtenerMedicamentos(page = 0) {
-  try {
-    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
-    const response = await fetch(`${API_BASE_URL}/list?page=${page}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
+	try {
+		const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+		const response = await fetch(`${API_BASE_URL}/list?page=${page}`, {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+		});
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Error al obtener la lista de medicamentos');
-    }
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || "Error al obtener la lista de medicamentos");
+		}
 
-    const result = await response.json();
-    return result.data || [];
-  } catch (error) {
-    console.error('Error al obtener medicamentos:', error);
-    mostrarError(error.message);
-    return [];
-  }
+		const result = await response.json();
+		return result.data || [];
+	} catch (error) {
+		console.error("Error al obtener medicamentos:", error);
+		mostrarError(error.message);
+		return [];
+	}
 }
 
 /**
@@ -97,40 +171,40 @@ async function obtenerMedicamentos(page = 0) {
  * @param {Array} medicamentos - Lista de medicamentos a mostrar
  */
 function actualizarTablaMedicamentos(medicamentos) {
-  const tbody = document.querySelector('table tbody');
-  if (!tbody) return;
+	const tbody = document.querySelector("table tbody");
+	if (!tbody) return;
 
-  // Limpiar tabla
-  tbody.innerHTML = '';
+	// Limpiar tabla
+	tbody.innerHTML = "";
 
-  if (medicamentos.length === 0) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td colspan="7" class="text-center">No se encontraron medicamentos</td>';
-    tbody.appendChild(tr);
-    return;
-  }
+	if (medicamentos.length === 0) {
+		const tr = document.createElement("tr");
+		tr.innerHTML = '<td colspan="7" class="text-center">No se encontraron medicamentos</td>';
+		tbody.appendChild(tr);
+		return;
+	}
 
-  // Llenar tabla con los datos
-  medicamentos.forEach((med, index) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+	// Llenar tabla con los datos
+	medicamentos.forEach((med, index) => {
+		const tr = document.createElement("tr");
+		tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${med.medicine_date || ''}</td>
-      <td>${med.medicine_name || ''}</td>
-      <td>${med.medicine_type || ''}</td>
-      <td>${med.medicine_description || 'N/A'}</td>
-      <td>${med.medicine_side_effect || 'N/A'}</td>
+      <td>${med.medicine_date || ""}</td>
+      <td>${med.medicine_name || ""}</td>
+      <td>${med.medicine_type || ""}</td>
+      <td>${med.medicine_description || "N/A"}</td>
+      <td>${med.medicine_side_effect || "N/A"}</td>
       <td>
         <button class="btn btn-primary btn-sm me-1 btn-editar" data-id="${med.id_medicine}">
           <i class="fa fa-pen"></i> Editar
         </button>
-        <button class="btn btn-danger btn-sm" data-id="${med.id_medicine}">
+        <button class="btn btn-danger btn-sm btn-eliminar" data-id="${med.id_medicine}" title="Eliminar">
           <i class="fa fa-trash"></i> Eliminar
         </button>
       </td>
     `;
-    tbody.appendChild(tr);
-  });
+		tbody.appendChild(tr);
+	});
 }
 
 /**
@@ -138,13 +212,13 @@ function actualizarTablaMedicamentos(medicamentos) {
  * @param {number} page - Número de página a cargar (por defecto 0)
  */
 async function cargarMedicamentos(page = 0) {
-  try {
-    const medicamentos = await obtenerMedicamentos(page);
-    actualizarTablaMedicamentos(medicamentos);
-  } catch (error) {
-    console.error('Error al cargar medicamentos:', error);
-    mostrarError('Error al cargar la lista de medicamentos');
-  }
+	try {
+		const medicamentos = await obtenerMedicamentos(page);
+		actualizarTablaMedicamentos(medicamentos);
+	} catch (error) {
+		console.error("Error al cargar medicamentos:", error);
+		mostrarError("Error al cargar la lista de medicamentos");
+	}
 }
 
 /**
@@ -189,7 +263,100 @@ async function cargarSidebar() {
 }
 
 // =============================================
-// 5. INICIALIZACIÓN DEL DOM
+// 6. MANEJADORES DE EVENTOS DE BÚSQUEDA
+// =============================================
+
+/**
+ * Configura los manejadores de eventos para la búsqueda
+ */
+function configurarEventosBusqueda() {
+  // Buscar por fecha
+  const btnBuscarFecha = document.getElementById('btn-buscar-fecha');
+  if (btnBuscarFecha) {
+    btnBuscarFecha.addEventListener('click', async () => {
+      const fechaInput = document.getElementById('fecha-busqueda');
+      const fecha = fechaInput.value;
+      
+      if (!fecha) {
+        mostrarError('Por favor ingrese una fecha para buscar');
+        return;
+      }
+      
+      try {
+        const medicamentos = await buscarMedicamentosPorFecha(fecha);
+        actualizarTablaMedicamentos(medicamentos);
+        if (medicamentos.length === 0) {
+          mostrarMensaje('No se encontraron medicamentos para la fecha especificada', 'info');
+        }
+      } catch (error) {
+        console.error('Error al buscar por fecha:', error);
+        mostrarError('Error al buscar por fecha');
+      }
+    });
+  }
+
+  // Buscar por nombre
+  const btnBuscarNombre = document.getElementById('btn-buscar-nombre');
+  if (btnBuscarNombre) {
+    btnBuscarNombre.addEventListener('click', async () => {
+      const nombreInput = document.getElementById('nombre-busqueda');
+      const nombre = nombreInput.value.trim();
+      
+      if (!nombre) {
+        mostrarError('Por favor ingrese un nombre para buscar');
+        return;
+      }
+      
+      try {
+        const medicamentos = await buscarMedicamentoPorNombre(nombre);
+        actualizarTablaMedicamentos(medicamentos);
+        if (medicamentos.length === 0) {
+          mostrarMensaje('No se encontró ningún medicamento con ese nombre', 'info');
+        }
+      } catch (error) {
+        console.error('Error al buscar por nombre:', error);
+        mostrarError('Error al buscar por nombre');
+      }
+    });
+  }
+
+  // Limpiar búsqueda
+  const btnLimpiarBusqueda = document.getElementById('btn-limpiar-busqueda');
+  if (btnLimpiarBusqueda) {
+    btnLimpiarBusqueda.addEventListener('click', () => {
+      limpiarBusqueda();
+    });
+  }
+
+  // Permitir búsqueda con Enter en los campos de texto
+  const nombreBusqueda = document.getElementById('nombre-busqueda');
+  if (nombreBusqueda) {
+    nombreBusqueda.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        btnBuscarNombre.click();
+      }
+    });
+  }
+}
+
+/**
+ * Limpia los campos de búsqueda y recarga la lista completa
+ */
+function limpiarBusqueda() {
+  // Limpiar campos
+  const fechaInput = document.getElementById('fecha-busqueda');
+  const nombreInput = document.getElementById('nombre-busqueda');
+  
+  if (fechaInput) fechaInput.value = '';
+  if (nombreInput) nombreInput.value = '';
+  
+  // Recargar lista completa
+  cargarMedicamentos(0);
+}
+
+// =============================================
+// 7. INICIALIZACIÓN DEL DOM
 // =============================================
 
 /**
@@ -278,71 +445,72 @@ async function enviarMedicamento(datosMedicamento) {
  * Configura los manejadores de eventos del formulario
  */
 function configurarEventosFormulario() {
-  const formMedicamento = document.getElementById("form-medicamento");
-  
-  if (!formMedicamento) {
-    console.error('No se encontró el formulario con id "form-medicamento"');
-    return;
-  }
+	const formMedicamento = document.getElementById("form-medicamento");
 
-  formMedicamento.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    let botonGuardar = null;
-    let textoOriginal = '';
-    
-    try {
-      // Obtener datos del formulario
-      const formData = {
-        medicine_date: formMedicamento.elements['medicine_date']?.value,
-        medicine_name: formMedicamento.elements['medicine_name']?.value.trim(),
-        medicine_type: formMedicamento.elements['medicine_type']?.value.trim(),
-        medicine_description: formMedicamento.elements['medicine_description']?.value.trim() || null,
-        medicine_side_effect: formMedicamento.elements['medicine_side_effect']?.value.trim() || null
-      };
+	if (!formMedicamento) {
+		console.error('No se encontró el formulario con id "form-medicamento"');
+		return;
+	}
 
-      // Validar formulario
-      const { valido, errores } = validarFormulario(formData);
+	formMedicamento.addEventListener("submit", async (e) => {
+		e.preventDefault();
 
-      if (!valido) {
-        mostrarError(errores.join("<br>"));
-        return;
-      }
+		let botonGuardar = null;
+		let textoOriginal = "";
 
-      // Mostrar indicador de carga
-      botonGuardar = formMedicamento.querySelector('button[type="submit"]');
-      if (botonGuardar) {
-        textoOriginal = botonGuardar.innerHTML;
-        botonGuardar.disabled = true;
-        botonGuardar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
-      }
+		try {
+			// Obtener datos del formulario
+			const formData = {
+				medicine_date: formMedicamento.elements["medicine_date"]?.value,
+				medicine_name: formMedicamento.elements["medicine_name"]?.value.trim(),
+				medicine_type: formMedicamento.elements["medicine_type"]?.value.trim(),
+				medicine_description: formMedicamento.elements["medicine_description"]?.value.trim() || null,
+				medicine_side_effect: formMedicamento.elements["medicine_side_effect"]?.value.trim() || null,
+			};
 
-      // Enviar datos a la API
-      const respuesta = await enviarMedicamento(formData);
+			// Validar formulario
+			const { valido, errores } = validarFormulario(formData);
 
-      // Mostrar mensaje de éxito
-      mostrarExito("Medicamento guardado correctamente");
+			if (!valido) {
+				mostrarError(errores.join("<br>"));
+				return;
+			}
 
-      // Limpiar formulario
-      formMedicamento.reset();
+			// Mostrar indicador de carga
+			botonGuardar = formMedicamento.querySelector('button[type="submit"]');
+			if (botonGuardar) {
+				textoOriginal = botonGuardar.innerHTML;
+				botonGuardar.disabled = true;
+				botonGuardar.innerHTML =
+					'<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+			}
 
-      // Recargar la lista de medicamentos (si existe la función)
-      if (typeof cargarMedicamentos === "function") {
-        await cargarMedicamentos();
-      }
+			// Enviar datos a la API
+			const respuesta = await enviarMedicamento(formData);
 
-      return respuesta;
-    } catch (error) {
-      console.error("Error al guardar el medicamento:", error);
-      mostrarError(error.message || "Error al guardar el medicamento");
-    } finally {
-      // Restaurar botón
-      if (botonGuardar) {
-        botonGuardar.disabled = false;
-        botonGuardar.innerHTML = textoOriginal;
-      }
-    }
-  });
+			// Mostrar mensaje de éxito
+			mostrarExito("Medicamento guardado correctamente");
+
+			// Limpiar formulario
+			formMedicamento.reset();
+
+			// Recargar la lista de medicamentos (si existe la función)
+			if (typeof cargarMedicamentos === "function") {
+				await cargarMedicamentos();
+			}
+
+			return respuesta;
+		} catch (error) {
+			console.error("Error al guardar el medicamento:", error);
+			mostrarError(error.message || "Error al guardar el medicamento");
+		} finally {
+			// Restaurar botón
+			if (botonGuardar) {
+				botonGuardar.disabled = false;
+				botonGuardar.innerHTML = textoOriginal;
+			}
+		}
+	});
 }
 
 // Variable para almacenar el ID del medicamento en edición
@@ -353,23 +521,25 @@ let medicamentoEditando = null;
  * @param {Object} medicamento - Datos del medicamento a editar
  */
 function activarModoEdicion(medicamento) {
-  const form = document.getElementById("form-medicamento");
-  if (!form) return;
+	const form = document.getElementById("form-medicamento");
+	if (!form) return;
 
-  // Guardar ID del medicamento
-  medicamentoEditando = medicamento.id_medicine;
+	// Guardar ID del medicamento
+	medicamentoEditando = medicamento.id_medicine;
 
-  // Llenar formulario con los datos
-  if (form.elements['medicine_date']) form.elements['medicine_date'].value = medicamento.medicine_date || '';
-  if (form.elements['medicine_name']) form.elements['medicine_name'].value = medicamento.medicine_name || '';
-  if (form.elements['medicine_type']) form.elements['medicine_type'].value = medicamento.medicine_type || '';
-  if (form.elements['medicine_description']) form.elements['medicine_description'].value = medicamento.medicine_description || '';
-  if (form.elements['medicine_side_effect']) form.elements['medicine_side_effect'].value = medicamento.medicine_side_effect || '';
+	// Llenar formulario con los datos
+	if (form.elements["medicine_date"]) form.elements["medicine_date"].value = medicamento.medicine_date || "";
+	if (form.elements["medicine_name"]) form.elements["medicine_name"].value = medicamento.medicine_name || "";
+	if (form.elements["medicine_type"]) form.elements["medicine_type"].value = medicamento.medicine_type || "";
+	if (form.elements["medicine_description"])
+		form.elements["medicine_description"].value = medicamento.medicine_description || "";
+	if (form.elements["medicine_side_effect"])
+		form.elements["medicine_side_effect"].value = medicamento.medicine_side_effect || "";
 
-  // Cambiar el botón de guardar por actualizar/cancelar
-  const btnContainer = form.querySelector('.btn-container');
-  if (btnContainer) {
-    btnContainer.innerHTML = `
+	// Cambiar el botón de guardar por actualizar/cancelar
+	const btnContainer = form.querySelector(".btn-container");
+	if (btnContainer) {
+		btnContainer.innerHTML = `
       <button type="button" class="btn btn-success me-2" id="btn-actualizar">
         <i class="fa fa-save"></i> Actualizar
       </button>
@@ -378,115 +548,176 @@ function activarModoEdicion(medicamento) {
       </button>
     `;
 
-    // Configurar eventos de los nuevos botones
-    document.getElementById('btn-actualizar').addEventListener('click', async () => {
-      await actualizarMedicamento();
-    });
+		// Configurar eventos de los nuevos botones
+		document.getElementById("btn-actualizar").addEventListener("click", async () => {
+			await actualizarMedicamento();
+		});
 
-    document.getElementById('btn-cancelar').addEventListener('click', () => {
-      cancelarEdicion();
-    });
-  }
+		document.getElementById("btn-cancelar").addEventListener("click", () => {
+			cancelarEdicion();
+		});
+	}
 }
 
 /**
  * Cancela el modo de edición y restaura el formulario
  */
 function cancelarEdicion() {
-  const form = document.getElementById("form-medicamento");
-  if (!form) return;
+	const form = document.getElementById("form-medicamento");
+	if (!form) return;
 
-  // Restaurar botón de guardar
-  const btnContainer = form.querySelector('.btn-container');
-  if (btnContainer) {
-    btnContainer.innerHTML = `
+	// Restaurar botón de guardar
+	const btnContainer = form.querySelector(".btn-container");
+	if (btnContainer) {
+		btnContainer.innerHTML = `
       <div class="col-12 text-end btn-container">
         <button type="submit" class="btn btn-primary mt-2 px-4">
           <i class="fa fa-save"></i> Guardar
         </button>
       </div>
     `;
-  }
+	}
 
-  // Limpiar formulario
-  form.reset();
-  medicamentoEditando = null;
+	// Limpiar formulario
+	form.reset();
+	medicamentoEditando = null;
 }
 
 /**
  * Actualiza un medicamento existente
  */
 async function actualizarMedicamento() {
-  const form = document.getElementById("form-medicamento");
-  if (!form || !medicamentoEditando) return;
+	const form = document.getElementById("form-medicamento");
+	if (!form || !medicamentoEditando) return;
 
-  try {
-    // Obtener datos del formulario
-    const formData = {
-      medicine_date: form.elements['medicine_date']?.value,
-      medicine_name: form.elements['medicine_name']?.value.trim(),
-      medicine_type: form.elements['medicine_type']?.value.trim(),
-      medicine_description: form.elements['medicine_description']?.value.trim() || null,
-      medicine_side_effect: form.elements['medicine_side_effect']?.value.trim() || null
-    };
+	try {
+		// Obtener datos del formulario
+		const formData = {
+			medicine_date: form.elements["medicine_date"]?.value,
+			medicine_name: form.elements["medicine_name"]?.value.trim(),
+			medicine_type: form.elements["medicine_type"]?.value.trim(),
+			medicine_description: form.elements["medicine_description"]?.value.trim() || null,
+			medicine_side_effect: form.elements["medicine_side_effect"]?.value.trim() || null,
+		};
 
-    // Validar formulario
-    const { valido, errores } = validarFormulario(formData);
-    if (!valido) {
-      mostrarError(errores.join("<br>"));
-      return;
-    }
+		// Validar formulario
+		const { valido, errores } = validarFormulario(formData);
+		if (!valido) {
+			mostrarError(errores.join("<br>"));
+			return;
+		}
 
-    // Mostrar indicador de carga
-    const btnActualizar = document.getElementById('btn-actualizar');
-    const textoOriginal = btnActualizar?.innerHTML || '';
-    if (btnActualizar) {
-      btnActualizar.disabled = true;
-      btnActualizar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Actualizando...';
-    }
+		// Mostrar indicador de carga
+		const btnActualizar = document.getElementById("btn-actualizar");
+		const textoOriginal = btnActualizar?.innerHTML || "";
+		if (btnActualizar) {
+			btnActualizar.disabled = true;
+			btnActualizar.innerHTML =
+				'<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Actualizando...';
+		}
 
-    // Enviar actualización
-    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
-    const response = await fetch(`${API_BASE_URL}/${medicamentoEditando}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(formData)
-    });
+		// Enviar actualización
+		const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+		const response = await fetch(`${API_BASE_URL}/${medicamentoEditando}`, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(formData),
+		});
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Error al actualizar el medicamento');
-    }
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || "Error al actualizar el medicamento");
+		}
 
-    // Mostrar mensaje de éxito y actualizar lista
-    mostrarExito('Medicamento actualizado correctamente');
-    await cargarMedicamentos(0);
-    cancelarEdicion();
+		// Mostrar mensaje de éxito y actualizar lista
+		mostrarExito("Medicamento actualizado correctamente");
+		await cargarMedicamentos(0);
+		cancelarEdicion();
+	} catch (error) {
+		console.error("Error al actualizar medicamento:", error);
+		mostrarError(error.message || "Error al actualizar el medicamento");
+	} finally {
+		// Restaurar botón
+		const btnActualizar = document.getElementById("btn-actualizar");
+		if (btnActualizar) {
+			btnActualizar.disabled = false;
+			btnActualizar.innerHTML = textoOriginal;
+		}
+	}
+}
 
-  } catch (error) {
-    console.error('Error al actualizar medicamento:', error);
-    mostrarError(error.message || 'Error al actualizar el medicamento');
-  } finally {
-    // Restaurar botón
-    const btnActualizar = document.getElementById('btn-actualizar');
-    if (btnActualizar) {
-      btnActualizar.disabled = false;
-      btnActualizar.innerHTML = textoOriginal;
-    }
-  }
+/**
+ * Elimina un medicamento
+ * @param {string} id - ID del medicamento a eliminar
+ */
+async function eliminarMedicamento(id) {
+	try {
+		const confirmacion = confirm('¿Estás seguro de que deseas eliminar este medicamento? Esta acción no se puede deshacer.');
+		if (!confirmacion) return;
+
+		const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+		if (!token) {
+			mostrarError('No se encontró el token de autenticación');
+			return;
+		}
+
+		const btnEliminar = document.querySelector(`.btn-eliminar[data-id="${id}"]`);
+		if (btnEliminar) {
+			btnEliminar.disabled = true;
+			btnEliminar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Eliminando...';
+		}
+
+		const response = await fetch(`${API_BASE_URL}/${id}`, {
+			method: 'DELETE',
+			headers: {
+				'Authorization': `Bearer ${token}`
+			}
+		});
+
+		if (response.status === 204) {
+			mostrarExito('Medicamento eliminado correctamente');
+			await cargarMedicamentos(0); // Recargar la lista
+		} else if (response.status === 404) {
+			mostrarError('No se encontró el medicamento');
+		} else {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || 'Error al eliminar el medicamento');
+		}
+	} catch (error) {
+		console.error('Error al eliminar medicamento:', error);
+		mostrarError(error.message || 'Error al eliminar el medicamento');
+	} finally {
+		const btnEliminar = document.querySelector(`.btn-eliminar[data-id="${id}"]`);
+		if (btnEliminar) {
+			btnEliminar.disabled = false;
+			btnEliminar.innerHTML = '<i class="fa fa-trash"></i>';
+		}
+	}
 }
 
 /**
  * Configura los manejadores de eventos de la tabla
  */
 function configurarEventosTabla() {
-  // Delegación de eventos para los botones de editar
+  // Delegación de eventos para los botones de la tabla
   document.addEventListener('click', async (e) => {
+    // Manejar clic en botón eliminar
+    if (e.target.closest('.btn-eliminar')) {
+      e.preventDefault();
+      const btn = e.target.closest('.btn-eliminar');
+      const id = btn.dataset.id;
+      if (id) {
+        await eliminarMedicamento(id);
+      }
+      return;
+    }
+    
     // Manejar clic en botón editar
     if (e.target.closest('.btn-editar')) {
+      e.preventDefault();
       const btn = e.target.closest('.btn-editar');
       const id = btn.dataset.id;
       if (id) {
@@ -497,28 +728,28 @@ function configurarEventosTabla() {
               'Authorization': `Bearer ${token}`
             }
           });
-          
-          if (response.ok) {
-            const result = await response.json();
-            activarModoEdicion(result.data);
-          } else {
-            throw new Error('Error al cargar los datos del medicamento');
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          mostrarError(error.message);
-        }
-      }
-    }
-  });
 
-  // Configurar búsqueda
-  const buscarInput = document.getElementById("buscar-medicamento-nombre");
-  if (buscarInput) {
-    buscarInput.addEventListener("input", (e) => {
-      // Lógica de búsqueda
-    });
-  }
+					if (response.ok) {
+						const result = await response.json();
+						activarModoEdicion(result.data);
+					} else {
+						throw new Error("Error al cargar los datos del medicamento");
+					}
+				} catch (error) {
+					console.error("Error:", error);
+					mostrarError(error.message);
+				}
+			}
+		}
+	});
+
+	// Configurar búsqueda
+	const buscarInput = document.getElementById("buscar-medicamento-nombre");
+	if (buscarInput) {
+		buscarInput.addEventListener("input", (e) => {
+			// Lógica de búsqueda
+		});
+	}
 }
 
 /**
@@ -529,7 +760,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	if (!verificarAutenticacion()) {
 		return;
 	}
-
 	try {
 		// Cargar el sidebar
 		await cargarSidebar();
@@ -546,6 +776,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		// Configurar eventos de la interfaz
 		configurarEventosFormulario();
 		configurarEventosTabla();
+		configurarEventosBusqueda();
 
 		// Cargar lista inicial de medicamentos
 		await cargarMedicamentos(0);
@@ -560,8 +791,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 			});
 		}
 
-		// Cargar datos iniciales
-		// await cargarMedicamentos();
+		// Configurar la fecha actual como valor por defecto en el campo de búsqueda por fecha
+		const fechaBusqueda = document.getElementById('fecha-busqueda');
+		if (fechaBusqueda) {
+			const hoy = new Date().toISOString().split('T')[0];
+			fechaBusqueda.value = hoy;
+		}
 	} catch (error) {
 		console.error("Error al inicializar la aplicación:", error);
 		mostrarError("Error al cargar la aplicación");

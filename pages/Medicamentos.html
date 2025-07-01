@@ -83,19 +83,42 @@
 			</div>
 
 			<!-- Buscador y tabla -->
-			<div class="mb-3 d-flex align-items-center flex-wrap gap-2">
-				<h4 class="mb-0 text-primary"><i class="fa fa-search"></i> Buscar Medicamento</h4>
-				<div class="input-group input-group-sm me-2" style="width: 180px">
-					<span class="input-group-text"><i class="fa fa-search"></i></span>
-					<input type="text" id="buscar-medicamento-nombre" class="form-control" placeholder="Ingrese nombre" />
+			<div class="card mb-4 shadow-sm">
+				<div class="card-header bg-light">
+					<h5 class="mb-0"><i class="fa fa-search me-2"></i>Buscar Medicamentos</h5>
 				</div>
-				<div class="input-group input-group-sm me-2" style="width: 180px">
-					<span class="input-group-text"><i class="fa fa-search"></i></span>
-					<input type="text" id="buscar-medicamento-id" class="form-control" placeholder="Ingrese ID" />
+				<div class="card-body">
+					<div class="row g-3">
+						<!-- Búsqueda por fecha -->
+						<div class="col-md-5">
+							<label class="form-label">Buscar por fecha</label>
+							<div class="input-group">
+								<input type="date" class="form-control" id="fecha-busqueda" />
+								<button class="btn btn-primary" type="button" id="btn-buscar-fecha">
+									<i class="fa fa-calendar-check me-1"></i> Buscar
+								</button>
+							</div>
+						</div>
+
+						<!-- Búsqueda por nombre -->
+						<div class="col-md-5">
+							<label class="form-label">Buscar por nombre</label>
+							<div class="input-group">
+								<input type="text" class="form-control" id="nombre-busqueda" placeholder="Nombre del medicamento" />
+								<button class="btn btn-primary" type="button" id="btn-buscar-nombre">
+									<i class="fa fa-search me-1"></i> Buscar
+								</button>
+							</div>
+						</div>
+
+						<!-- Botón limpiar búsqueda -->
+						<div class="col-md-2 d-flex align-items-end">
+							<button class="btn btn-outline-secondary w-100" type="button" id="btn-limpiar-busqueda">
+								<i class="fa fa-times-circle me-1"></i> Limpiar
+							</button>
+						</div>
+					</div>
 				</div>
-				<button class="btn btn-outline-secondary btn-sm me-2" id="btn-listar-todos">
-					<i class="fa fa-list"></i> Listar Todos
-				</button>
 			</div>
 
 			<div class="table-responsive">
