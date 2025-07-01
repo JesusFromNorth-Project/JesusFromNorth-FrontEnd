@@ -1,4 +1,3 @@
-// Importar la verificación de autenticación
 import { verificarAutenticacion } from "/scripts/utils/auth.js";
 
 // Inicialización cuando el DOM esté listo
@@ -87,3 +86,14 @@ async function cargarSidebar() {
     mostrarError("Error al cargar la interfaz");
   }
 }
+// Cuando se presiona el botón "Añadir" en el modal de receta
+document.getElementById('btnAnadirReceta').addEventListener('click', function() {
+  // Cierra el modal de receta
+  const recetaModal = bootstrap.Modal.getInstance(document.getElementById('modalReceta'));
+  recetaModal.hide();
+
+  // Abre el modal de resumen
+  const resumenModal = new bootstrap.Modal(document.getElementById('modalResumenReceta'));
+  resumenModal.show();
+});
+
