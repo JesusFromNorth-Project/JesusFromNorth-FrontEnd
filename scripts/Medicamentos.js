@@ -13,22 +13,33 @@ const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/medicine";
 // =============================================
 
 /**
- * Muestra un mensaje al usuario
+ * Muestra un mensaje en la interfaz
  * @param {string} mensaje - Texto del mensaje a mostrar
- * @param {string} tipo - Tipo de mensaje (danger, success, warning, etc.)
+ * @param {string} tipo - Tipo de mensaje (danger, success, etc.)
  */
 function mostrarMensaje(mensaje, tipo = "danger") {
-	const alertDiv = document.createElement("div");
-	alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
-	alertDiv.innerHTML = `
+  const alertDiv = document.createElement("div");
+  alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
+  alertDiv.innerHTML = `
     ${mensaje}
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   `;
-
-	const mainContent = document.querySelector(".main-content") || document.querySelector("body");
-	mainContent?.insertAdjacentElement("afterbegin", alertDiv);
-
-	setTimeout(() => alertDiv.remove(), 5000);
+  
+  // Buscar el contenedor principal del contenido
+  const mainContainer = document.querySelector(".contenido-principal");
+  if (mainContainer) {
+    mainContainer.insertAdjacentElement("afterbegin", alertDiv);
+  } else {
+    // Si no se encuentra, insertar al principio del body
+    document.body.insertAdjacentElement("afterbegin", alertDiv);
+  }
+  
+  // Eliminar el mensaje después de 5 segundos
+  setTimeout(() => {
+    if (alertDiv.parentNode) {
+      alertDiv.remove();
+    }
+  }, 5000);
 }
 
 /**
@@ -36,15 +47,15 @@ function mostrarMensaje(mensaje, tipo = "danger") {
  * @param {string} mensaje - Texto del mensaje
  */
 function mostrarExito(mensaje) {
-	mostrarMensaje(mensaje, "success");
+  mostrarMensaje(mensaje, "success");
 }
 
 /**
  * Muestra un mensaje de error
- * @param {string} mensaje - Texto del mensaje
+ * @param {string} mensaje - Texto del mensaje de error
  */
 function mostrarError(mensaje) {
-	mostrarMensaje(mensaje || "Ha ocurrido un error inesperado", "danger");
+  mostrarMensaje(mensaje, "danger");
 }
 
 // =============================================
@@ -110,7 +121,7 @@ function actualizarTablaMedicamentos(medicamentos) {
       <td>${med.medicine_description || 'N/A'}</td>
       <td>${med.medicine_side_effect || 'N/A'}</td>
       <td>
-        <button class="btn btn-primary btn-sm me-1" data-id="${med.id_medicine}">
+        <button class="btn btn-primary btn-sm me-1 btn-editar" data-id="${med.id_medicine}">
           <i class="fa fa-pen"></i> Editar
         </button>
         <button class="btn btn-danger btn-sm" data-id="${med.id_medicine}">
@@ -334,17 +345,180 @@ function configurarEventosFormulario() {
   });
 }
 
+// Variable para almacenar el ID del medicamento en edición
+let medicamentoEditando = null;
+
+/**
+ * Activa el modo de edición en el formulario
+ * @param {Object} medicamento - Datos del medicamento a editar
+ */
+function activarModoEdicion(medicamento) {
+  const form = document.getElementById("form-medicamento");
+  if (!form) return;
+
+  // Guardar ID del medicamento
+  medicamentoEditando = medicamento.id_medicine;
+
+  // Llenar formulario con los datos
+  if (form.elements['medicine_date']) form.elements['medicine_date'].value = medicamento.medicine_date || '';
+  if (form.elements['medicine_name']) form.elements['medicine_name'].value = medicamento.medicine_name || '';
+  if (form.elements['medicine_type']) form.elements['medicine_type'].value = medicamento.medicine_type || '';
+  if (form.elements['medicine_description']) form.elements['medicine_description'].value = medicamento.medicine_description || '';
+  if (form.elements['medicine_side_effect']) form.elements['medicine_side_effect'].value = medicamento.medicine_side_effect || '';
+
+  // Cambiar el botón de guardar por actualizar/cancelar
+  const btnContainer = form.querySelector('.btn-container');
+  if (btnContainer) {
+    btnContainer.innerHTML = `
+      <button type="button" class="btn btn-success me-2" id="btn-actualizar">
+        <i class="fa fa-save"></i> Actualizar
+      </button>
+      <button type="button" class="btn btn-secondary" id="btn-cancelar">
+        <i class="fa fa-times"></i> Cancelar
+      </button>
+    `;
+
+    // Configurar eventos de los nuevos botones
+    document.getElementById('btn-actualizar').addEventListener('click', async () => {
+      await actualizarMedicamento();
+    });
+
+    document.getElementById('btn-cancelar').addEventListener('click', () => {
+      cancelarEdicion();
+    });
+  }
+}
+
+/**
+ * Cancela el modo de edición y restaura el formulario
+ */
+function cancelarEdicion() {
+  const form = document.getElementById("form-medicamento");
+  if (!form) return;
+
+  // Restaurar botón de guardar
+  const btnContainer = form.querySelector('.btn-container');
+  if (btnContainer) {
+    btnContainer.innerHTML = `
+      <div class="col-12 text-end btn-container">
+        <button type="submit" class="btn btn-primary mt-2 px-4">
+          <i class="fa fa-save"></i> Guardar
+        </button>
+      </div>
+    `;
+  }
+
+  // Limpiar formulario
+  form.reset();
+  medicamentoEditando = null;
+}
+
+/**
+ * Actualiza un medicamento existente
+ */
+async function actualizarMedicamento() {
+  const form = document.getElementById("form-medicamento");
+  if (!form || !medicamentoEditando) return;
+
+  try {
+    // Obtener datos del formulario
+    const formData = {
+      medicine_date: form.elements['medicine_date']?.value,
+      medicine_name: form.elements['medicine_name']?.value.trim(),
+      medicine_type: form.elements['medicine_type']?.value.trim(),
+      medicine_description: form.elements['medicine_description']?.value.trim() || null,
+      medicine_side_effect: form.elements['medicine_side_effect']?.value.trim() || null
+    };
+
+    // Validar formulario
+    const { valido, errores } = validarFormulario(formData);
+    if (!valido) {
+      mostrarError(errores.join("<br>"));
+      return;
+    }
+
+    // Mostrar indicador de carga
+    const btnActualizar = document.getElementById('btn-actualizar');
+    const textoOriginal = btnActualizar?.innerHTML || '';
+    if (btnActualizar) {
+      btnActualizar.disabled = true;
+      btnActualizar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Actualizando...';
+    }
+
+    // Enviar actualización
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+    const response = await fetch(`${API_BASE_URL}/${medicamentoEditando}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(formData)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Error al actualizar el medicamento');
+    }
+
+    // Mostrar mensaje de éxito y actualizar lista
+    mostrarExito('Medicamento actualizado correctamente');
+    await cargarMedicamentos(0);
+    cancelarEdicion();
+
+  } catch (error) {
+    console.error('Error al actualizar medicamento:', error);
+    mostrarError(error.message || 'Error al actualizar el medicamento');
+  } finally {
+    // Restaurar botón
+    const btnActualizar = document.getElementById('btn-actualizar');
+    if (btnActualizar) {
+      btnActualizar.disabled = false;
+      btnActualizar.innerHTML = textoOriginal;
+    }
+  }
+}
+
 /**
  * Configura los manejadores de eventos de la tabla
  */
 function configurarEventosTabla() {
-	// TODO: Implementar eventos de la tabla
-	const buscarInput = document.getElementById("buscar-medicamento-nombre");
-	if (buscarInput) {
-		buscarInput.addEventListener("input", (e) => {
-			// Lógica de búsqueda
-		});
-	}
+  // Delegación de eventos para los botones de editar
+  document.addEventListener('click', async (e) => {
+    // Manejar clic en botón editar
+    if (e.target.closest('.btn-editar')) {
+      const btn = e.target.closest('.btn-editar');
+      const id = btn.dataset.id;
+      if (id) {
+        try {
+          const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+          const response = await fetch(`${API_BASE_URL}/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            activarModoEdicion(result.data);
+          } else {
+            throw new Error('Error al cargar los datos del medicamento');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          mostrarError(error.message);
+        }
+      }
+    }
+  });
+
+  // Configurar búsqueda
+  const buscarInput = document.getElementById("buscar-medicamento-nombre");
+  if (buscarInput) {
+    buscarInput.addEventListener("input", (e) => {
+      // Lógica de búsqueda
+    });
+  }
 }
 
 /**
