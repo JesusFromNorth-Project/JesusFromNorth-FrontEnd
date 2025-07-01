@@ -1,0 +1,83 @@
+body {
+    min-height: 100vh;
+    background: #f4f8fb;
+}
+
+/* Contenido principal alineado con el sidebar */
+.contenido-principal {
+    margin-left: 240px;
+    padding: 2rem 1rem;
+}
+
+/* Card general */
+.card {
+    border-radius: 1.2rem;
+    box-shadow: 0 4px 24px rgba(37,99,235,0.10);
+    background: #fff;
+}
+
+/* Encabezado de card con gradiente */
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%) !important;
+    color: #fff !important;
+    font-size: 1.2rem;
+}
+
+/* Tabla */
+.table thead {
+    background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+    color: #fff;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Botón de acción principal */
+.btn-success {
+    background: linear-gradient(90deg, #22c55e 60%, #16a34a 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(90deg, #16a34a 60%, #22c55e 100%);
+}
+
+/* Responsividad */
+@media (max-width: 991.98px) {
+    .contenido-principal {
+        margin-left: 0;
+        padding: 1rem 0.5rem;
+    }
+    .card {
+        margin-bottom: 1rem;
+    }
+    table {
+        font-size: 0.95rem;
+    }
+    .table th, .table td {
+        padding: 0.4rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .contenido-principal {
+        padding: 0.5rem !important;
+    }
+    .card {
+        padding: 0;
+    }
+    table {
+        font-size: 0.90rem;
+    }
+    .table th, .table td {
+        padding: 0.3rem;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table th {
+        width: auto !important;
+    }
+}
