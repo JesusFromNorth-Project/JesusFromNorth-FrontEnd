@@ -1,88 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Panel - Clínica Jesús del Norte</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel - Clínica Jesús del Norte</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Font Awesome CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+		<link rel="stylesheet" href="../css/Dashboard.css" />
+		<link rel="stylesheet" href="../css/Sidebar.css" />
+	</head>
 
-  <!-- CSS personalizado -->
-  <link rel="stylesheet" href="../css/Dashboard.css" />
-  <link rel="stylesheet" href="../css/Sidebar.css" />
-
-</head>
-
-<body>
-
-  <!-- Botón hamburguesa para móviles -->
-  <button id="toggle-sidebar" class="btn btn-outline-primary d-md-none m-2"
-    style="z-index: 1000; position: fixed; top: 1rem; left: 1rem;">
-    <i class="fas fa-bars"></i>
-  </button>
-
-  <!-- Sidebar -->
-  <nav id="sidebar" class="sidebar-menu border-end"
-    >
-    <div class="p-3 d-flex flex-column justify-content-between" style="height: 100vh;">
-      <div>
-        <div class="sidebar-logo mb-2 text-center">
-          <img src="/pages/img/jesus.png" alt="Logo Clínica"
-            style="width: 100px; height: 100px; object-fit: contain;" />
-        </div>
-        <h4 class="text-center">Clínica Jesús Del Norte</h4>
-        <ul class="nav flex-column mt-3">
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/DashboardDoctor.html">
-              <i class="fas fa-chart-line"></i> Citas
-            </a>
-          </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/Doctor.html">
-              <i class="fas fa-user-md"></i> Doctor
-            </a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/Paciente.html">
-              <i class="fas fa-user-injured"></i> Paciente
-            </a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/Citas.html">
-              <i class="fas fa-calendar-check"></i> Citas
-            </a>
-          </li> -->
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/Atenciones.html">
-              <i class="fas fa-pills"></i> Atenciones
-            </a>
-          </li>
-         
-          <!-- <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/Especialidad.html">
-              <i class="fas fa-stethoscope"></i> Especialidad
-            </a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link text-dark" href="../pages/Servicios.html">
-              <i class="fas fa-concierge-bell"></i> Servicio
-            </a>
-          </li> -->
-        </ul>
-      </div>
-      <div>
-        <hr />
-        <div id="sidebar-user" class="mb-2 text-center fw-bold"></div>
-        <a href="/pages/Login.html" id="logout-link"
-          class="nav-link text-danger d-flex align-items-center justify-content-center">
-          <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
-        </a>
-      </div>
-    </div>
-  </nav>
-  <!-- Script del sidebar -->
-  <script src="../scripts/Sidebar.js" defer></script>
-</body>
+	<body>
+		<nav id="sidebar" class="sidebar-menu border-end">
+			<div class="p-3 d-flex flex-column justify-content-between" style="height: 100vh">
+				<div>
+					<div class="sidebar-logo mb-2 text-center">
+						<img
+							src="/pages/img/jesus.png"
+							alt="Logo Clínica"
+							style="width: 100px; height: 100px; object-fit: contain" />
+					</div>
+					<h4 class="text-center">Clínica Jesús Del Norte</h4>
+					<ul class="nav flex-column mt-3">
+						<li class="nav-item">
+							<a class="nav-link text-dark" href="../pages/DashboardDoctor.html">
+								<i class="fas fa-chart-line"></i> Dashboard
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" href="../pages/Atenciones.html">
+								<i class="fas fa-pills"></i> Atenciones
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div>
+					<hr />
+					<div id="sidebar-user" class="mb-2 text-center fw-bold"></div>
+					<a
+						href="/pages/Login.html"
+						id="logout-link"
+						class="nav-link text-danger d-flex align-items-center justify-content-center">
+						<i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión
+					</a>
+				</div>
+			</div>
+		</nav>
+		<script src="../scripts/Sidebar.js" defer></script>
+	</body>
 </html>
