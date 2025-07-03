@@ -68,31 +68,31 @@ function mostrarError(mensaje) {
  * @param {number} page - Número de página (0-based)
  */
 async function buscarMedicamentosPorFecha(date, page = 0) {
-  try {
-    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
-    if (!token) {
-      mostrarError('No se encontró el token de autenticación');
-      return [];
-    }
+	try {
+		const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+		if (!token) {
+			mostrarError("No se encontró el token de autenticación");
+			return [];
+		}
 
-    const response = await fetch(`${API_BASE_URL}/list/by-date?date=${date}&page=${page}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+		const response = await fetch(`${API_BASE_URL}/list/by-date?date=${date}&page=${page}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Error al buscar medicamentos por fecha');
-    }
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || "Error al buscar medicamentos por fecha");
+		}
 
-    const result = await response.json();
-    return result.data || [];
-  } catch (error) {
-    console.error('Error en buscarMedicamentosPorFecha:', error);
-    mostrarError(error.message || 'Error al buscar medicamentos por fecha');
-    return [];
-  }
+		const result = await response.json();
+		return result.data || [];
+	} catch (error) {
+		console.error("Error en buscarMedicamentosPorFecha:", error);
+		mostrarError(error.message || "Error al buscar medicamentos por fecha");
+		return [];
+	}
 }
 
 /**
@@ -100,36 +100,36 @@ async function buscarMedicamentosPorFecha(date, page = 0) {
  * @param {string} nombre - Nombre del medicamento a buscar
  */
 async function buscarMedicamentoPorNombre(nombre) {
-  try {
-    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
-    if (!token) {
-      mostrarError('No se encontró el token de autenticación');
-      return [];
-    }
+	try {
+		const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+		if (!token) {
+			mostrarError("No se encontró el token de autenticación");
+			return [];
+		}
 
-    const response = await fetch(`${API_BASE_URL}/?name_medicine=${encodeURIComponent(nombre)}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+		const response = await fetch(`${API_BASE_URL}/?name_medicine=${encodeURIComponent(nombre)}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
-    if (response.status === 404) {
-      return [];
-    }
+		if (response.status === 404) {
+			return [];
+		}
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Error al buscar el medicamento por nombre');
-    }
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || "Error al buscar el medicamento por nombre");
+		}
 
-    const result = await response.json();
-    // Convertir a array para mantener consistencia con otros métodos
-    return result.data ? [result.data] : [];
-  } catch (error) {
-    console.error('Error en buscarMedicamentoPorNombre:', error);
-    mostrarError(error.message || 'Error al buscar el medicamento por nombre');
-    return [];
-  }
+		const result = await response.json();
+		// Convertir a array para mantener consistencia con otros métodos
+		return result.data ? [result.data] : [];
+	} catch (error) {
+		console.error("Error en buscarMedicamentoPorNombre:", error);
+		mostrarError(error.message || "Error al buscar el medicamento por nombre");
+		return [];
+	}
 }
 
 // =============================================
@@ -270,89 +270,89 @@ async function cargarSidebar() {
  * Configura los manejadores de eventos para la búsqueda
  */
 function configurarEventosBusqueda() {
-  // Buscar por fecha
-  const btnBuscarFecha = document.getElementById('btn-buscar-fecha');
-  if (btnBuscarFecha) {
-    btnBuscarFecha.addEventListener('click', async () => {
-      const fechaInput = document.getElementById('fecha-busqueda');
-      const fecha = fechaInput.value;
-      
-      if (!fecha) {
-        mostrarError('Por favor ingrese una fecha para buscar');
-        return;
-      }
-      
-      try {
-        const medicamentos = await buscarMedicamentosPorFecha(fecha);
-        actualizarTablaMedicamentos(medicamentos);
-        if (medicamentos.length === 0) {
-          mostrarMensaje('No se encontraron medicamentos para la fecha especificada', 'info');
-        }
-      } catch (error) {
-        console.error('Error al buscar por fecha:', error);
-        mostrarError('Error al buscar por fecha');
-      }
-    });
-  }
+	// Buscar por fecha
+	const btnBuscarFecha = document.getElementById("btn-buscar-fecha");
+	if (btnBuscarFecha) {
+		btnBuscarFecha.addEventListener("click", async () => {
+			const fechaInput = document.getElementById("fecha-busqueda");
+			const fecha = fechaInput.value;
 
-  // Buscar por nombre
-  const btnBuscarNombre = document.getElementById('btn-buscar-nombre');
-  if (btnBuscarNombre) {
-    btnBuscarNombre.addEventListener('click', async () => {
-      const nombreInput = document.getElementById('nombre-busqueda');
-      const nombre = nombreInput.value.trim();
-      
-      if (!nombre) {
-        mostrarError('Por favor ingrese un nombre para buscar');
-        return;
-      }
-      
-      try {
-        const medicamentos = await buscarMedicamentoPorNombre(nombre);
-        actualizarTablaMedicamentos(medicamentos);
-        if (medicamentos.length === 0) {
-          mostrarMensaje('No se encontró ningún medicamento con ese nombre', 'info');
-        }
-      } catch (error) {
-        console.error('Error al buscar por nombre:', error);
-        mostrarError('Error al buscar por nombre');
-      }
-    });
-  }
+			if (!fecha) {
+				mostrarError("Por favor ingrese una fecha para buscar");
+				return;
+			}
 
-  // Limpiar búsqueda
-  const btnLimpiarBusqueda = document.getElementById('btn-limpiar-busqueda');
-  if (btnLimpiarBusqueda) {
-    btnLimpiarBusqueda.addEventListener('click', () => {
-      limpiarBusqueda();
-    });
-  }
+			try {
+				const medicamentos = await buscarMedicamentosPorFecha(fecha);
+				actualizarTablaMedicamentos(medicamentos);
+				if (medicamentos.length === 0) {
+					mostrarMensaje("No se encontraron medicamentos para la fecha especificada", "info");
+				}
+			} catch (error) {
+				console.error("Error al buscar por fecha:", error);
+				mostrarError("Error al buscar por fecha");
+			}
+		});
+	}
 
-  // Permitir búsqueda con Enter en los campos de texto
-  const nombreBusqueda = document.getElementById('nombre-busqueda');
-  if (nombreBusqueda) {
-    nombreBusqueda.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        btnBuscarNombre.click();
-      }
-    });
-  }
+	// Buscar por nombre
+	const btnBuscarNombre = document.getElementById("btn-buscar-nombre");
+	if (btnBuscarNombre) {
+		btnBuscarNombre.addEventListener("click", async () => {
+			const nombreInput = document.getElementById("nombre-busqueda");
+			const nombre = nombreInput.value.trim();
+
+			if (!nombre) {
+				mostrarError("Por favor ingrese un nombre para buscar");
+				return;
+			}
+
+			try {
+				const medicamentos = await buscarMedicamentoPorNombre(nombre);
+				actualizarTablaMedicamentos(medicamentos);
+				if (medicamentos.length === 0) {
+					mostrarMensaje("No se encontró ningún medicamento con ese nombre", "info");
+				}
+			} catch (error) {
+				console.error("Error al buscar por nombre:", error);
+				mostrarError("Error al buscar por nombre");
+			}
+		});
+	}
+
+	// Limpiar búsqueda
+	const btnLimpiarBusqueda = document.getElementById("btn-limpiar-busqueda");
+	if (btnLimpiarBusqueda) {
+		btnLimpiarBusqueda.addEventListener("click", () => {
+			limpiarBusqueda();
+		});
+	}
+
+	// Permitir búsqueda con Enter en los campos de texto
+	const nombreBusqueda = document.getElementById("nombre-busqueda");
+	if (nombreBusqueda) {
+		nombreBusqueda.addEventListener("keypress", (e) => {
+			if (e.key === "Enter") {
+				e.preventDefault();
+				btnBuscarNombre.click();
+			}
+		});
+	}
 }
 
 /**
  * Limpia los campos de búsqueda y recarga la lista completa
  */
 function limpiarBusqueda() {
-  // Limpiar campos
-  const fechaInput = document.getElementById('fecha-busqueda');
-  const nombreInput = document.getElementById('nombre-busqueda');
-  
-  if (fechaInput) fechaInput.value = '';
-  if (nombreInput) nombreInput.value = '';
-  
-  // Recargar lista completa
-  cargarMedicamentos(0);
+	// Limpiar campos
+	const fechaInput = document.getElementById("fecha-busqueda");
+	const nombreInput = document.getElementById("nombre-busqueda");
+
+	if (fechaInput) fechaInput.value = "";
+	if (nombreInput) nombreInput.value = "";
+
+	// Recargar lista completa
+	cargarMedicamentos(0);
 }
 
 // =============================================
@@ -655,40 +655,43 @@ async function actualizarMedicamento() {
  */
 async function eliminarMedicamento(id) {
 	try {
-		const confirmacion = confirm('¿Estás seguro de que deseas eliminar este medicamento? Esta acción no se puede deshacer.');
+		const confirmacion = confirm(
+			"¿Estás seguro de que deseas eliminar este medicamento? Esta acción no se puede deshacer."
+		);
 		if (!confirmacion) return;
 
 		const token = localStorage.getItem(AUTH_KEYS.TOKEN);
 		if (!token) {
-			mostrarError('No se encontró el token de autenticación');
+			mostrarError("No se encontró el token de autenticación");
 			return;
 		}
 
 		const btnEliminar = document.querySelector(`.btn-eliminar[data-id="${id}"]`);
 		if (btnEliminar) {
 			btnEliminar.disabled = true;
-			btnEliminar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Eliminando...';
+			btnEliminar.innerHTML =
+				'<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Eliminando...';
 		}
 
 		const response = await fetch(`${API_BASE_URL}/${id}`, {
-			method: 'DELETE',
+			method: "DELETE",
 			headers: {
-				'Authorization': `Bearer ${token}`
-			}
+				Authorization: `Bearer ${token}`,
+			},
 		});
 
 		if (response.status === 204) {
-			mostrarExito('Medicamento eliminado correctamente');
+			mostrarExito("Medicamento eliminado correctamente");
 			await cargarMedicamentos(0); // Recargar la lista
 		} else if (response.status === 404) {
-			mostrarError('No se encontró el medicamento');
+			mostrarError("No se encontró el medicamento");
 		} else {
 			const errorData = await response.json().catch(() => ({}));
-			throw new Error(errorData.message || 'Error al eliminar el medicamento');
+			throw new Error(errorData.message || "Error al eliminar el medicamento");
 		}
 	} catch (error) {
-		console.error('Error al eliminar medicamento:', error);
-		mostrarError(error.message || 'Error al eliminar el medicamento');
+		console.error("Error al eliminar medicamento:", error);
+		mostrarError(error.message || "Error al eliminar el medicamento");
 	} finally {
 		const btnEliminar = document.querySelector(`.btn-eliminar[data-id="${id}"]`);
 		if (btnEliminar) {
@@ -702,32 +705,32 @@ async function eliminarMedicamento(id) {
  * Configura los manejadores de eventos de la tabla
  */
 function configurarEventosTabla() {
-  // Delegación de eventos para los botones de la tabla
-  document.addEventListener('click', async (e) => {
-    // Manejar clic en botón eliminar
-    if (e.target.closest('.btn-eliminar')) {
-      e.preventDefault();
-      const btn = e.target.closest('.btn-eliminar');
-      const id = btn.dataset.id;
-      if (id) {
-        await eliminarMedicamento(id);
-      }
-      return;
-    }
-    
-    // Manejar clic en botón editar
-    if (e.target.closest('.btn-editar')) {
-      e.preventDefault();
-      const btn = e.target.closest('.btn-editar');
-      const id = btn.dataset.id;
-      if (id) {
-        try {
-          const token = localStorage.getItem(AUTH_KEYS.TOKEN);
-          const response = await fetch(`${API_BASE_URL}/${id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+	// Delegación de eventos para los botones de la tabla
+	document.addEventListener("click", async (e) => {
+		// Manejar clic en botón eliminar
+		if (e.target.closest(".btn-eliminar")) {
+			e.preventDefault();
+			const btn = e.target.closest(".btn-eliminar");
+			const id = btn.dataset.id;
+			if (id) {
+				await eliminarMedicamento(id);
+			}
+			return;
+		}
+
+		// Manejar clic en botón editar
+		if (e.target.closest(".btn-editar")) {
+			e.preventDefault();
+			const btn = e.target.closest(".btn-editar");
+			const id = btn.dataset.id;
+			if (id) {
+				try {
+					const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+					const response = await fetch(`${API_BASE_URL}/${id}`, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					});
 
 					if (response.ok) {
 						const result = await response.json();
@@ -792,9 +795,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 		}
 
 		// Configurar la fecha actual como valor por defecto en el campo de búsqueda por fecha
-		const fechaBusqueda = document.getElementById('fecha-busqueda');
+		const fechaBusqueda = document.getElementById("fecha-busqueda");
 		if (fechaBusqueda) {
-			const hoy = new Date().toISOString().split('T')[0];
+			const hoy = new Date().toISOString().split("T")[0];
 			fechaBusqueda.value = hoy;
 		}
 	} catch (error) {
