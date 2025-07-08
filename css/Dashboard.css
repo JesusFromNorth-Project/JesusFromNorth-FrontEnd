@@ -1,7 +1,7 @@
 body {
   display: flex;
   min-height: 100vh;
-
+background: linear-gradient(120deg, #f4f8fb 60%, #cbe5fd 100%);
   /* Para Calendar */
   margin: 40px 10px;
   padding: 0;
@@ -9,19 +9,20 @@ body {
   font-size: 14px;
 }
 
-#calendar {
-  max-width: 1320px; /* Para alinear el calendario */
-  margin: 0 auto;
+html {
+  scroll-behavior: smooth;
 }
 
 nav {
-  background-color: #58a2eb;
+  /* Degradado azul para el sidebar */
+  background: linear-gradient(180deg, #58a2eb 70%, #2563eb 100%);
   width: 220px;
   position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
   padding: 1rem;
+  z-index: 1000;
 }
 
 .main {
@@ -42,14 +43,18 @@ nav {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   color: #fff;
   padding: 20px;
-}
-
+ }
 .small-box .icon {
   position: absolute;
   top: 10px;
   right: 10px;
   font-size: 50px;
   opacity: 0.4;
+}
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%) !important;
+    color: #fff !important;
+    font-size: 1.2rem;
 }
 
 .small-box-footer {
@@ -64,73 +69,32 @@ nav {
   text-decoration: underline;
 }
 
-/* Modal */
-#eventModal .modal-content {
-  border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  border: none;
+.contenido-principal {
+  margin-left: 260px;
+  padding: 2rem 1rem;
+  margin-right: 30px;
 }
 
-#eventModal .modal-header {
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
-  background: linear-gradient(90deg, #0d6efd 60%, #0dcaf0 100%);
-  color: #fff;
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 991.98px) {
+  .main,
+  .contenido-principal {
+    margin-left: 0;
+    padding: 1rem 0.5rem;
+    margin-right: 0;
+  }
+  nav {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
 }
 
-#eventModal .modal-title i {
-  margin-right: 8px;
-  color: #fff;
+@media (max-width: 767.98px) {
+  .main,
+  .contenido-principal {
+    padding: 0.5rem !important;
+  }
 }
 
-#eventModal .btn-close-white {
-  filter: invert(1);
-}
-
-#eventModal .form-label {
-  font-weight: 500;
-  color: #0d6efd;
-}
-
-#eventModal .input-group-text {
-  background: #e7f1ff;
-  color: #0d6efd;
-  border: none;
-}
-
-#eventModal .form-control,
-#eventModal .form-select {
-  border-radius: 8px;
-  border: 1px solid #d1e7ff;
-  box-shadow: none;
-  transition: border-color 0.2s;
-}
-
-#eventModal .form-control:focus,
-#eventModal .form-select:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
-}
-
-#eventModal textarea.form-control {
-  min-height: 80px;
-  resize: vertical;
-}
-
-#eventModal .btn-primary {
-  background: linear-gradient(90deg, #0d6efd 60%, #0dcaf0 100%);
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.08);
-  transition: background 0.2s;
-}
-
-#eventModal .btn-primary:hover {
-  background: linear-gradient(90deg, #0dcaf0 60%, #0d6efd 100%);
-}
-
-#eventModal .input-group {
-  margin-bottom: 0.5rem;
-}

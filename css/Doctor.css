@@ -18,7 +18,7 @@ thead th:nth-child(5) { width: 6rem; }  /* CMP */
 thead th:nth-child(6) { width: 10rem; } /* Correo */
 thead th:nth-child(7) { width: 8rem; }  /* Teléfono */
 thead th:nth-child(8) { width: 8rem; } /* Especialidad */
-thead th:nth-child(9) { width: 10rem; } /* Acciones */
+thead th:nth-child(9) { width: 12rem; } /* Acciones */
 
 /* Asegurar que las celdas del cuerpo respeten el ancho */
 tbody td {
@@ -49,12 +49,15 @@ tbody td {
     }
     table {
         font-size: 0.95rem;
+        min-width: 700px;
     }
     thead th,
     tbody td {
-        padding: 0.4rem;
+        padding: 0.5rem 0.3rem;
+        max-width: 90px;
     }
 }
+
 @media (max-width: 767.98px) {
     .contenido-principal {
         margin-left: 0;
@@ -62,16 +65,18 @@ tbody td {
     }
     table {
         font-size: 0.90rem;
+        min-width: 600px;
     }
     thead th,
     tbody td {
-        padding: 0.3rem;
+        padding: 0.35rem 0.2rem;
+        max-width: 70px;
     }
     /* Permite scroll horizontal en tablas grandes */
     .table-responsive {
         overflow-x: auto;
     }
-    /* Opcional: hace que los th no tengan ancho fijo en móvil */
+    /* Hace que los th no tengan ancho fijo en móvil */
     thead th {
         width: auto !important;
     }
