@@ -6,11 +6,6 @@ const API_BASE_URL = "http://localhost:8080/system_clinic/api/v0.1/doctor/";
 const ESPECIALITY_URL = "http://localhost:8080/system_clinic/api/v0.1/specialty/";
 
 // 3. FUNCIONES SÍNCRONAS
-/**
- * Muestra un mensaje en la interfaz
- * @param {string} mensaje - Texto del mensaje a mostrar
- * @param {string} tipo - Tipo de mensaje (danger, success, etc.)
- */
 function mostrarMensaje(mensaje, tipo = "danger") {
 	const alertDiv = document.createElement("div");
 	alertDiv.className = `alert alert-${tipo} alert-dismissible fade show`;
@@ -22,26 +17,14 @@ function mostrarMensaje(mensaje, tipo = "danger") {
 	setTimeout(() => alertDiv.remove(), 5000);
 }
 
-/**
- * Muestra un mensaje de éxito
- * @param {string} mensaje - Texto del mensaje
- */
 function mostrarExito(mensaje) {
 	mostrarMensaje(mensaje, "success");
 }
 
-/**
- * Muestra un mensaje de error
- * @param {string} mensaje - Texto del mensaje de error
- */
 function mostrarError(mensaje) {
 	mostrarMensaje(mensaje, "danger");
 }
 
-/**
- * Obtiene los headers de autenticación para las peticiones a la API
- * @returns {Object} Headers de autenticación
- */
 function getAuthHeaders() {
 	const token = localStorage.getItem(AUTH_KEYS.TOKEN);
 	if (!token) {
@@ -55,19 +38,11 @@ function getAuthHeaders() {
 	};
 }
 
-/**
- * Cierra la sesión del usuario y redirige al login
- */
 function cerrarSesion() {
 	limpiarSesion();
 	window.location.href = "Login.html";
 }
 
-/**
- * Valida los datos del formulario de doctor
- * @param {FormData} formData - Datos del formulario a validar
- * @returns {string[]} Array de mensajes de error
- */
 function validarFormularioDoctor(formData) {
 	const errors = [];
 
@@ -94,7 +69,6 @@ function validarFormularioDoctor(formData) {
 		errors.push("El correo electrónico no es válido");
 	}
 
-	// Validar contraseña solo para nuevos registros
 	const isEditing = document.querySelector('button[type="submit"]')?.dataset.editing === "true";
 	if (!isEditing && !formData.get("password")?.trim()) {
 		errors.push("La contraseña es obligatoria");
@@ -103,9 +77,6 @@ function validarFormularioDoctor(formData) {
 	return errors;
 }
 
-/**
- * Configura el botón de cancelar edición
- */
 function configurarBotonCancelar() {
 	const btnCancelar = document.createElement("button");
 	btnCancelar.type = "button";
@@ -122,17 +93,12 @@ function configurarBotonCancelar() {
 	}
 }
 
-/**
- * Cancela la edición y restablece el formulario
- */
 function cancelarEdicion() {
 	const form = document.getElementById("formDoctor");
 	if (!form) return;
 
-	// Restablecer el formulario
 	form.reset();
 
-	// Restaurar el botón de enviar
 	const submitButton = form.querySelector('button[type="submit"]');
 	if (submitButton) {
 		submitButton.textContent = "Registrar Doctor";
@@ -141,33 +107,23 @@ function cancelarEdicion() {
 		delete submitButton.dataset.doctorId;
 	}
 
-	// Eliminar el botón de cancelar
 	const btnCancelar = document.getElementById("btnCancelarEdicion");
 	if (btnCancelar) {
 		btnCancelar.remove();
 	}
 
-	// Desplazarse al principio del formulario
 	form.scrollIntoView({ behavior: "smooth" });
 }
 
-// Inicialización cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", async () => {
-	// Verificar autenticación
 	if (!verificarAutenticacion()) {
 		return;
 	}
-
-	// Inicializar la página de doctores
 	await inicializarPagina();
 });
 
 // 4. FUNCIONES ASÍNCRONAS
-/**
- * Maneja los errores de la API, especialmente los de autenticación
- * @param {Response} response - Respuesta de la API
- * @returns {Promise<Error>} Error con el mensaje correspondiente
- */
+
 async function handleApiError(response) {
 	if (response.status === 401 || response.status === 403) {
 		console.error("Error de autenticación - Token expirado o inválido");
@@ -180,7 +136,6 @@ async function handleApiError(response) {
 	return new Error(error.message || "Error en la petición al servidor");
 }
 
-// Cargar el sidebar basado en el rol del usuario
 async function cargarSidebar() {
 	try {
 		const role = localStorage.getItem("role");
@@ -198,7 +153,6 @@ async function cargarSidebar() {
 
 		sidebarElement.innerHTML = html;
 
-		// Resaltar el enlace activo según la página actual
 		const path = window.location.pathname.split("/").pop().toLowerCase();
 		const links = document.querySelectorAll("#sidebar-placeholder a.nav-link");
 
@@ -215,9 +169,6 @@ async function cargarSidebar() {
 	}
 }
 
-/**
- * Carga las especialidades en el select
- */
 async function cargarEspecialidades() {
 	try {
 		console.log("Iniciando carga de especialidades...");
@@ -680,15 +631,10 @@ async function inicializarPagina() {
 	console.log("Página de doctores inicializada");
 }
 
-/**
- * Edita un doctor
- * @param {string} id - ID del doctor a editar
- */
 async function editarDoctor(id) {
 	try {
 		console.log("Obteniendo datos del doctor con ID:", id);
 
-		// 1. Obtener los datos actuales del doctor
 		const response = await fetch(`${API_BASE_URL}${id}`, {
 			headers: getAuthHeaders(),
 		});
@@ -707,13 +653,10 @@ async function editarDoctor(id) {
 
 		console.log("Datos del doctor obtenidos:", doctor);
 
-		// 2. Llenar el formulario con los datos actuales
 		const form = document.getElementById("formDoctor");
 		if (!form) {
 			throw new Error("No se encontró el formulario de doctores");
 		}
-
-		// Mapear los campos del formulario con los datos del doctor
 		const fields = {
 			first_name: "first_name",
 			last_name: "last_name",
@@ -725,36 +668,27 @@ async function editarDoctor(id) {
 			cmp: "cmp",
 			username: "username",
 		};
-
-		// Llenar los campos del formulario
 		Object.entries(fields).forEach(([fieldName, doctorField]) => {
 			if (form.elements[fieldName]) {
 				form.elements[fieldName].value = doctor[doctorField] || "";
 			}
 		});
-
-		// Establecer la especialidad si existe
 		if (doctor.specialty_id && form.elements["specialty_id"]) {
 			form.elements["specialty_id"].value = doctor.specialty_id;
 		} else if (doctor.specialty && doctor.specialty.id_specialty) {
 			form.elements["specialty_id"].value = doctor.specialty.id_specialty;
 		}
-
-		// 3. Cambiar el texto del botón de enviar
 		const submitButton = form.querySelector('button[type="submit"]');
 		if (submitButton) {
 			submitButton.innerHTML = '<i class="fas fa-save me-1"></i> Actualizar Doctor';
 			submitButton.dataset.editing = "true";
 			submitButton.dataset.doctorId = id;
 
-			// Mostrar el botón de cancelar
 			configurarBotonCancelar();
 		}
 
-		// 4. Desplazarse al formulario
 		form.scrollIntoView({ behavior: "smooth" });
 
-		// Mostrar mensaje de éxito
 		mostrarExito("Datos del doctor cargados. Puede modificar la información y guardar los cambios.");
 	} catch (error) {
 		console.error("Error al cargar datos del doctor:", error);
@@ -762,10 +696,6 @@ async function editarDoctor(id) {
 	}
 }
 
-/**
- * Elimina un doctor
- * @param {string} id - ID del doctor a eliminar
- */
 async function eliminarDoctor(id) {
 	if (!confirm("¿Está seguro de que desea eliminar este doctor? Esta acción no se puede deshacer.")) {
 		return;
@@ -796,9 +726,6 @@ async function eliminarDoctor(id) {
 	}
 }
 
-/**
- * Exporta la lista de doctores a un archivo Excel
- */
 async function exportarAExcel() {
 	const btnExportar = document.getElementById("exportarPacientes");
 	if (!btnExportar) return;
@@ -853,7 +780,6 @@ async function exportarAExcel() {
 }
 
 // 5. EVENTOS Y ASIGNACIONES GLOBALES
-// Hacer que las funciones estén disponibles globalmente
 window.buscarPorCMP = buscarPorCMP;
 window.buscarPorDNI = buscarPorDNI;
 window.editarDoctor = editarDoctor;
