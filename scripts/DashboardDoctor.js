@@ -91,3 +91,80 @@ document.getElementById("btnAnadirReceta").addEventListener("click", function ()
 	const resumenModal = new bootstrap.Modal(document.getElementById("modalResumenReceta"));
 	resumenModal.show();
 });
+
+// Guardar medicamentos en un array temporal
+let medicamentos = [];
+
+// Al guardar un medicamento
+document.getElementById('formReceta').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    nombre: form.medicamento.options[form.medicamento.selectedIndex].text,
+    dose: form.dose.value,
+    frequency: form.frequency.value,
+    duration: form.duration.value,
+    format: form.medicationFormat.value
+  };
+  medicamentos.push(data);
+
+  // Mostrar medicamentos ingresados arriba del formulario
+  mostrarMedicamentosIngresados();
+
+  // Limpiar formulario
+  form.reset();
+});
+
+// Mostrar medicamentos ingresados arriba del formulario
+function mostrarMedicamentosIngresados() {
+  const cont = document.getElementById('medicamentosIngresados');
+  cont.innerHTML = medicamentos.map((m, i) => `
+    <div class="input-group mb-2">
+      <input type="text" class="form-control" value="${m.nombre} Ingresado" readonly>
+      <button type="button" class="btn btn-outline-secondary" title="Ver detalles" onclick="verDetalleMedicamento(${i})">
+        <i class="fa fa-eye"></i>
+      </button>
+      <button type="button" class="btn btn-outline-danger" title="Eliminar" onclick="eliminarMedicamento(${i})">
+        <i class="fa fa-minus"></i>
+      </button>
+    </div>
+  `).join('');
+}
+
+// Eliminar medicamento
+function eliminarMedicamento(idx) {
+  medicamentos.splice(idx, 1);
+  mostrarMedicamentosIngresados();
+}
+
+// Ver detalle (puedes personalizar)
+function verDetalleMedicamento(idx) {
+  alert(JSON.stringify(medicamentos[idx], null, 2));
+}
+
+// Al presionar "Añadir", mostrar resumen
+document.getElementById('btnAnadirReceta').addEventListener('click', function() {
+  // Llenar el resumen
+  const lista = document.getElementById('listaMedicamentosResumen');
+  lista.innerHTML = medicamentos.map(m => `
+    <li class="list-group-item d-flex justify-content-between align-items-center rounded-3 mb-2">
+      <span>
+        <i class="fa fa-capsules me-2 text-success"></i>
+        <strong>${m.nombre}</strong> - ${m.dose}, ${m.frequency}, ${m.duration}, ${m.format}
+      </span>
+    </li>
+  `).join('');
+  // Mostrar modal resumen
+  const modalReceta = bootstrap.Modal.getInstance(document.getElementById('modalReceta'));
+  modalReceta.hide();
+  const modalResumen = new bootstrap.Modal(document.getElementById('modalResumenReceta'));
+  modalResumen.show();
+});
+
+// Añadir otro medicamento desde el resumen
+document.getElementById('btnAgregarOtroMedicamento').addEventListener('click', function() {
+  const modalResumen = bootstrap.Modal.getInstance(document.getElementById('modalResumenReceta'));
+  modalResumen.hide();
+  const modalReceta = new bootstrap.Modal(document.getElementById('modalReceta'));
+  modalReceta.show();
+});

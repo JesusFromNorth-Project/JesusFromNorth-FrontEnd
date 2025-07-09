@@ -263,7 +263,7 @@ function actualizarTablaServicios(servicios = []) {
   if (!servicios || servicios.length === 0) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td colspan="4" class="text-center py-4">
+      <td colspan="3" class="text-center py-4">
         <i class="fas fa-info-circle me-2"></i>
         No hay servicios registrados
       </td>`;
@@ -272,24 +272,15 @@ function actualizarTablaServicios(servicios = []) {
   }
 
   servicios.forEach((servicio) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${servicio.name_Service || servicio.name || "N/A"}</td>
-      <td>${
-        servicio.specialtyName || servicio.specialty?.specialty_name || "N/A"
-      }</td>
-      <td>$${(servicio.price || 0).toFixed(2)}</td>
-      <td>
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-danger" onclick="eliminarServicio('${
-            servicio.id
-          }')">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </td>`;
-    tbody.appendChild(tr);
-  });
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${servicio.name_Service || servicio.name || "N/A"}</td>
+    <td>$${(servicio.price || 0).toFixed(2)}</td>
+    <td>
+      <!-- Aquí ya no hay botón de eliminar -->
+    </td>`;
+  tbody.appendChild(tr);
+});
 }
 
 /**
