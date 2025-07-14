@@ -38,16 +38,11 @@ function mostrarNombreUsuario() {
         ? "Administrador"
         : role === "doctor"
         ? "Doctor"
-        : role === "user"
-        ? "Usuario"
         : role;
     userRoleDisplay.textContent = formattedRole;
   }
 }
 
-/**
- * Configura el evento de cierre de sesión
- */
 function configurarCerrarSesion() {
   const logout = document.getElementById("logout-link");
   if (logout) {

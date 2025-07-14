@@ -24,7 +24,7 @@
 								<label class="fw-semibold mb-1">Fecha Programada de la Atención</label>
 								<div class="input-group">
 									<span class="input-group-text bg-white text-primary"><i class="fa fa-calendar-check"></i></span>
-									<input type="datetime-local" class="form-control" name="responseDTO.date_attention" required />
+									<input type="datetime-local" class="form-control" id="fechaAtencion" name="responseDTO.date_attention" required />
 								</div>
 							</div>
 
@@ -79,13 +79,28 @@
 									<span class="input-group-text bg-white text-primary"><i class="fa fa-align-left"></i></span>
 									<textarea
 										class="form-control"
+										id="descripcion"
 										name="responseDTO.description"
 										placeholder="Descripción de la cita"
 										rows="2"></textarea>
 								</div>
 							</div>
 							<div class="col-12 text-end mt-3">
-								<button type="submit" class="btn btn-primary px-4"><i class="fa fa-save me-1"></i> Guardar</button>
+								<!-- Botón de Guardar (visible por defecto) -->
+								<button type="submit" id="btnGuardar" class="btn btn-primary px-4">
+									<i class="fa fa-save me-1"></i> Guardar
+								</button>
+								
+								<!-- Botón de Actualizar (oculto inicialmente) -->
+								<button type="submit" id="btnActualizar" class="btn btn-warning px-4 d-none">
+									<i class="fa fa-sync me-1"></i> Actualizar
+								</button>
+								
+								<!-- Botón de Cancelar Edición (oculto inicialmente) -->
+								<button type="button" id="btnCancelarEdicion" class="btn btn-outline-secondary px-4 ms-2 d-none">
+									<i class="fa fa-times me-1"></i> Cancelar
+								</button>
+								
 								<button type="reset" class="btn btn-secondary px-4 ms-2">
 									<i class="fa fa-eraser me-1"></i> Limpiar
 								</button>
