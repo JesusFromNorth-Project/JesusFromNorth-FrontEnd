@@ -60,28 +60,30 @@ async function iniciarSesion(username, password, btnLogin) {
 			// 1. Guardar el token
 			localStorage.setItem(AUTH_KEYS.TOKEN, data.token);
 
-			// 2. Verificar si es administrador o doctor
-			const adminId = data.data?.id_admin;
+			// 2. Obtener el ID del usuario (admin o doctor)
+			const userId = data.data?.id_admin || data.data?.id_doctor;
 			const usernameToStore = data.data?.username || username;
 
-			if (adminId) {
-				// Es administrador
-				localStorage.setItem(AUTH_KEYS.USER_ID, adminId);
-			} else {
-				// Es doctor
-				console.log("Iniciando sesión como doctor");
-				localStorage.setItem(AUTH_KEYS.USER_ID, usernameToStore);
+			if (!userId) {
+				throw new Error("No se pudo obtener el ID del usuario");
 			}
 
-			// 3. Guardar la información de autenticación común
+			// 3. Guardar la información de autenticación
+			localStorage.setItem(AUTH_KEYS.USER_ID, userId);
 			localStorage.setItem(AUTH_KEYS.USERNAME, usernameToStore);
 			localStorage.setItem(AUTH_KEYS.ROLE, data.role || "user");
 
+			console.log("Datos de autenticación guardados:", {
+				userId: userId,
+				username: usernameToStore,
+				role: data.role || "user"
+			});
+
 			console.log("Datos guardados en localStorage:", {
-				userId: adminId || usernameToStore,
+				userId: userId,
 				username: usernameToStore,
 				role: data.role || "user",
-				isAdmin: !!adminId,
+				isAdmin: data.role === "ADMIN",
 			});
 
 			const userRole = data.role || "user";
