@@ -23,13 +23,12 @@
                 <span class="text-primary fw-bold me-3 mb-2">
                     <i class="fa fa-search"></i> Buscar Atención
                 </span>
-                <div class="input-group input-group-sm me-2 mb-2" style="width:180px;">
+                <div class="input-group input-group-sm me-2 mb-2" style="width:200px;">
                     <span class="input-group-text"><i class="fa fa-id-card"></i></span>
-                    <input type="text" class="form-control" placeholder="Ingrese tipo">
+                    <input type="text" class="form-control" placeholder="Ingrese DNI del paciente">
                 </div>
                 <button class="btn btn-primary btn-sm me-2 mb-2"><i class="fa fa-search"></i> Buscar</button>
                 <button class="btn btn-outline-secondary btn-sm me-2 mb-2"><i class="fa fa-list"></i> Mostrar Todos</button>
-                
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm table-striped mb-0">
@@ -40,36 +39,12 @@
                             <th><i class="fa fa-pills"></i> Tratamiento</th>
                             <th><i class="fa fa-user-md"></i> Tipo de Atención</th>
                             <th><i class="fa fa-calendar-alt"></i> Fecha</th>
+                            <th><i class="fa fa-id-card"></i> DNI Paciente</th>
                             <th><i class="fa fa-cogs"></i> Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Ejemplo de fila -->
-                        <tr>
-                            <td>1</td>
-                            <td>Gripe común</td>
-                            <td>Paracetamol, reposo</td>
-                            <td>Consulta Externa</td>
-                            <td>2025-06-25 09:30</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fa fa-trash"></i> Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Dolor de cabeza</td>
-                            <td>Ibuprofeno</td>
-                            <td>Emergencia</td>
-                            <td>2025-06-26 15:10</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fa fa-trash"></i> Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Más filas dinámicamente -->
+                        <!-- Las filas se cargarán dinámicamente desde la API -->
                     </tbody>
                 </table>
             </div>
