@@ -123,43 +123,98 @@ async function cargarCitasDoctor() {
 }
 
 function mostrarCitasEnTabla(citas) {
-	const tbody = document.querySelector("#tablaCitas tbody");
-	if (!tbody) return;
+    const tbody = document.querySelector("#tablaCitas tbody");
+    if (!tbody) {
+        console.error("No se encontró el cuerpo de la tabla de citas");
+        return;
+    }
 
-	tbody.innerHTML = ""; // Limpiar tabla
+    tbody.innerHTML = "";
 
-	if (citas.length === 0) {
-		const tr = document.createElement("tr");
-		tr.innerHTML = `
-            <td colspan="8" class="text-center">No hay citas programadas</td>
-        `;
-		tbody.appendChild(tr);
-		return;
-	}
+    if (!citas || citas.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-4">
+                    <i class="fas fa-calendar-times fa-2x text-muted mb-2"></i>
+                    <p class="mb-0">No se encontraron citas programadas</p>
+                </td>
+            </tr>`;
+        return;
+    }
 
-	citas.forEach((cita, index) => {
-		const tr = document.createElement("tr");
-		const pacienteNombre = cita.patient
-			? `${cita.patient.first_name || ""} ${cita.patient.last_name || ""}`.trim()
-			: "N/A";
-		const doctorNombre = cita.doctor ? `${cita.doctor.first_name || ""} ${cita.doctor.last_name || ""}`.trim() : "N/A";
+    // Ordenar citas por fecha (más recientes primero)
+    const citasOrdenadas = [...citas].sort((a, b) => {
+        return new Date(b.date_attention) - new Date(a.date_attention);
+    });
 
-		tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${formatearFechaHora(cita.date_attention)}</td>
-            <td>${cita.patient?.dni || "N/A"}</td>
-            <td>${pacienteNombre || "N/A"}</td>
-            <td>${cita.description || "N/A"}</td>
-            <td>${doctorNombre}</td>
-            <td>${cita.date_appointment ? new Date(cita.date_appointment).toLocaleString() : "N/A"}</td>
-            <td>
-                <button class="btn btn-success btn-sm me-1 btn-realizar-atencion" data-id="${cita.id_appointment}">
-                    <i class="fa fa-notes-medical"></i> Realizar Atención
-                </button>
+    citasOrdenadas.forEach((cita, index) => {
+        const tr = document.createElement("tr");
+        
+        // Formatear la fecha para mostrar
+        const fechaHora = formatearFechaHora(cita.date_attention || cita.appointmentDate);
+        const [fecha, hora] = fechaHora.split(' ');
+        
+        // Determinar si la cita está vencida
+        const ahora = new Date();
+        const fechaCita = new Date(cita.date_attention || cita.appointmentDate);
+        const esVencida = fechaCita < ahora;
+        
+        // Clases CSS según el estado de la cita
+        const claseFila = esVencida ? 'table-secondary' : '';
+        const textoBoton = esVencida ? 'Registrar Tardíamente' : 'Realizar Atención';
+        const iconoBoton = esVencida ? 'fa-clock' : 'fa-stethoscope';
+        
+        tr.innerHTML = `
+            <td class="${claseFila}">${index + 1}</td>
+            <td class="${claseFila}" data-fecha="${cita.date_attention || cita.appointmentDate}">
+                <div class="fw-bold">${fecha}</div>
+                <div class="text-muted small">${hora}</div>
             </td>
-        `;
-		tbody.appendChild(tr);
-	});
+            <td class="${claseFila}">${cita.patient?.dni || 'N/A'}</td>
+            <td class="${claseFila}">
+                <div class="fw-bold">${cita.patient?.first_name || ''} ${cita.patient?.last_name || ''}</div>
+                <div class="text-muted small">${cita.patient?.email || ''}</div>
+            </td>
+            <td class="${claseFila}">${cita.specialty?.name || cita.description || 'N/A'}</td>
+            <td class="${claseFila}">${cita.doctor?.first_name || ''} ${cita.doctor?.last_name || 'N/A'}</td>
+            <td class="${claseFila}">${cita.description || ''}</td>
+            <td class="text-center ${claseFila}">
+                <button class="btn btn-sm ${esVencida ? 'btn-warning' : 'btn-primary'} btn-realizar-atencion" 
+                        data-id="${cita.id_appointment || cita.id}"
+                        title="${textoBoton}">
+                    <i class="fas ${iconoBoton} me-1"></i> ${textoBoton}
+                </button>
+            </td>`;
+            
+        tbody.appendChild(tr);
+    });
+
+    // Usar delegación de eventos para los botones de realizar atención
+    tbody.addEventListener("click", (e) => {
+        const btn = e.target.closest(".btn-realizar-atencion");
+        if (!btn) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const citaId = btn.dataset.id;
+        if (!citaId) {
+            console.error("No se encontró el ID de la cita");
+            mostrarError("Error al cargar los datos de la cita");
+            return;
+        }
+        
+        // Encontrar la cita en la lista
+        const cita = citas.find(c => (c.id_appointment || c.id) == citaId);
+        if (!cita) {
+            console.error("No se encontró la cita con ID:", citaId);
+            mostrarError("No se pudo encontrar la cita seleccionada");
+            return;
+        }
+        
+        // Cargar los datos de la cita
+        cargarDatosCita(cita);
+    });
 }
 
 function formatearFechaHora(fechaHora) {
@@ -214,174 +269,466 @@ function configurarEventosFormulario() {
 	});
 }
 
-function cargarDatosCita(cita) {
-	citaSeleccionada = cita;
+async function cargarDatosCita(cita) {
+    try {
+        console.log("Cargando datos de la cita:", cita);
+        
+        // Verificar que la cita tenga los datos necesarios
+        if (!cita || !cita.id_appointment) {
+            throw new Error("Datos de la cita no válidos");
+        }
 
-	// Llenar datos de la cita
-	document.getElementById("idCita").value = cita.id;
-	document.getElementById("pacienteNombre").value = cita.paciente?.fullName || "N/A";
-	document.getElementById("pacienteDNI").value = cita.paciente?.dni || "N/A";
-	document.getElementById("fechaCita").value = formatearFechaHora(cita.appointmentDate);
-	document.getElementById("especialidad").value = cita.specialty?.name || "N/A";
+        // Obtener los detalles completos de la cita por su ID
+        const response = await fetch(`${BASE_URL}/appointments/${cita.id_appointment}`, {
+            headers: getAuthHeaders()
+        });
 
-	// Limpiar campos del formulario
-	document.getElementById("diagnostico").value = "";
-	document.getElementById("tratamiento").value = "";
-	document.getElementById("tipoAtencion").value = "";
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || "Error al cargar los detalles de la cita");
+        }
 
-	// Limpiar lista de medicamentos
-	document.getElementById("listaMedicamentos").innerHTML =
-		'<p class="text-muted mb-0">No hay medicamentos agregados</p>';
-	medicamentos = [];
+        const citaDetallada = await response.json();
+        console.log("Datos detallados de la cita:", citaDetallada);
+        
+        // Guardar la cita seleccionada
+        citaSeleccionada = citaDetallada.data || citaDetallada;
+        
+        // Obtener referencias a los elementos del formulario
+        const form = document.getElementById("formAtencion");
+        if (!form) {
+            throw new Error("No se encontró el formulario de atención");
+        }
 
-	// Mostrar el modal
-	const modal = new bootstrap.Modal(document.getElementById("modalAtencion"));
-	modal.show();
+        // Llenar datos de la cita en el formulario
+        const pacienteNombre = document.getElementById("pacienteNombre");
+        const pacienteDNI = document.getElementById("pacienteDNI");
+        const fechaCita = document.getElementById("fechaCita");
+        const especialidad = document.getElementById("especialidad");
+        const diagnostico = document.getElementById("diagnostico");
+        const tratamiento = document.getElementById("tratamiento");
+        const tipoAtencion = document.getElementById("tipoAtencion");
+        
+        // Verificar que todos los elementos existen
+        if (!pacienteNombre || !pacienteDNI || !fechaCita || !especialidad || 
+            !diagnostico || !tratamiento || !tipoAtencion) {
+            throw new Error("Elementos del formulario no encontrados");
+        }
+
+        // Llenar los campos con los datos de la cita
+        if (citaDetallada.patient) {
+            pacienteNombre.value = [
+                citaDetallada.patient.first_name || '',
+                citaDetallada.patient.last_name || ''
+            ].join(' ').trim() || 'N/A';
+            
+            pacienteDNI.value = citaDetallada.patient.dni || 'N/A';
+        } else {
+            pacienteNombre.value = 'N/A';
+            pacienteDNI.value = 'N/A';
+        }
+
+        fechaCita.value = formatearFechaHora(citaDetallada.date_attention || citaDetallada.appointmentDate);
+        especialidad.value = citaDetallada.specialty?.name || citaDetallada.description || "N/A";
+        
+        // Limpiar campos de diagnóstico y tratamiento
+        diagnostico.value = "";
+        tratamiento.value = "";
+        tipoAtencion.value = "CONSULTATION"; // Valor por defecto
+
+        // Limpiar lista de medicamentos
+        const listaMedicamentos = document.getElementById("listaMedicamentos");
+        if (listaMedicamentos) {
+            listaMedicamentos.innerHTML = '';
+            medicamentos = [];
+            actualizarListaMedicamentos();
+        }
+
+        // Cargar medicamentos disponibles si no están cargados
+        if (listaMedicamentosDisponibles.length === 0) {
+            await cargarMedicamentos();
+        }
+
+        // Mostrar el modal
+        const modalElement = document.getElementById("modalAtencion");
+        if (!modalElement) {
+            throw new Error("No se encontró el modal de atención");
+        }
+        
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modal.show();
+
+    } catch (error) {
+        console.error("Error al cargar datos de la cita:", error);
+        mostrarError(`Error al cargar los datos de la cita: ${error.message}`);
+    }
 }
 
 async function cargarMedicamentos() {
-	try {
-		const response = await fetch(`${MEDICINE_URL}/list?page=0`, {
-			headers: getAuthHeaders(),
-		});
+    try {
+        const response = await fetch(`${MEDICINE_URL}/list?page=0&size=100`, {
+            headers: getAuthHeaders()
+        });
 
-		if (!response.ok) {
-			throw new Error("Error al cargar los medicamentos");
-		}
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || "Error al cargar los medicamentos");
+        }
 
-		const data = await response.json();
-		if (data.data && Array.isArray(data.data)) {
-			listaMedicamentosDisponibles = data.data;
-			return data.data;
-		} else {
-			throw new Error("Formato de respuesta inesperado");
-		}
-	} catch (error) {
-		console.error("Error al cargar medicamentos:", error);
-		mostrarError("No se pudieron cargar los medicamentos");
-		return [];
-	}
+        const data = await response.json();
+        
+        if (data.data && Array.isArray(data.data)) {
+            listaMedicamentosDisponibles = data.data;
+            console.log("Medicamentos cargados:", listaMedicamentosDisponibles);
+            return data.data;
+        } else {
+            throw new Error("Formato de respuesta inesperado al cargar medicamentos");
+        }
+    } catch (error) {
+        console.error("Error al cargar medicamentos:", error);
+        mostrarError(`No se pudieron cargar los medicamentos: ${error.message}`);
+        return [];
+    }
 }
 
 async function agregarMedicamento() {
-	const listaMedicamentos = document.getElementById("listaMedicamentos");
-	const template = document.getElementById("templateMedicamento");
-	const nuevoMedicamento = template.content.cloneNode(true);
+    const listaMedicamentos = document.getElementById("listaMedicamentos");
+    const template = document.getElementById("templateMedicamento");
+    
+    // Verificar si existe el template
+    if (!template) {
+        console.error("No se encontró el template de medicamento");
+        mostrarError("Error al cargar el formulario de medicamentos");
+        return;
+    }
 
-	const select = nuevoMedicamento.querySelector(".medicamento-select");
+    // Clonar el template
+    const nuevoMedicamento = template.content.cloneNode(true);
+    const select = nuevoMedicamento.querySelector(".medicamento-select");
+    
+    try {
+        // Cargar medicamentos si no están cargados
+        if (listaMedicamentosDisponibles.length === 0) {
+            await cargarMedicamentos();
+        }
 
-	try {
-		// Cargar medicamentos si no están cargados
-		if (listaMedicamentosDisponibles.length === 0) {
-			await cargarMedicamentos();
-		}
+        // Verificar que hay medicamentos disponibles
+        if (listaMedicamentosDisponibles.length === 0) {
+            throw new Error("No hay medicamentos disponibles");
+        }
 
-		// Llenar el select con los medicamentos disponibles
-		select.innerHTML = '<option value="">Seleccione un medicamento</option>';
-		listaMedicamentosDisponibles.forEach((med) => {
-			const option = document.createElement("option");
-			option.value = med.id_medicine;
-			option.textContent = `${med.name} (${med.concentration} ${med.unit || ""})`;
-			select.appendChild(option);
-		});
-	} catch (error) {
-		console.error("Error al cargar medicamentos:", error);
-		mostrarError("No se pudieron cargar los medicamentos");
-	}
+        // Llenar el select con los medicamentos disponibles
+        select.innerHTML = '<option value="">Seleccione un medicamento</option>';
+        
+        listaMedicamentosDisponibles.forEach((med) => {
+            // Verificar que el medicamento tenga los campos requeridos
+            if (!med.id_medicine || !med.name) {
+                console.warn("Medicamento con datos incompletos:", med);
+                return; // Saltar medicamentos sin ID o nombre
+            }
+            
+            const option = document.createElement("option");
+            option.value = med.id_medicine;
+            
+            // Construir el texto mostrado en el select
+            let displayText = med.name;
+            if (med.concentration) {
+                displayText += ` (${med.concentration}`;
+                if (med.unit) {
+                    displayText += ` ${med.unit}`;
+                }
+                displayText += ") ";
+            }
+            
+            if (med.laboratory) {
+                displayText += ` - ${med.laboratory}`;
+            }
+            
+            option.textContent = displayText;
+            select.appendChild(option);
+        });
 
-	// Limpiar mensaje de "No hay medicamentos" si es la primera vez
-	if (listaMedicamentos.querySelector("p.text-muted")) {
-		listaMedicamentos.innerHTML = "";
-	}
+        // Agregar evento para mostrar detalles del medicamento seleccionado
+        select.addEventListener('change', (e) => {
+            const selectedId = e.target.value;
+            const medicamento = listaMedicamentosDisponibles.find(m => m.id_medicine == selectedId);
+            if (medicamento) {
+                // Actualizar tooltips o información adicional si es necesario
+                const item = e.target.closest('.medicamento-item');
+                if (item) {
+                    const dosisInput = item.querySelector('.medicamento-dosis');
+                    if (dosisInput) {
+                        dosisInput.placeholder = `Ej: 1 ${medicamento.unit || 'unidad'}`;
+                    }
+                }
+            }
+        });
 
-	listaMedicamentos.appendChild(nuevoMedicamento);
+        // Limpiar mensaje de "No hay medicamentos" si es la primera vez
+        if (listaMedicamentos.querySelector("p.text-muted")) {
+            listaMedicamentos.innerHTML = "";
+        }
+
+        // Agregar el nuevo medicamento a la lista
+        listaMedicamentos.appendChild(nuevoMedicamento);
+        
+        // Hacer scroll al nuevo elemento
+        listaMedicamentos.lastElementChild.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error("Error al agregar medicamento:", error);
+        mostrarError(`No se pudo agregar el medicamento: ${error.message}`);
+        
+        // Mostrar mensaje si no hay medicamentos
+        if (listaMedicamentos.children.length === 0) {
+            listaMedicamentos.innerHTML = 
+                '<div class="alert alert-warning">No se encontraron medicamentos disponibles</div>';
+        }
+    }
 }
 
 function actualizarListaMedicamentos() {
-	const listaMedicamentos = document.getElementById("listaMedicamentos");
-	if (listaMedicamentos.children.length === 0) {
-		listaMedicamentos.innerHTML = '<p class="text-muted mb-0">No hay medicamentos agregados</p>';
-	}
+    const listaMedicamentos = document.getElementById("listaMedicamentos");
+    if (!listaMedicamentos) {
+        console.error("No se encontró el contenedor de medicamentos");
+        return;
+    }
+
+    // Contar solo los elementos que son medicamentos (no mensajes de error o advertencia)
+    const itemsMedicamentos = listaMedicamentos.querySelectorAll('.medicamento-item');
+    
+    if (itemsMedicamentos.length === 0) {
+        // Verificar si ya hay un mensaje mostrado
+        const existingMessage = listaMedicamentos.querySelector('.alert-warning, .text-muted');
+        if (!existingMessage) {
+            listaMedicamentos.innerHTML = `
+                <div class="d-flex flex-column align-items-center justify-content-center py-4">
+                    <i class="fas fa-pills fa-3x text-muted mb-3"></i>
+                    <p class="text-muted mb-0">No hay medicamentos agregados</p>
+                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="agregarMedicamento()">
+                        <i class="fas fa-plus me-1"></i> Agregar Medicamento
+                    </button>
+                </div>`;
+        }
+    }
 }
 
 async function guardarAtencion() {
-	if (!citaSeleccionada) return;
+    if (!citaSeleccionada) {
+        mostrarError("No se ha seleccionado ninguna cita");
+        return;
+    }
 
-	const form = document.getElementById("formAtencion");
-	if (!form.checkValidity()) {
-		form.classList.add("was-validated");
-		return;
-	}
+    const form = document.getElementById("formAtencion");
+    if (!form.checkValidity()) {
+        form.classList.add("was-validated");
+        return;
+    }
 
-	// Recolectar datos del formulario
-	const atencionData = {
-		diagnosis: document.getElementById("diagnostico").value,
-		treatment: document.getElementById("tratamiento").value,
-		attentionType: document.getElementById("tipoAtencion").value,
-		prescriptions: [],
-	};
+    // Mostrar carga
+    const btnGuardar = document.getElementById("btnGuardarAtencion");
+    const btnText = btnGuardar.innerHTML;
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
 
-	// Recolectar medicamentos
-	const itemsMedicamentos = document.querySelectorAll(".medicamento-item");
-	itemsMedicamentos.forEach((item) => {
-		atencionData.prescriptions.push({
-			id_medicine: item.querySelector(".medicamento-select").value,
-			dose: parseFloat(item.querySelector(".medicamento-dosis").value),
-			frequency: parseFloat(item.querySelector(".medicamento-frecuencia").value),
-			duration: item.querySelector(".medicamento-duracion").value,
-			medicationFormat: "TABLETS", // Por defecto, podrías hacerlo seleccionable
-		});
-	});
+    try {
+        // Recolectar datos del formulario
+        const atencionData = {
+            diagnosis: document.getElementById("diagnostico").value.trim(),
+            treatment: document.getElementById("tratamiento").value.trim(),
+            attentionType: document.getElementById("tipoAtencion").value,
+            prescriptions: [],
+        };
 
-	try {
-		const response = await fetch(`${ATTENTION_URL}/appointment/${citaSeleccionada.id}`, {
-			method: "POST",
-			headers: getAuthHeaders(),
-			body: JSON.stringify(atencionData),
-		});
+        // Validar que se haya seleccionado un tipo de atención
+        if (!atencionData.attentionType) {
+            throw new Error("Por favor seleccione un tipo de atención");
+        }
 
-		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}));
-			throw new Error(errorData.message || "Error al guardar la atención");
-		}
+        // Recolectar medicamentos
+        const itemsMedicamentos = document.querySelectorAll(".medicamento-item");
+        itemsMedicamentos.forEach((item) => {
+            const medicamentoId = item.querySelector(".medicamento-select").value;
+            const dosis = parseFloat(item.querySelector(".medicamento-dosis").value);
+            const frecuencia = parseFloat(item.querySelector(".medicamento-frecuencia").value);
+            const duracion = item.querySelector(".medicamento-duracion").value.trim();
 
-		const data = await response.json();
-		mostrarExito("Atención registrada correctamente");
+            // Validar campos de medicamento
+            if (!medicamentoId) {
+                throw new Error("Por favor seleccione un medicamento");
+            }
+            if (isNaN(dosis) || dosis <= 0) {
+                throw new Error("La dosis debe ser un número mayor a cero");
+            }
+            if (isNaN(frecuencia) || frecuencia <= 0) {
+                throw new Error("La frecuencia debe ser un número mayor a cero");
+            }
+            if (!duracion) {
+                throw new Error("La duración es requerida");
+            }
 
-		// Cerrar el modal
-		const modal = bootstrap.Modal.getInstance(document.getElementById("modalAtencion"));
-		modal.hide();
+            atencionData.prescriptions.push({
+                id_medicine: medicamentoId,
+                dose: dosis,
+                frequency: frecuencia,
+                duration: duracion,
+                medicationFormat: "TABLETS", // Valor por defecto
+            });
+        });
 
-		// Opcional: actualizar la lista de citas
-		await cargarCitasDoctor();
-	} catch (error) {
-		console.error("Error al guardar atención:", error);
-		mostrarError(error.message || "Error al guardar la atención");
-	}
+        // Realizar la petición al servidor
+        const response = await fetch(`${ATTENTION_URL}/appointment/${citaSeleccionada.id_appointment}`, {
+            method: "POST",
+            headers: {
+                ...getAuthHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(atencionData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Error al guardar la atención (${response.status})`);
+        }
+
+        const data = await response.json();
+        
+        // Mostrar mensaje de éxito
+        mostrarExito(data.message || "Atención registrada correctamente");
+
+        // Cerrar el modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById("modalAtencion"));
+        modal.hide();
+
+        // Actualizar la lista de citas
+        await cargarCitasDoctor();
+        
+    } catch (error) {
+        console.error("Error al guardar atención:", error);
+        mostrarError(error.message || "Error al procesar la atención. Por favor, intente nuevamente.");
+    } finally {
+        // Restaurar el botón
+        btnGuardar.disabled = false;
+        btnGuardar.innerHTML = btnText;
+    }
 }
 
 // 8. Inicialización
+let eventListenersInitialized = false; // Bandera para controlar la inicialización de eventos
+
 async function inicializarPagina() {
-	if (!verificarAutenticacion()) return;
+    // Verificar autenticación
+    if (!verificarAutenticacion()) {
+        return;
+    }
 
-	try {
-		await cargarSidebar();
+    try {
+        // Cargar la barra lateral
+        await cargarSidebar();
 
-		// Verificar que tenemos el ID del doctor
-		const doctorId = localStorage.getItem(AUTH_KEYS.USER_ID);
-		if (!doctorId) {
-			throw new Error("No se encontró el ID del doctor. Por favor, inicia sesión nuevamente.");
-		}
+        // Verificar que tenemos el ID del doctor
+        const doctorId = localStorage.getItem(AUTH_KEYS.USER_ID);
+        if (!doctorId) {
+            throw new Error("No se encontró el ID del doctor. Por favor, inicia sesión nuevamente.");
+        }
 
-		console.log("ID del doctor obtenido:", doctorId);
+        console.log("ID del doctor obtenido:", doctorId);
 
-		// Cargar citas y medicamentos en paralelo
-		await Promise.all([cargarCitasDoctor(), cargarMedicamentos()]);
-	} catch (error) {
-		console.error("Error al inicializar la página:", error);
-		mostrarError(error.message || "Error al cargar la aplicación");
-	}
+        // Cargar citas y medicamentos en paralelo
+        await Promise.all([
+            cargarCitasDoctor(),
+            cargarMedicamentos()
+        ]);
+
+        // Inicializar eventos solo una vez
+        if (!eventListenersInitialized) {
+            inicializarEventos();
+            eventListenersInitialized = true;
+        }
+
+    } catch (error) {
+        console.error("Error al inicializar la página:", error);
+        mostrarError(error.message || "Error al cargar la aplicación");
+    }
 }
 
-// 6. Eventos
+// Función para inicializar todos los eventos
+function inicializarEventos() {
+    // Configurar el botón de guardar atención (usando delegación de eventos)
+    document.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'btnGuardarAtencion') {
+            e.preventDefault();
+            guardarAtencion();
+        }
+        
+        // Configurar el botón para agregar medicamento
+        if (e.target && e.target.id === 'btnAgregarMedicamento') {
+            e.preventDefault();
+            e.stopPropagation(); // Prevenir doble ejecución
+            agregarMedicamento();
+        }
+        
+        // Configurar botones de eliminar medicamento
+        if (e.target && e.target.closest('.btn-eliminar-medicamento')) {
+            e.preventDefault();
+            const item = e.target.closest('.medicamento-item');
+            if (item) {
+                item.remove();
+                actualizarListaMedicamentos();
+            }
+        }
+        
+        // Configurar botón de limpiar formulario
+        if (e.target && e.target.id === 'btnLimpiarFormulario') {
+            e.preventDefault();
+            limpiarFormularioAtencion();
+        }
+    });
+
+    // Configurar el modal para que se reinicie al cerrarse
+    const modalAtencion = document.getElementById('modalAtencion');
+    if (modalAtencion) {
+        // Remover cualquier listener previo para evitar duplicados
+        const modalInstance = bootstrap.Modal.getInstance(modalAtencion);
+        if (modalInstance) {
+            modalInstance.dispose();
+        }
+        
+        // Inicializar el modal de Bootstrap
+        const modal = new bootstrap.Modal(modalAtencion);
+        
+        // Agregar evento para limpiar el formulario al cerrar
+        modalAtencion.addEventListener('hidden.bs.modal', function () {
+            limpiarFormularioAtencion();
+        });
+    }
+}
+
+// 9. Funciones de utilidad para el formulario
+function limpiarFormularioAtencion() {
+    // Limpiar campos del formulario
+    const form = document.getElementById("formAtencion");
+    if (form) {
+        form.reset();
+        form.classList.remove("was-validated");
+    }
+
+    // Limpiar lista de medicamentos
+    const listaMedicamentos = document.getElementById("listaMedicamentos");
+    if (listaMedicamentos) {
+        listaMedicamentos.innerHTML = '';
+        actualizarListaMedicamentos();
+    }
+
+    // Limpiar cita seleccionada
+    citaSeleccionada = null;
+    
+    // Limpiar mensajes de error/éxito
+    const mensajes = document.querySelectorAll('.alert-dismissible');
+    mensajes.forEach(mensaje => {
+        mensaje.remove();
+    });
+}
+
+// 10. Eventos
 document.addEventListener("DOMContentLoaded", inicializarPagina);
