@@ -404,222 +404,221 @@ async function cargarMedicamentos() {
 }
 
 async function agregarMedicamento() {
-    const listaMedicamentos = document.getElementById("listaMedicamentos");
-    const template = document.getElementById("template-medicamento");
-    const sinMedicamentos = document.getElementById("sinMedicamentos");
+	const listaMedicamentos = document.getElementById("listaMedicamentos");
+	const template = document.getElementById("template-medicamento");
+	const sinMedicamentos = document.getElementById("sinMedicamentos");
 
-    if (!template) {
-        console.error("No se encontró el template de medicamento");
-        mostrarError("Error al cargar el formulario de medicamentos");
-        return;
-    }
+	if (!template) {
+		console.error("No se encontró el template de medicamento");
+		mostrarError("Error al cargar el formulario de medicamentos");
+		return;
+	}
 
-    // Ocultar mensaje de "No hay medicamentos"
-    if (sinMedicamentos) {
-        sinMedicamentos.style.display = "none";
-    }
+	// Ocultar mensaje de "No hay medicamentos"
+	if (sinMedicamentos) {
+		sinMedicamentos.style.display = "none";
+	}
 
-    try {
-        // Cargar medicamentos si no están cargados
-        if (listaMedicamentosDisponibles.length === 0) {
-            await cargarMedicamentos();
-        }
+	try {
+		// Cargar medicamentos si no están cargados
+		if (listaMedicamentosDisponibles.length === 0) {
+			await cargarMedicamentos();
+		}
 
-        if (listaMedicamentosDisponibles.length === 0) {
-            throw new Error("No hay medicamentos disponibles");
-        }
+		if (listaMedicamentosDisponibles.length === 0) {
+			throw new Error("No hay medicamentos disponibles");
+		}
 
-        // Clonar el template
-        const nuevoMedicamento = template.content.cloneNode(true);
-        const medicamentoItem = nuevoMedicamento.querySelector(".medicamento-item");
-        const select = nuevoMedicamento.querySelector(".medicamento-select");
+		// Clonar el template
+		const nuevoMedicamento = template.content.cloneNode(true);
+		const medicamentoItem = nuevoMedicamento.querySelector(".medicamento-item");
+		const select = nuevoMedicamento.querySelector(".medicamento-select");
 
-        // Llenar el select con los medicamentos disponibles
-        select.innerHTML = '<option value="">Seleccione un medicamento</option>';
-        
-        listaMedicamentosDisponibles.forEach(med => {
-            if (!med.id_medicine || !med.medicine_name) {
-                console.warn("Medicamento con datos incompletos:", med);
-                return;
-            }
+		// Llenar el select con los medicamentos disponibles
+		select.innerHTML = '<option value="">Seleccione un medicamento</option>';
 
-            const option = document.createElement("option");
-            option.value = med.id_medicine;
-            option.textContent = med.medicine_name;
-            select.appendChild(option);
-        });
+		listaMedicamentosDisponibles.forEach((med) => {
+			if (!med.id_medicine || !med.medicine_name) {
+				console.warn("Medicamento con datos incompletos:", med);
+				return;
+			}
 
-        // Configurar evento de eliminación
-        const btnEliminar = nuevoMedicamento.querySelector(".btn-eliminar-medicamento");
-        if (btnEliminar) {
-            btnEliminar.addEventListener("click", function() {
-                medicamentoItem.remove();
-                
-                // Mostrar mensaje si no quedan medicamentos
-                if (listaMedicamentos.querySelectorAll(".medicamento-item").length === 0) {
-                    if (sinMedicamentos) {
-                        sinMedicamentos.style.display = "block";
-                    }
-                }
-            });
-        }
+			const option = document.createElement("option");
+			option.value = med.id_medicine;
+			option.textContent = med.medicine_name;
+			select.appendChild(option);
+		});
 
-        // Agregar el nuevo medicamento a la lista
-        listaMedicamentos.appendChild(nuevoMedicamento);
+		// Configurar evento de eliminación
+		const btnEliminar = nuevoMedicamento.querySelector(".btn-eliminar-medicamento");
+		if (btnEliminar) {
+			btnEliminar.addEventListener("click", function () {
+				medicamentoItem.remove();
 
-        // Desplazarse al nuevo elemento
-        medicamentoItem.scrollIntoView({ behavior: "smooth" });
+				// Mostrar mensaje si no quedan medicamentos
+				if (listaMedicamentos.querySelectorAll(".medicamento-item").length === 0) {
+					if (sinMedicamentos) {
+						sinMedicamentos.style.display = "block";
+					}
+				}
+			});
+		}
 
-    } catch (error) {
-        console.error("Error al agregar medicamento:", error);
-        mostrarError(`No se pudo agregar el medicamento: ${error.message}`);
-        
-        // Mostrar mensaje de error si no hay medicamentos
-        if (listaMedicamentos.children.length === 0) {
-            listaMedicamentos.innerHTML = `
+		// Agregar el nuevo medicamento a la lista
+		listaMedicamentos.appendChild(nuevoMedicamento);
+
+		// Desplazarse al nuevo elemento
+		medicamentoItem.scrollIntoView({ behavior: "smooth" });
+	} catch (error) {
+		console.error("Error al agregar medicamento:", error);
+		mostrarError(`No se pudo agregar el medicamento: ${error.message}`);
+
+		// Mostrar mensaje de error si no hay medicamentos
+		if (listaMedicamentos.children.length === 0) {
+			listaMedicamentos.innerHTML = `
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     No se encontraron medicamentos disponibles
                 </div>`;
-        }
-    }
+		}
+	}
 }
 
 function actualizarListaMedicamentos() {
-    const listaMedicamentos = document.getElementById("listaMedicamentos");
-    if (!listaMedicamentos) {
-        console.error("No se encontró el contenedor de medicamentos");
-        return;
-    }
+	const listaMedicamentos = document.getElementById("listaMedicamentos");
+	if (!listaMedicamentos) {
+		console.error("No se encontró el contenedor de medicamentos");
+		return;
+	}
 
-    const itemsMedicamentos = listaMedicamentos.querySelectorAll(".medicamento-item");
-    const sinMedicamentos = document.getElementById("sinMedicamentos");
+	const itemsMedicamentos = listaMedicamentos.querySelectorAll(".medicamento-item");
+	const sinMedicamentos = document.getElementById("sinMedicamentos");
 
-    // Mostrar u ocultar el mensaje de "No hay medicamentos"
-    if (itemsMedicamentos.length === 0) {
-        if (!sinMedicamentos) {
-            listaMedicamentos.innerHTML = `
+	// Mostrar u ocultar el mensaje de "No hay medicamentos"
+	if (itemsMedicamentos.length === 0) {
+		if (!sinMedicamentos) {
+			listaMedicamentos.innerHTML = `
                 <div id="sinMedicamentos" class="alert alert-info mb-0">
                     <small><i class="fas fa-info-circle me-1"></i> No se han agregado medicamentos.</small>
                 </div>`;
-        } else {
-            sinMedicamentos.style.display = 'block';
-        }
-    } else if (sinMedicamentos) {
-        sinMedicamentos.style.display = 'none';
-    }
+		} else {
+			sinMedicamentos.style.display = "block";
+		}
+	} else if (sinMedicamentos) {
+		sinMedicamentos.style.display = "none";
+	}
 }
 
 async function guardarAtencion() {
-    if (!citaSeleccionada) {
-        mostrarError("No se ha seleccionado ninguna cita");
-        return;
-    }
+	if (!citaSeleccionada) {
+		mostrarError("No se ha seleccionado ninguna cita");
+		return;
+	}
 
-    const form = document.getElementById("formAtencion");
-    if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
-    }
+	const form = document.getElementById("formAtencion");
+	if (!form.checkValidity()) {
+		form.classList.add("was-validated");
+		return;
+	}
 
-    const btnGuardar = document.getElementById("btnGuardarAtencion");
-    const btnText = btnGuardar.innerHTML;
-    btnGuardar.disabled = true;
-    btnGuardar.innerHTML = 
-        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+	const btnGuardar = document.getElementById("btnGuardarAtencion");
+	const btnText = btnGuardar.innerHTML;
+	btnGuardar.disabled = true;
+	btnGuardar.innerHTML =
+		'<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
 
-    try {
-        // Obtener los datos básicos del formulario
-        const atencionData = {
-            diagnosis: document.getElementById("diagnostico").value.trim(),
-            treatment: document.getElementById("tratamiento").value.trim(),
-            attentionType: document.getElementById("tipoAtencion").value,
-            prescriptions: []
-        };
+	try {
+		// Obtener los datos básicos del formulario
+		const atencionData = {
+			diagnosis: document.getElementById("diagnostico").value.trim(),
+			treatment: document.getElementById("tratamiento").value.trim(),
+			attentionType: document.getElementById("tipoAtencion").value,
+			prescriptions: [],
+		};
 
-        // Validar que se haya seleccionado un tipo de atención
-        if (!atencionData.attentionType) {
-            throw new Error("Por favor seleccione un tipo de atención");
-        }
+		// Validar que se haya seleccionado un tipo de atención
+		if (!atencionData.attentionType) {
+			throw new Error("Por favor seleccione un tipo de atención");
+		}
 
-        // Procesar los medicamentos si los hay
-        const itemsMedicamentos = document.querySelectorAll(".medicamento-item");
-        
-        itemsMedicamentos.forEach((item, index) => {
-            const select = item.querySelector(".medicamento-select");
-            const dosisInput = item.querySelector(".medicamento-dosis");
-            const frecuenciaInput = item.querySelector(".medicamento-frecuencia");
-            const duracionInput = item.querySelector(".medicamento-duracion");
-            const formatoSelect = item.querySelector(".medicamento-formato");
-            
-            // Validar que todos los campos requeridos estén completos
-            if (!select || !dosisInput || !frecuenciaInput || !duracionInput || !formatoSelect) {
-                console.warn("Estructura de medicamento incompleta en el índice:", index);
-                return;
-            }
+		// Procesar los medicamentos si los hay
+		const itemsMedicamentos = document.querySelectorAll(".medicamento-item");
 
-            const medicamentoId = select.value;
-            const dosis = dosisInput.value.trim();
-            const frecuencia = frecuenciaInput.value.trim();
-            const duracion = duracionInput.value.trim();
-            const formato = formatoSelect.value;
+		itemsMedicamentos.forEach((item, index) => {
+			const select = item.querySelector(".medicamento-select");
+			const dosisInput = item.querySelector(".medicamento-dosis");
+			const frecuenciaInput = item.querySelector(".medicamento-frecuencia");
+			const duracionInput = item.querySelector(".medicamento-duracion");
+			const formatoSelect = item.querySelector(".medicamento-formato");
 
-            // Validar campos obligatorios
-            if (!medicamentoId) {
-                throw new Error(`Por favor seleccione un medicamento en el ítem ${index + 1}`);
-            }
-            if (!dosis) {
-                throw new Error(`Ingrese la dosis en el ítem ${index + 1}`);
-            }
-            if (!frecuencia) {
-                throw new Error(`Ingrese la frecuencia en el ítem ${index + 1}`);
-            }
-            if (!duracion) {
-                throw new Error(`Ingrese la duración en el ítem ${index + 1}`);
-            }
+			// Validar que todos los campos requeridos estén completos
+			if (!select || !dosisInput || !frecuenciaInput || !duracionInput || !formatoSelect) {
+				console.warn("Estructura de medicamento incompleta en el índice:", index);
+				return;
+			}
 
-            // Agregar el medicamento a la lista
-            atencionData.prescriptions.push({
-                id_medicine: parseInt(medicamentoId, 10),
-                dose: dosis,
-                frequency: frecuencia,
-                duration: duracion,
-                medicationFormat: formato
-            });
-        });
+			const medicamentoId = select.value;
+			const dosis = dosisInput.value.trim();
+			const frecuencia = frecuenciaInput.value.trim();
+			const duracion = duracionInput.value.trim();
+			const formato = formatoSelect.value;
 
-        console.log("Enviando datos de atención:", atencionData);
+			// Validar campos obligatorios
+			if (!medicamentoId) {
+				throw new Error(`Por favor seleccione un medicamento en el ítem ${index + 1}`);
+			}
+			if (!dosis) {
+				throw new Error(`Ingrese la dosis en el ítem ${index + 1}`);
+			}
+			if (!frecuencia) {
+				throw new Error(`Ingrese la frecuencia en el ítem ${index + 1}`);
+			}
+			if (!duracion) {
+				throw new Error(`Ingrese la duración en el ítem ${index + 1}`);
+			}
 
-        // Enviar la solicitud al servidor
-        const response = await fetch(`${ATTENTION_URL}/appointment/${citaSeleccionada.id_appointment}`, {
-            method: "POST",
-            headers: {
-                ...getAuthHeaders(),
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(atencionData)
-        });
+			// Agregar el medicamento a la lista
+			atencionData.prescriptions.push({
+				id_medicine: parseInt(medicamentoId, 10),
+				dose: dosis,
+				frequency: frecuencia,
+				duration: duracion,
+				medicationFormat: formato,
+			});
+		});
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `Error al guardar la atención (${response.status})`);
-        }
+		console.log("Enviando datos de atención:", atencionData);
 
-        const data = await response.json();
-        mostrarExito(data.message || "Atención registrada correctamente");
+		// Enviar la solicitud al servidor
+		const response = await fetch(`${ATTENTION_URL}/appointment/${citaSeleccionada.id_appointment}`, {
+			method: "POST",
+			headers: {
+				...getAuthHeaders(),
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(atencionData),
+		});
 
-        // Cerrar el modal y recargar las citas
-        const modal = bootstrap.Modal.getInstance(document.getElementById("modalAtencion"));
-        modal.hide();
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || `Error al guardar la atención (${response.status})`);
+		}
 
-        await cargarCitasDoctor();
-    } catch (error) {
-        console.error("Error al guardar atención:", error);
-        mostrarError(error.message || "Error al procesar la atención. Por favor, intente nuevamente.");
-    } finally {
-        btnGuardar.disabled = false;
-        btnGuardar.innerHTML = btnText;
-    }
+		const data = await response.json();
+		mostrarExito(data.message || "Atención registrada correctamente");
+
+		// Cerrar el modal y recargar las citas
+		const modal = bootstrap.Modal.getInstance(document.getElementById("modalAtencion"));
+		modal.hide();
+
+		await cargarCitasDoctor();
+	} catch (error) {
+		console.error("Error al guardar atención:", error);
+		mostrarError(error.message || "Error al procesar la atención. Por favor, intente nuevamente.");
+	} finally {
+		btnGuardar.disabled = false;
+		btnGuardar.innerHTML = btnText;
+	}
 }
 
 // 8. Inicialización
@@ -653,35 +652,35 @@ async function inicializarPagina() {
 }
 
 function inicializarEventos() {
-    // Manejador para el botón de guardar atención
-    document.getElementById('btnGuardarAtencion')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        guardarAtencion();
-    });
+	// Manejador para el botón de guardar atención
+	document.getElementById("btnGuardarAtencion")?.addEventListener("click", (e) => {
+		e.preventDefault();
+		guardarAtencion();
+	});
 
-    // Manejador para el botón de agregar medicamento
-    document.getElementById('btnAgregarMedicamento')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        agregarMedicamento();
-    });
+	// Manejador para el botón de agregar medicamento
+	document.getElementById("btnAgregarMedicamento")?.addEventListener("click", (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		agregarMedicamento();
+	});
 
-    // Manejador para el botón de cerrar formulario
-    document.getElementById('cerrarFormAtencion')?.addEventListener('click', () => {
-        document.getElementById('formAtencionContainer').classList.add('d-none');
-    });
+	// Manejador para el botón de cerrar formulario
+	document.getElementById("cerrarFormAtencion")?.addEventListener("click", () => {
+		document.getElementById("formAtencionContainer").classList.add("d-none");
+	});
 
-    // Manejador para el botón de cancelar atención
-    document.getElementById('cancelarAtencion')?.addEventListener('click', () => {
-        document.getElementById('formAtencionContainer').classList.add('d-none');
-    });
+	// Manejador para el botón de cancelar atención
+	document.getElementById("cancelarAtencion")?.addEventListener("click", () => {
+		document.getElementById("formAtencionContainer").classList.add("d-none");
+	});
 
-    // Manejador para los botones de eliminar medicamento (delegación de eventos)
-    document.getElementById('listaMedicamentos')?.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-eliminar-medicamento')) {
-            e.preventDefault();
-            const item = e.target.closest('.medicamento-item');
-            if (item) {
+	// Manejador para los botones de eliminar medicamento (delegación de eventos)
+	document.getElementById("listaMedicamentos")?.addEventListener("click", (e) => {
+		if (e.target.closest(".btn-eliminar-medicamento")) {
+			e.preventDefault();
+			const item = e.target.closest(".medicamento-item");
+			if (item) {
 				item.remove();
 				actualizarListaMedicamentos();
 			}
