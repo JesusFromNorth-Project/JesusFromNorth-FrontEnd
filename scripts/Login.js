@@ -5,10 +5,6 @@ import { AUTH_KEYS, limpiarSesion } from "./utils/auth.js";
 const API_URL = "http://localhost:8080/system_clinic/api/v0.1";
 
 // 3. FUNCIONES SÍNCRONAS
-/**
- * Muestra un mensaje de error en la interfaz
- * @param {string} mensaje - Mensaje de error a mostrar
- */
 function mostrarError(mensaje) {
 	const errorDiv = document.getElementById("errorMessage");
 	if (errorDiv) {
@@ -25,22 +21,11 @@ function mostrarError(mensaje) {
 	}
 }
 
-/**
- * Restablece el estado del botón de inicio de sesión
- * @param {HTMLButtonElement} btnLogin - Elemento del botón de inicio de sesión
- */
 function resetLoginButton(btnLogin) {
 	btnLogin.disabled = false;
 	btnLogin.textContent = "Iniciar sesión";
 }
 
-// 4. FUNCIONES ASÍNCRONAS
-/**
- * Realiza el proceso de autenticación
- * @param {string} username - Nombre de usuario
- * @param {string} password - Contraseña
- * @param {HTMLButtonElement} btnLogin - Elemento del botón de inicio de sesión
- */
 async function iniciarSesion(username, password, btnLogin) {
 	try {
 		const response = await fetch(`${API_URL}/auth/login`, {
@@ -76,7 +61,7 @@ async function iniciarSesion(username, password, btnLogin) {
 			console.log("Datos de autenticación guardados:", {
 				userId: userId,
 				username: usernameToStore,
-				role: data.role || "user"
+				role: data.role || "user",
 			});
 
 			console.log("Datos guardados en localStorage:", {
@@ -104,9 +89,7 @@ async function iniciarSesion(username, password, btnLogin) {
 }
 
 // 5. EVENTOS Y ASIGNACIONES GLOBALES
-// Inicialización cuando el DOM está listo
 document.addEventListener("DOMContentLoaded", () => {
-	// Limpiar sesión previa al cargar la página de login
 	limpiarSesion();
 
 	const form = document.getElementById("loginForm");

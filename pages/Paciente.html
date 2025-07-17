@@ -41,21 +41,21 @@
                                 <label class="fw-semibold">DNI</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fa fa-id-card"></i></span>
-                                    <input type="text" class="form-control" placeholder="DNI" name="dni" required />
+                                    <input type="text" class="form-control" placeholder="DNI" name="dni" maxlength="8" pattern="\d{8}" title="El DNI debe tener exactamente 8 dígitos" required />
                                 </div>
                             </div>
                             <div class="col-12 col-md-2 mb-2">
                                 <label class="fw-semibold">Fecha de Nacimiento</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fa fa-birthday-cake"></i></span>
-                                    <input type="date" class="form-control" name="birthday" required />
+                                    <input type="date" class="form-control" name="birthday" id="fechaNacimiento" max="2025-12-31" required />
                                 </div>
                             </div>
                             <div class="col-12 col-md-2 mb-2">
                                 <label class="fw-semibold">Edad</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fa fa-hourglass-half"></i></span>
-                                    <input type="number" class="form-control" placeholder="Edad" name="edad" min="0" required />
+                                    <input type="number" class="form-control" placeholder="Edad" id="edadInput" name="edad" min="0" max="120" readonly required />
                                 </div>
                             </div>
                         </div>
@@ -71,14 +71,14 @@
                                 <label class="fw-semibold">Teléfono</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fa fa-phone"></i></span>
-                                    <input type="tel" class="form-control" placeholder="Teléfono" name="telefono" required />
+                                    <input type="tel" class="form-control" placeholder="Teléfono" name="telefono" pattern="[0-9]{7,9}" title="El teléfono debe tener entre 7 y 9 dígitos" required />
                                 </div>
                             </div>
                             <div class="col-12 col-md-3 mb-2">
                                 <label class="fw-semibold">Celular</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="fa fa-mobile-alt"></i></span>
-                                    <input type="tel" class="form-control" placeholder="Celular" name="celular" required />
+                                    <input type="tel" class="form-control" placeholder="Celular" name="celular" pattern="[0-9]{9}" title="El celular debe tener exactamente 9 dígitos" required />
                                 </div>
                             </div>
                             <div class="col-12 col-md-3 mb-2">
@@ -97,7 +97,8 @@
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label class="fw-semibold">Antecedente</label>
-                                <textarea class="form-control" name="antecedente" rows="2" placeholder="Antecedente"></textarea>
+                                <textarea class="form-control" name="antecedente" rows="2" placeholder="Antecedente" maxlength="1000"></textarea>
+                                <small class="text-muted">Máximo 1000 caracteres</small>
                             </div>
                         </div>
                         <div class="row">
