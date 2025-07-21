@@ -251,81 +251,81 @@ function cerrarSesion() {
 }
 
 function validarFormularioPacientes(formData) {
-  const errors = [];
-  const telefono = formData.get("telefono")?.trim() || "";
-  const celular = formData.get("celular")?.trim() || "";
-  const genero = formData.get("genero");
+	const errors = [];
+	const telefono = formData.get("telefono")?.trim() || "";
+	const celular = formData.get("celular")?.trim() || "";
+	const genero = formData.get("genero");
 
-  // 1. Validar Nombre (obligatorio)
-  if (!formData.get("nombre")?.trim()) {
-    errors.push("El nombre es obligatorio");
-  }
+	// 1. Validar Nombre (obligatorio)
+	if (!formData.get("nombre")?.trim()) {
+		errors.push("El nombre es obligatorio");
+	}
 
-  // 2. Validar Apellidos (obligatorio)
-  if (!formData.get("apellidos")?.trim()) {
-    errors.push("Los apellidos son obligatorios");
-  }
+	// 2. Validar Apellidos (obligatorio)
+	if (!formData.get("apellidos")?.trim()) {
+		errors.push("Los apellidos son obligatorios");
+	}
 
-  // 3. Validar DNI (obligatorio, 8 dígitos)
-  const dni = formData.get("dni")?.trim() || "";
-  if (!dni) {
-    errors.push("El DNI es obligatorio");
-  } else if (!/^[0-9]{8}$/.test(dni)) {
-    errors.push("El DNI debe tener exactamente 8 dígitos numéricos");
-  }
+	// 3. Validar DNI (obligatorio, 8 dígitos)
+	const dni = formData.get("dni")?.trim() || "";
+	if (!dni) {
+		errors.push("El DNI es obligatorio");
+	} else if (!/^[0-9]{8}$/.test(dni)) {
+		errors.push("El DNI debe tener exactamente 8 dígitos numéricos");
+	}
 
-  // 4. Validar Fecha de Nacimiento (obligatoria)
-  const fechaNacimiento = formData.get("birthday")?.trim();
-  if (!fechaNacimiento) {
-    errors.push("La fecha de nacimiento es obligatoria");
-  }
+	// 4. Validar Fecha de Nacimiento (obligatoria)
+	const fechaNacimiento = formData.get("birthday")?.trim();
+	if (!fechaNacimiento) {
+		errors.push("La fecha de nacimiento es obligatoria");
+	}
 
-  // 5. Calcular y validar Edad automáticamente
-  const edadInput = document.getElementById("edadInput");
-  if (fechaNacimiento) {
-    const edadCalculada = calcularEdad(fechaNacimiento);
-    if (edadInput) {
-      edadInput.value = edadCalculada > 0 ? edadCalculada : "";
-    }
-  }
+	// 5. Calcular y validar Edad automáticamente
+	const edadInput = document.getElementById("edadInput");
+	if (fechaNacimiento) {
+		const edadCalculada = calcularEdad(fechaNacimiento);
+		if (edadInput) {
+			edadInput.value = edadCalculada > 0 ? edadCalculada : "";
+		}
+	}
 
-  // 6. Validar Dirección (obligatoria)
-  if (!formData.get("direccion")?.trim()) {
-    errors.push("La dirección es obligatoria");
-  }
+	// 6. Validar Dirección (obligatoria)
+	if (!formData.get("direccion")?.trim()) {
+		errors.push("La dirección es obligatoria");
+	}
 
-  // 7. Validar Teléfono (obligatorio, 7-9 dígitos)
-  if (!telefono) {
-    errors.push("El teléfono es obligatorio");
-  } else if (!/^[0-9]{7,9}$/.test(telefono)) {
-    errors.push("El teléfono debe tener entre 7 y 9 dígitos numéricos");
-  }
+	// 7. Validar Teléfono (obligatorio, 7-9 dígitos)
+	if (!telefono) {
+		errors.push("El teléfono es obligatorio");
+	} else if (!/^[0-9]{7,9}$/.test(telefono)) {
+		errors.push("El teléfono debe tener entre 7 y 9 dígitos numéricos");
+	}
 
-  // 8. Validar Celular (obligatorio, 9 dígitos)
-  if (!celular) {
-    errors.push("El número de celular es obligatorio");
-  } else if (!/^[0-9]{9}$/.test(celular)) {
-    errors.push("El celular debe tener exactamente 9 dígitos numéricos");
-  }
+	// 8. Validar Celular (obligatorio, 9 dígitos)
+	if (!celular) {
+		errors.push("El número de celular es obligatorio");
+	} else if (!/^[0-9]{9}$/.test(celular)) {
+		errors.push("El celular debe tener exactamente 9 dígitos numéricos");
+	}
 
-  // 9. Validar Correo Electrónico (opcional pero con formato válido si se ingresa)
-  const email = formData.get("email")?.trim();
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.push("El formato del correo electrónico no es válido");
-  }
+	// 9. Validar Correo Electrónico (opcional pero con formato válido si se ingresa)
+	const email = formData.get("email")?.trim();
+	if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+		errors.push("El formato del correo electrónico no es válido");
+	}
 
-  // 10. Validar Género (obligatorio)
-  if (!genero) {
-    errors.push("Debe seleccionar un género (Hombre o Mujer)");
-  }
+	// 10. Validar Género (obligatorio)
+	if (!genero) {
+		errors.push("Debe seleccionar un género (Hombre o Mujer)");
+	}
 
-  // 11. Validar Antecedente (opcional, máximo 1000 caracteres)
-  const antecedente = formData.get("antecedente")?.trim() || "";
-  if (antecedente.length > 1000) {
-    errors.push("El antecedente no debe exceder los 1000 caracteres");
-  }
+	// 11. Validar Antecedente (opcional, máximo 1000 caracteres)
+	const antecedente = formData.get("antecedente")?.trim() || "";
+	if (antecedente.length > 1000) {
+		errors.push("El antecedente no debe exceder los 1000 caracteres");
+	}
 
-  return errors;
+	return errors;
 }
 
 // 4. FUNCIONES ASÍNCRONAS
@@ -754,8 +754,48 @@ async function cargarPacientes(pagina = 0) {
 	}
 }
 
+// Función para exportar pacientes a Excel
+async function exportarPacientesAExcel() {
+	try {
+		const response = await fetch(`${API_BASE_URL}export/excel`, {
+			method: 'GET',
+			headers: getAuthHeaders()
+		});
+
+		if (!response.ok) {
+			throw new Error('Error al exportar los pacientes');
+		}
+
+		// Obtener el blob del archivo
+		const blob = await response.blob();
+		
+		// Crear un enlace temporal para descargar el archivo
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'pacientes.xlsx';
+		document.body.appendChild(a);
+		a.click();
+		
+		// Limpiar
+		window.URL.revokeObjectURL(url);
+		document.body.removeChild(a);
+		
+		mostrarExito('Exportación completada con éxito');
+	} catch (error) {
+		console.error('Error al exportar a Excel:', error);
+		mostrarError('Error al exportar los pacientes: ' + error.message);
+	}
+}
+
 // Configurar manejadores de eventos al cargar el DOM
 document.addEventListener("DOMContentLoaded", async () => {
+	// Configurar el manejador del botón de exportar
+	const btnExportar = document.getElementById('exportarPacientes');
+	if (btnExportar) {
+		btnExportar.addEventListener('click', exportarPacientesAExcel);
+	}
+    
 	// Configurar el cálculo automático de edad
 	configurarCalculoEdad();
 

@@ -120,18 +120,9 @@
 													<label class="form-label">Frecuencia (veces/día)</label>
 													<input type="number" step="0.1" min="0.1" class="form-control frecuencia" required />
 												</div>
-												<div class="col-md-2">
+												<div class="col-md-3">
 													<label class="form-label">Duración (días)</label>
 													<input type="text" class="form-control duracion" required />
-												</div>
-												<div class="col-md-2">
-													<label class="form-label">Formato</label>
-													<select class="form-select formato" required>
-														<option value="TABLETS">Tabletas</option>
-														<option value="CAPSULES">Cápsulas</option>
-														<option value="CAPSULES">Pastillas</option>
-														<option value="CAPSULES">Jarabe</option>
-													</select>
 												</div>
 												<div class="col-12 text-end">
 													<button type="button" class="btn btn-sm btn-danger btn-eliminar-medicamento">
@@ -149,7 +140,7 @@
 							<button type="button" class="btn btn-secondary me-md-2" id="cancelarAtencion">
 								<i class="fas fa-times me-1"></i> Cancelar
 							</button>
-							<button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Guardar Atención</button>
+							<button type="submit" id="btnGuardarAtencion" class="btn btn-success"><i class="fas fa-save me-1"></i> Guardar Atención</button>
 						</div>
 					</form>
 				</div>

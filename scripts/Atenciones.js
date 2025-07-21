@@ -87,20 +87,20 @@ async function inicializarPagina() {
 		await cargarSidebar();
 		await mostrarInfoDoctor();
 		await cargarTablaAtenciones();
-		
+
 		// Configurar eventos de búsqueda
-		const btnBuscar = document.querySelector('button i.fa-search')?.parentElement;
-		const btnMostrarTodos = document.querySelector('button i.fa-list')?.parentElement;
+		const btnBuscar = document.querySelector("button i.fa-search")?.parentElement;
+		const btnMostrarTodos = document.querySelector("button i.fa-list")?.parentElement;
 		const inputBusqueda = document.querySelector('input[placeholder="Ingrese DNI del paciente"]');
-		
+
 		if (btnBuscar) {
 			btnBuscar.addEventListener("click", buscarAtenciones);
 		}
-		
+
 		if (btnMostrarTodos) {
 			btnMostrarTodos.addEventListener("click", cargarTablaAtenciones);
 		}
-		
+
 		if (inputBusqueda) {
 			inputBusqueda.addEventListener("keypress", (e) => {
 				if (e.key === "Enter") {
@@ -108,7 +108,6 @@ async function inicializarPagina() {
 				}
 			});
 		}
-		
 	} catch (error) {
 		mostrarError("Error al cargar los datos iniciales");
 	}
@@ -118,7 +117,7 @@ async function inicializarPagina() {
 async function mostrarInfoDoctor() {
 	const role = localStorage.getItem("role");
 	const userName = localStorage.getItem("userName");
-	
+
 	if (role === "DOCTOR" && userName) {
 		const tituloElement = document.querySelector("h2");
 		if (tituloElement) {
@@ -137,15 +136,15 @@ async function obtenerAtenciones() {
 	try {
 		const doctorId = localStorage.getItem("userId");
 		const role = localStorage.getItem("role");
-		
+
 		let url = APPOINTMENTS_URL;
-		
+
 		// Si es doctor, filtrar por sus atenciones
 		if (role === "DOCTOR" && doctorId) {
 			url = `${APPOINTMENTS_URL}doctor/${doctorId}`;
 		}
 		// Si es admin, mostrar todas las atenciones
-		
+
 		const response = await fetch(url, {
 			method: "GET",
 			headers: getAuthHeaders(),
@@ -189,12 +188,12 @@ async function crearAtencion(atencionData) {
 	try {
 		const doctorId = localStorage.getItem("userId");
 		const role = localStorage.getItem("role");
-		
+
 		// Si es doctor, asociar automáticamente la atención al doctor
 		if (role === "DOCTOR" && doctorId) {
 			atencionData.doctorId = doctorId;
 		}
-		
+
 		const response = await fetch(APPOINTMENTS_URL, {
 			method: "POST",
 			headers: getAuthHeaders(),
@@ -264,14 +263,14 @@ async function buscarAtencionesPorDniPaciente(dni) {
 	try {
 		const doctorId = localStorage.getItem("userId");
 		const role = localStorage.getItem("role");
-		
+
 		let url = `${APPOINTMENTS_URL}search?patientDni=${encodeURIComponent(dni)}`;
-		
+
 		// Si es doctor, agregar filtro por doctor
 		if (role === "DOCTOR" && doctorId) {
 			url += `&doctorId=${doctorId}`;
 		}
-		
+
 		const response = await fetch(url, {
 			method: "GET",
 			headers: getAuthHeaders(),
@@ -294,49 +293,53 @@ async function buscarAtencionesPorDniPaciente(dni) {
 
 // Cargar y mostrar atenciones en la tabla
 async function cargarTablaAtenciones() {
-	const tbody = document.querySelector("table tbody");
-	if (!tbody) return;
+    const tbody = document.querySelector("table tbody");
+    if (!tbody) return;
 
-	try {
-		// Mostrar loading
-		tbody.innerHTML = '<tr><td colspan="7" class="text-center"><i class="fa fa-spinner fa-spin"></i> Cargando...</td></tr>';
+    try {
+        // Mostrar loading
+        tbody.innerHTML =
+            '<tr><td colspan="7" class="text-center"><i class="fa fa-spinner fa-spin"></i> Cargando...</td></tr>';
 
-		const atenciones = await obtenerAtenciones();
-		
-		if (atenciones.length === 0) {
-			tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No hay atenciones registradas</td></tr>';
-			return;
-		}
+        const response = await obtenerAtenciones();
+        const atenciones = response.data || [];
 
-		tbody.innerHTML = atenciones.map((atencion, index) => `
-			<tr>
-				<td>${index + 1}</td>
-				<td>${atencion.diagnosis || 'N/A'}</td>
-				<td>${atencion.treatment || 'N/A'}</td>
-				<td>${atencion.appointmentType || 'N/A'}</td>
-				<td>${atencion.appointmentDateTime ? new Date(atencion.appointmentDateTime).toLocaleString('es-ES') : 'N/A'}</td>
-				<td>${atencion.patient?.dni || 'N/A'}</td>
-				<td>
-					<button class="btn btn-info btn-sm me-1" onclick="verDetalleAtencion(${atencion.id})">
-						<i class="fa fa-eye"></i> Ver Detalle
-					</button>
-					<button class="btn btn-warning btn-sm me-1" onclick="editarAtencion(${atencion.id})">
-						<i class="fa fa-edit"></i> Editar
-					</button>
-					<button class="btn btn-danger btn-sm" onclick="confirmarEliminarAtencion(${atencion.id})">
-						<i class="fa fa-trash"></i> Eliminar
-					</button>
-				</td>
-			</tr>
-		`).join('');
-	} catch (error) {
-		tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error al cargar las atenciones</td></tr>';
-	}
+        if (atenciones.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No hay atenciones registradas</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = atenciones
+            .map(
+                (atencion, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${atencion.description || "N/A"}</td>
+                <td>N/A</td> <!-- No hay campo de tratamiento en la respuesta -->
+                <td>Consulta</td> <!-- Valor por defecto -->
+                <td>${atencion.date_attention ? new Date(atencion.date_attention).toLocaleString("es-ES") : "N/A"}</td>
+                <td>${atencion.patient?.dni || "N/A"}</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1" onclick="verDetalleAtencion('${atencion.id_appointment}'); return false;">
+                        <i class="fa fa-eye"></i> Ver Detalle
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="confirmarEliminarAtencion('${atencion.id_appointment}'); return false;">
+                        <i class="fa fa-trash"></i> Eliminar
+                    </button>
+                </td>
+            </tr>
+        `
+            )
+            .join("");
+    } catch (error) {
+        console.error('Error al cargar la tabla de atenciones:', error);
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error al cargar las atenciones</td></tr>';
+    }
 }
 
 // Confirmar eliminación de atención
 function confirmarEliminarAtencion(id) {
-	if (confirm('¿Está seguro de que desea eliminar esta atención?')) {
+	if (confirm("¿Está seguro de que desea eliminar esta atención?")) {
 		eliminarAtencionYRefrescar(id);
 	}
 }
@@ -355,7 +358,7 @@ async function buscarAtenciones() {
 	if (!dniInput) return;
 
 	const dni = dniInput.value.trim();
-	
+
 	if (!dni) {
 		await cargarTablaAtenciones();
 		return;
@@ -365,23 +368,27 @@ async function buscarAtenciones() {
 	if (!tbody) return;
 
 	try {
-		tbody.innerHTML = '<tr><td colspan="7" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>';
-		
+		tbody.innerHTML =
+			'<tr><td colspan="7" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>';
+
 		const atenciones = await buscarAtencionesPorDniPaciente(dni);
-		
+
 		if (atenciones.length === 0) {
-			tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No se encontraron atenciones para ese DNI</td></tr>';
+			tbody.innerHTML =
+				'<tr><td colspan="7" class="text-center text-muted">No se encontraron atenciones para ese DNI</td></tr>';
 			return;
 		}
 
-		tbody.innerHTML = atenciones.map((atencion, index) => `
+		tbody.innerHTML = atenciones
+			.map(
+				(atencion, index) => `
 			<tr>
 				<td>${index + 1}</td>
-				<td>${atencion.diagnosis || 'N/A'}</td>
-				<td>${atencion.treatment || 'N/A'}</td>
-				<td>${atencion.appointmentType || 'N/A'}</td>
-				<td>${atencion.appointmentDateTime ? new Date(atencion.appointmentDateTime).toLocaleString('es-ES') : 'N/A'}</td>
-				<td>${atencion.patient?.dni || 'N/A'}</td>
+				<td>${atencion.diagnosis || "N/A"}</td>
+				<td>${atencion.treatment || "N/A"}</td>
+				<td>${atencion.appointmentType || "N/A"}</td>
+				<td>${atencion.appointmentDateTime ? new Date(atencion.appointmentDateTime).toLocaleString("es-ES") : "N/A"}</td>
+				<td>${atencion.patient?.dni || "N/A"}</td>
 				<td>
 					<button class="btn btn-info btn-sm me-1" onclick="verDetalleAtencion(${atencion.id})">
 						<i class="fa fa-eye"></i> Ver Detalle
@@ -394,103 +401,100 @@ async function buscarAtenciones() {
 					</button>
 				</td>
 			</tr>
-		`).join('');
+		`
+			)
+			.join("");
 	} catch (error) {
 		tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error al buscar atenciones</td></tr>';
 	}
 }
 
-// Variables globales para edición
-let atencionEditandoId = null;
-
-// Editar atención (función placeholder)
-function editarAtencion(id) {
-	console.log('Editar atención:', id);
-	atencionEditandoId = id;
-	// Aquí podrías implementar un modal de edición o navegar a otra página
-}
 
 // Ver detalle de la atención
 async function verDetalleAtencion(id) {
-	try {
-		const atencion = await obtenerAtencionPorId(id);
-		if (!atencion) return;
+    try {
+        const response = await obtenerAtencionPorId(id);
+        if (!response || !response.data) {
+            mostrarError("No se pudo obtener el detalle de la atención");
+            return;
+        }
+        
+        const atencion = response.data;
+        const doctor = atencion.doctor || {};
+        const patient = atencion.patient || {};
+        const specialty = doctor.specialty || {};
 
-		// Crear modal para mostrar el detalle
-		const modalHtml = `
-			<div class="modal fade" id="modalDetalleAtencion" tabindex="-1">
-				<div class="modal-dialog modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">
-								<i class="fa fa-eye"></i> Detalle de la Atención
-							</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-						</div>
-						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-6">
-									<h6><i class="fa fa-notes-medical"></i> Información de la Atención</h6>
-									<p><strong>Diagnóstico:</strong> ${atencion.diagnosis || 'N/A'}</p>
-									<p><strong>Tratamiento:</strong> ${atencion.treatment || 'N/A'}</p>
-									<p><strong>Tipo de Atención:</strong> ${atencion.appointmentType || 'N/A'}</p>
-									<p><strong>Fecha y Hora:</strong> ${atencion.appointmentDateTime ? new Date(atencion.appointmentDateTime).toLocaleString('es-ES') : 'N/A'}</p>
-								</div>
-								<div class="col-md-6">
-									<h6><i class="fa fa-user"></i> Información del Paciente</h6>
-									<p><strong>Nombre:</strong> ${atencion.patient?.name || 'N/A'}</p>
-									<p><strong>DNI:</strong> ${atencion.patient?.dni || 'N/A'}</p>
-									<p><strong>Teléfono:</strong> ${atencion.patient?.phone || 'N/A'}</p>
-									<p><strong>Email:</strong> ${atencion.patient?.email || 'N/A'}</p>
-									
-									<h6><i class="fa fa-user-md"></i> Información del Doctor</h6>
-									<p><strong>Nombre:</strong> ${atencion.doctor?.name || 'N/A'}</p>
-									<p><strong>Especialidad:</strong> ${atencion.doctor?.specialty || 'N/A'}</p>
-								</div>
-							</div>
-							${atencion.notes ? `
-								<div class="row mt-3">
-									<div class="col-12">
-										<h6><i class="fa fa-comment"></i> Notas Adicionales</h6>
-										<p>${atencion.notes}</p>
-									</div>
-								</div>
-							` : ''}
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-								<i class="fa fa-times"></i> Cerrar
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		`;
+        // Crear modal para mostrar el detalle
+        const modalHtml = `
+            <div class="modal fade" id="modalDetalleAtencion" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="fa fa-eye"></i> Detalle de la Atención
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="fa fa-notes-medical"></i> Información de la Atención</h6>
+                                    <p><strong>Descripción:</strong> ${atencion.description || "N/A"}</p>
+                                    <p><strong>Fecha de Creación:</strong> ${
+                                        atencion.date_appointment 
+                                            ? new Date(atencion.date_appointment).toLocaleString("es-ES")
+                                            : "N/A"
+                                    }</p>
+                                    <p><strong>Fecha de Atención:</strong> ${
+                                        atencion.date_attention
+                                            ? new Date(atencion.date_attention).toLocaleString("es-ES")
+                                            : "N/A"
+                                    }</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="fa fa-user"></i> Información del Paciente</h6>
+                                    <p><strong>Nombre:</strong> ${patient.first_name ? `${patient.first_name} ${patient.last_name || ''}` : 'N/A'}</p>
+                                    <p><strong>DNI:</strong> ${patient.dni || "N/A"}</p>
+                                    <p><strong>Teléfono:</strong> ${patient.phone || patient.landline_phone || "N/A"}</p>
+                                    <p><strong>Email:</strong> ${patient.email || "N/A"}</p>
+                                    
+                                    <h6 class="mt-3"><i class="fa fa-user-md"></i> Información del Doctor</h6>
+                                    <p><strong>Nombre:</strong> ${doctor.first_name ? `${doctor.first_name} ${doctor.last_name || ''}` : 'N/A'}</p>
+                                    <p><strong>Especialidad:</strong> ${specialty.specialty_name || "N/A"}</p>
+                                    <p><strong>CMP:</strong> ${doctor.cmp || "N/A"}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fa fa-times"></i> Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
 
-		// Remover modal anterior si existe
-		const modalAnterior = document.getElementById('modalDetalleAtencion');
-		if (modalAnterior) {
-			modalAnterior.remove();
-		}
+        // Remover modal anterior si existe
+        const modalAnterior = document.getElementById("modalDetalleAtencion");
+        if (modalAnterior) {
+            modalAnterior.remove();
+        }
 
 		// Agregar modal al DOM
-		document.body.insertAdjacentHTML('beforeend', modalHtml);
+		document.body.insertAdjacentHTML("beforeend", modalHtml);
 
 		// Mostrar modal
-		const modal = new bootstrap.Modal(document.getElementById('modalDetalleAtencion'));
+		const modal = new bootstrap.Modal(document.getElementById("modalDetalleAtencion"));
 		modal.show();
-
 	} catch (error) {
-		console.error('Error al mostrar detalle:', error);
-		mostrarError('Error al cargar el detalle de la atención');
+		console.error("Error al mostrar detalle:", error);
+		mostrarError("Error al cargar el detalle de la atención");
 	}
 }
 
 // 5. Eventos DOM
-
 document.addEventListener("DOMContentLoaded", inicializarPagina);
 
 // 6. Funciones Globales
-window.editarAtencion = editarAtencion;
 window.confirmarEliminarAtencion = confirmarEliminarAtencion;
 window.verDetalleAtencion = verDetalleAtencion;
